@@ -9,7 +9,7 @@
 | `files/`           | Reference and source documents used to put the system together (PDFs, .docx, .xlsx) |
 | `email-templates/` | HTML email templates for the flows                                              |
 
-Root holds only `CLAUDE.md`, `PROJECT_HANDOVER.md` and `PROJECT_HISTORY.md`.
+Root holds only `README.md`, `CLAUDE.md`, `PROJECT_HANDOVER.md` and `PROJECT_HISTORY.md`.
 
 ## Rules
 
