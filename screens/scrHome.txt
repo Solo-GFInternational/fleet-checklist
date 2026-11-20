@@ -1,0 +1,440 @@
+Screens:
+  scrHome:
+    Properties:
+      Fill: =RGBA(243, 246, 246, 1)
+      LoadingSpinnerColor: =RGBA(8, 144, 144, 1)
+      OnVisible: |-
+        =If(Connection.Connected,
+            With({u: LookUp('GF Fleet Checklist App Users', UserEmail = Lower(User().Email))},
+                Set(varRole, If(!IsBlank(u) && u.ActiveYN, u.AppRole.Value, "None")));
+            ClearCollect(colRoleCache, {Role: varRole});
+            IfError(SaveData(colRoleCache, "fcRole"); true, false),
+            IfError(LoadData(colRoleCache, "fcRole", true); true, false);
+            Set(varRole, Coalesce(First(colRoleCache).Role, "None")));
+        IfError(LoadData(colLocalRun, "fcRunHeader", true); true, false)
+    Children:
+      - conHome:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            Fill: =RGBA(243, 246, 246, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =0
+            Width: =Parent.Width
+          Children:
+            - conHomeHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =84
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =84
+                  LayoutMinWidth: =16
+                  PaddingBottom: =14
+                  PaddingLeft: =12
+                  PaddingRight: =16
+                  PaddingTop: =14
+                Children:
+                  - imgHomeLogo:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="GF logo"
+                        Height: =48
+                        Image: ='gf-logo'
+                        ImagePosition: =ImagePosition.Fit
+                        Width: =48
+                  - conHomeTitles:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Height: =58
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =2
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                      Children:
+                        - lblHomeTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 112, 112, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              PaddingLeft: =0
+                              Size: =18
+                              Text: ="Fleet Checklist"
+                        - lblHomeSubtitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =22
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: ="Hello " & User().FullName & If(varRole in ["Driver", "Reviewer", "Admin"], "   ·   " & varRole, "")
+            - conHomeStripe:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =6
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =0
+                  LayoutMinHeight: =6
+                  LayoutMinWidth: =16
+                Children:
+                  - recHomeStripe1:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recHomeStripe2:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(0, 184, 216, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recHomeStripe3:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(248, 208, 0, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recHomeStripe4:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(160, 200, 80, 1)
+                        FillPortions: =1
+                        Height: =6
+            - conHomeBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(243, 246, 246, 1)
+                  FillPortions: =1
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =14
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =24
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - conHomeTruck:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"]
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =236
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =12
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblHomeTruckHeading:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =28
+                              PaddingLeft: =0
+                              Size: =15
+                              Text: ="Which truck are you driving?"
+                        - bcrTruck:
+                            Control: BarcodeReader@1.0.25
+                            Properties:
+                              Height: =52
+                              OnScan: |-
+                                =With({t: Upper(Substitute(Substitute(First(Self.Barcodes).Value, " ", ""), "-", ""))},
+                                    Set(varTruck, If(IsBlank(t), Blank(), Left(t, 2) & " " & Mid(t, 3, 10))))
+                              Text: ="Scan truck barcode"
+                        - txtTruck:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              BorderColor: =RGBA(208, 216, 218, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =""
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              Height: =52
+                              HintText: ="Or type the truck number"
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              OnChange: |-
+                                =With({t: Upper(Substitute(Substitute(Self.Text, " ", ""), "-", ""))},
+                                    Set(varTruck, If(IsBlank(t), Blank(), Left(t, 2) & " " & Mid(t, 3, 10))))
+                              PaddingLeft: =12
+                              PressedBorderColor: =RGBA(8, 144, 144, 1)
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Size: =15
+                        - lblTruckStatus:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =If(IsBlank(varTruck), RGBA(96, 108, 118, 1), RGBA(0, 112, 112, 1))
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =32
+                              PaddingLeft: =0
+                              Size: =15
+                              Text: |-
+                                =If(IsBlank(varTruck), "No truck selected yet", "Truck: " & varTruck)
+                  - lblHomeNoAccess:
+                      Control: Label@2.5.1
+                      Properties:
+                        PaddingBottom: =12
+                        PaddingTop: =12
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(196, 49, 75, 1)
+                        Fill: =RGBA(250, 228, 232, 1)
+                        FillPortions: =0
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =88
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        Size: =14
+                        Text: ="You're not registered to use this app yet. Ask a Fleet Checklist admin to add you, then reopen the app."
+                        Visible: =varRole = "None"
+                        Wrap: =true
+                  - lblHomeOffline:
+                      Control: Label@2.5.1
+                      Properties:
+                        PaddingBottom: =12
+                        PaddingTop: =12
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        Fill: =RGBA(254, 246, 204, 1)
+                        FillPortions: =0
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =76
+                        PaddingLeft: =14
+                        PaddingRight: =14
+                        Size: =13
+                        Text: ="You're offline. The run sheet still works and uploads when you're back in coverage. Checklists and declarations need signal."
+                        Visible: =!Connection.Connected && varRole in ["Driver", "Reviewer", "Admin"]
+                        Wrap: =true
+                  - lblHomeRunWaiting:
+                      Control: Label@2.5.1
+                      Properties:
+                        PaddingBottom: =12
+                        PaddingTop: =12
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        Fill: =RGBA(226, 243, 242, 1)
+                        FillPortions: =0
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =76
+                        PaddingLeft: =14
+                        PaddingRight: =14
+                        Size: =13
+                        Text: ="Your run sheet is saved on this phone but not submitted yet. Open Run sheet when you have signal and tap Upload now."
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"] && !IsEmpty(colLocalRun) && First(colLocalRun).PendingSubmit
+                        Wrap: =true
+                  - lblHomeActions:
+                      Control: Label@2.5.1
+                      Properties:
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"]
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        PaddingLeft: =0
+                        PaddingTop: =8
+                        Size: =15
+                        Text: ="What do you need to do?"
+                  - btnFleetChecklist:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"]
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        DisplayMode: =If(!Connection.Connected, DisplayMode.Disabled, If(IsBlank(varTruck), DisplayMode.Disabled, DisplayMode.Edit))
+                        Fill: =RGBA(8, 144, 144, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        OnSelect: |-
+                          =Set(varReviewing, false);
+                          Set(varCheck, Blank());
+                          Clear(colPhotos);
+                          NewForm(frmPreTrip);
+                          Navigate(scrPreTrip)
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: =If(IsBlank(varTruck), "Select a truck first", "Start fleet checklist")
+                  - btnDriverDeclaration:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        DisplayMode: =If(Connection.Connected, DisplayMode.Edit, DisplayMode.Disabled)
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"]
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =RGBA(0, 112, 112, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        OnSelect: =Navigate(scrDecl)
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: ="Driver declaration"
+                  - btnRunSheet:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"]
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =RGBA(0, 112, 112, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        OnSelect: |-
+                          =IfError(LoadData(colLocalRun, "fcRunHeader", true); LoadData(colRunStops, "fcRunStops", true); true, false);
+                          If(!IsEmpty(colLocalRun),
+                              Set(varRunSheet, First(colLocalRun)),
+                              Clear(colRunStops);
+                              If(Connection.Connected,
+                                  With({r: First(Sort(Filter('Run Sheets', DriverName = User().FullName && Status.Value = "In Progress"), ID, SortOrder.Descending))},
+                                      Set(varRunSheet, If(IsBlank(r), Blank(), {
+                                          LocalKey: "sp-" & r.ID,
+                                          ID: r.ID,
+                                          Synced: true,
+                                          PendingSubmit: false,
+                                          RunDate: DateValue(Text(r.RunDate, "yyyy-mm-dd")),
+                                          DateofDrive: DateValue(Text(r.DateofDrive, "yyyy-mm-dd")),
+                                          DriverName: r.DriverName,
+                                          Title: r.Title,
+                                          Partner: r.Partner,
+                                          Area: r.Area,
+                                          NoofInvoices: r.NoofInvoices,
+                                          StartMileage: r.StartMileage,
+                                          ExpectedDeparture: r.ExpectedDeparture,
+                                          ExpectedArrival: r.ExpectedArrival,
+                                          TimeReturned: "",
+                                          EndMileage: Value(""),
+                                          BalanceInvoice: "",
+                                          AnalogTemp: Value(""),
+                                          PlugInTemp: Value(""),
+                                          BalanceQty: Value(""),
+                                          InvoiceBalanced: false}))),
+                                  Set(varRunSheet, Blank())));
+                          If(!IsBlank(varRunSheet), Notify("Carrying on with your run for " & varRunSheet.Title, NotificationType.Information));
+                          Navigate(scrRunSheet)
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: ="Run sheet"
+                  - btnReviewChecklists:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        Visible: =varRole in ["Reviewer", "Admin"]
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =RGBA(0, 112, 112, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        OnSelect: =Navigate(scrReview)
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: ="Review and sign-off"

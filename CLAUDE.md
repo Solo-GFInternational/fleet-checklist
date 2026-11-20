@@ -1,0 +1,34 @@
+# Fleet Checklist – project rules
+
+## Folder layout
+
+| Folder             | What goes in it                                                                 |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `screens/`         | Every Power Apps screen, old and new: one file per screen                       |
+| `scripts/`         | Scripts that build or set up parts of the system (e.g. `build_forms.py`, `build_lists.py`) |
+| `files/`           | Reference and source documents used to put the system together (PDFs, .docx, .xlsx) |
+| `email-templates/` | HTML email templates for the flows                                              |
+
+Root holds only `CLAUDE.md`, `PROJECT_HANDOVER.md` and `PROJECT_HISTORY.md`.
+
+## Rules
+
+- **New screens go straight into `screens/`.** Whenever a new screen is suggested or designed, create its file in `screens/` automatically, without being asked. Don't just describe it in chat.
+  - Name it `scr<Name>.txt` (PascalCase, `scr` prefix, `.txt` extension), e.g. `screens/scrRunEnd.txt`.
+  - The file holds the screen's full YAML/Power Fx (the screen definition you paste into Power Apps).
+  - Control names use a type prefix and no spaces or `_1`/`DataCard1` suffixes: `scr` screen, `frm` form, `crd` form card (e.g. `crdOdometer`), `btn` button, `lbl` label, `txt` text input, `drp` dropdown, `gal` gallery, `cam` camera, `img` image, `ico` icon, `rec` rectangle, `con` container, `bcr` barcode reader. Controls inside a form card keep Power Apps' default names (`DataCardValueN`, `DataCardKeyN`, `ErrorMessageN`, `StarVisibleN`); only the card itself is renamed (testing whether renaming them broke the drop-downs, Nov 2026). Names must be unique across the whole app. Never name a control after a Power Fx function (e.g. not `SubmitForm`, `Back`, `Navigate`).
+  - Drop-down options come from SharePoint, never hard-coded lists like `["Yes", "No"]`, so option changes are made in SharePoint only.
+  - In `Choices(...)` and `DataSourceInfo(...)`, refer to columns by their **internal** name (`Choices([@'Fleet Checklist'].'field_4')`), not the display name. With display names the pasted drop-downs open empty (confirmed Nov 2026).
+  - Use the **Classic/DropDown** control for single-choice fields, never Classic/ComboBox: a ComboBox pasted in from screen code opens with an empty list even when its code is correct (confirmed Nov 2026). Dropdown cards use `AllowEmptySelection: =true` (so nothing is pre-selected), `Default: =ThisItem.field_N.Value` (the card's own internal field; `Parent.Default.Value` errors with "'Value' isn't recognized" after pasting), `Items.Value: =Value`, and the card's `Update: =<dropdown>.Selected`.
+  - Yes/No questions a driver answers (checklist items, declaration statements) are **checkboxes**, not drop-downs or Yes/No buttons (user's decision, Nov 2026): the question text sits beside the box, ticked saves "Yes", unticked saves "No". Use `Classic/CheckBox@2.1.0` with an empty caption laid over the question label, so tapping the text ticks the box. In a form card: `Default: =ThisItem.field_N.Value = "Yes"`, card `Update: ={Value: If(<checkbox>.Value, "Yes", "No")}`, card `Required: =false`. Don't give the checkbox `MetadataKey: FieldValue` inside a card; the card's `Update` reads the checkbox by name. `Classic/CheckBox` has **no `AccessibleLabel` property**: paste fails with error PA2108 (confirmed Nov 2026). Manager/office sign-off choices (e.g. Approval for Delivery, Send for Repairs) stay as drop-downs.
+  - Changes to an existing screen are made in its file in `screens/`; don't create a second copy.
+- **Look and feel (GF brand, phone-first).** Every screen uses the same pattern: white header (`con<Screen>Header`: back icon, `'gf-logo'` image, title + subtitle), a 4-colour brand stripe under it (`con<Screen>Stripe`), a scrolling body on a light background, and a fixed white footer for the main action. Sizes come from `Parent.Width` / auto-layout containers, never fixed pixel widths. Touch targets are at least 48 px high.
+  - Palette (from `gf-logo.png`): teal `RGBA(8, 144, 144, 1)` (primary buttons, section headings), dark teal `RGBA(0, 112, 112, 1)` (titles, pressed), teal tint `RGBA(226, 243, 242, 1)` (hover), cyan `RGBA(0, 184, 216, 1)`, yellow `RGBA(248, 208, 0, 1)`, lime `RGBA(160, 200, 80, 1)` (stripe only), ink `RGBA(31, 41, 51, 1)` (text), muted `RGBA(96, 108, 118, 1)`, line `RGBA(208, 216, 218, 1)`, background `RGBA(243, 246, 246, 1)`.
+  - Primary button: teal fill, white text, radius 10, height 56. Secondary button: white fill, 2 px teal border, dark-teal text.
+  - Text must fit a ~360 px phone: free-text inputs (comments, remarks, descriptions, names) use `Mode: =TextMode.MultiLine` (height 80–104); any label that can run past one line gets `AutoHeight: =true` + `Wrap: =true`, and a fixed-height card around it gets `Height: =<base> + (lbl.Height - <label's original height>)`. Gallery rows leave room for 2-line text.
+  - The logo must be uploaded to the app's Media as `gf-logo` (from `gf-logo.png` in the project root).
+- **Roles.** Access is controlled by the SharePoint list **GF Fleet Checklist App Users** (Title = name, `UserEmail` lower case, `AppRole` choice Admin/Reviewer/Driver, `ActiveYN`), created by `scripts/create_app_users.js`. `scrHome.OnVisible` sets `varRole` ("Driver", "Reviewer", "Admin", or "None" if not registered/inactive). Roles stack: Reviewer can do everything Driver can, Admin everything Reviewer can. Gate buttons with `Visible: =varRole in [...]`, and screens a role must not open by hiding the screen's root container (`Visible: =varRole in [...]`) and showing a full-screen label whose `OnSelect` navigates to scrHome. Never put `Navigate` in a screen's `OnVisible` (Studio error: "Navigate cannot be used here"). Hiding a button is not security: list permissions in SharePoint are the real boundary.
+- **Offline (run sheet).** The run sheet works without signal: the trip (`varRunSheet`, a plain record with `LocalKey`, `ID`, `Synced`, `PendingSubmit` and the trip/return fields) and stops (`colRunStops`, each with `LocalKey`, `ID`, `Synced`) are saved on the phone with `SaveData` ("fcRunHeader", "fcRunStops") and uploaded by `btnRunSync` (trip first, then unsynced stops, then the submission). Never write to Run Sheets / Run Sheet Details directly from another button; save locally and `Select(btnRunSync)`. `varRole` is cached in "fcRole". Offline only works in the Power Apps mobile app. Checklist and declaration still need signal.
+- **New scripts go in `scripts/`.** The build scripts take the output folder as their first argument. Point it at `files/`, e.g. `python scripts/build_lists.py files`.
+- **Generated or reference documents go in `files/`.**
+- Never create new files in the project root.

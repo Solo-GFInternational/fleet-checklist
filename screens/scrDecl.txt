@@ -1,0 +1,1302 @@
+Screens:
+  scrDecl:
+    Properties:
+      Fill: =RGBA(243, 246, 246, 1)
+      LoadingSpinnerColor: =RGBA(8, 144, 144, 1)
+      OnVisible: |-
+        =UpdateContext({ctxLastDecl: First(Sort(Filter('Driver Declarations', Title = User().FullName), ID, SortOrder.Descending))});
+        Reset(txtDeclEmpNo);
+        Reset(txtDeclComments);
+        Reset(chkDecl01);
+        Reset(chkDecl02);
+        Reset(chkDecl03);
+        Reset(chkDecl04);
+        Reset(chkDecl05);
+        Reset(chkDecl06);
+        Reset(chkDecl07);
+        Reset(chkDecl08);
+        Reset(chkDecl09);
+        Reset(chkDecl10);
+        Reset(chkDecl11);
+        Reset(chkDecl12);
+        Reset(chkDecl13);
+        Reset(chkDecl14)
+    Children:
+      - conDecl:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            Fill: =RGBA(243, 246, 246, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =0
+            Width: =Parent.Width
+          Children:
+            - conDeclHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =84
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =84
+                  LayoutMinWidth: =16
+                  PaddingBottom: =14
+                  PaddingLeft: =12
+                  PaddingRight: =16
+                  PaddingTop: =14
+                Children:
+                  - icoDeclBack:
+                      Control: Classic/Icon@2.5.0
+                      Properties:
+                        AccessibleLabel: ="Go back"
+                        Color: =RGBA(0, 112, 112, 1)
+                        Height: =40
+                        Icon: =Icon.ChevronLeft
+                        OnSelect: =Navigate(scrHome)
+                        PaddingBottom: =8
+                        PaddingLeft: =8
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        Tooltip: ="Go back"
+                        Width: =40
+                  - imgDeclLogo:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="GF logo"
+                        Height: =48
+                        Image: ='gf-logo'
+                        ImagePosition: =ImagePosition.Fit
+                        Width: =48
+                  - conDeclTitles:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Height: =58
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =2
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                      Children:
+                        - lblDeclTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 112, 112, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              PaddingLeft: =0
+                              Size: =18
+                              Text: ="Driver declaration"
+                        - lblDeclSubtitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =22
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: ="Fitness for Driving   ·   " & Text(Today(), "dd mmm yyyy")
+            - conDeclStripe:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =6
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =0
+                  LayoutMinHeight: =6
+                  LayoutMinWidth: =16
+                Children:
+                  - recDeclStripe1:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recDeclStripe2:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(0, 184, 216, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recDeclStripe3:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(248, 208, 0, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recDeclStripe4:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(160, 200, 80, 1)
+                        FillPortions: =1
+                        Height: =6
+            - conDeclBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(243, 246, 246, 1)
+                  FillPortions: =1
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =12
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =24
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - conDeclDriver:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDeclIntro.Height + 190 + (lblDeclDriverInfo.Height - 22)
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDeclDriverHeading:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 112, 112, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              PaddingLeft: =0
+                              Size: =16
+                              Text: ="Driver details"
+                        - lblDeclDriverInfo:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =22
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: |-
+                                ="Name: " & User().FullName & "   ·   " & Text(Now(), "dd mmm yyyy, hh:mm")
+                              Wrap: =true
+                        - lblDeclEmpNoLabel:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =24
+                              PaddingLeft: =0
+                              Size: =14
+                              Text: ="Employee No *"
+                        - txtDeclEmpNo:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              BorderColor: =RGBA(208, 216, 218, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =Coalesce(ctxLastDecl.field_2, "")
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              Height: =52
+                              HintText: ="e.g. W02203"
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              PaddingLeft: =12
+                              PressedBorderColor: =RGBA(8, 144, 144, 1)
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Size: =15
+                        - lblDeclIntro:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: ="This document is to provide clarity and direction to all Goodman Fielder truck drivers on their responsibilities with respect to driver safety, vehicle safety and journey safety. Please check the box for each declaration prior to signing off."
+                              VerticalAlign: =VerticalAlign.Top
+                              Wrap: =true
+                  - lblDeclAlreadyToday:
+                      Control: Label@2.5.1
+                      Properties:
+                        PaddingBottom: =12
+                        PaddingTop: =12
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(0, 112, 112, 1)
+                        Fill: =RGBA(226, 243, 242, 1)
+                        FillPortions: =0
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        Size: =13
+                        Text: ="You already made a declaration today at " & Text(ctxLastDecl.field_0, "hh:mm") & ". Only submit again if something has changed."
+                        Visible: =Text(ctxLastDecl.field_0, "yyyymmdd") = Text(Today(), "yyyymmdd")
+                        Wrap: =true
+                  - lblDeclHeading:
+                      Control: Label@2.5.1
+                      Properties:
+                        Wrap: =true
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(0, 112, 112, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =28
+                        PaddingLeft: =0
+                        Size: =15
+                        Text: ="I, " & User().FullName & ", hereby declare that I:"
+                  - conDecl01:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl01.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl01.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl01:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="1.  Must hold the appropriate and valid driver's license required to drive the vehicle assigned to me;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl01:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl01.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl02:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl02.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl02.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl02:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="2.  Am responsible for maintaining the validity and conditions of my driver's license;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl02:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl02.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl03:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl03.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl03.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl03:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="3.  Have completed the necessary Vehicle Pre-Start Checklist and notified my Supervisor of any defects which may affect driver safety, vehicle safety and journey safety;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl03:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl03.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl04:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl04.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl04.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl04:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="4.  Have had adequate rest prior to driving my assigned vehicle. Rest is the hours totalling no less than nine hours - defined as the number of hours taken sequentially, completely away from all work;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl04:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl04.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl05:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl05.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl05.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl05:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="5.  Shall not engage in activities such as driving other commercial vehicles, including or not limited to, driving taxis, hired vehicles, pirate taxis during the rest period above."
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl05:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl05.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl06:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl06.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl06.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl06:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="6.  Am not under any condition (medical, alcohol, drug, etc) that will impair my driving ability and create a risk to other road users;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl06:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl06.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl07:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl07.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl07.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl07:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="7.  Shall report any incident (including any traffic infringement notices) to my immediate Supervisor as soon as possible;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl07:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl07.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl08:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl08.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl08.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl08:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="8.  Shall agree to undergo an alcohol and drug test at any time during my shift irrespective whether an incident has occurred or not."
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl08:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl08.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl09:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl09.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl09.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl09:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="9.  Shall not carry any non-Goodman Fielder employees in my assigned vehicle;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl09:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl09.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl10:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl10.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl10.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl10:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="10.  Shall carry only the number of passengers equal to the number of seat belts in a vehicle;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl10:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl10.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl11:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl11.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl11.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl11:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="11.  Shall comply with all Fiji legislation and Goodman Fielder Procedural requirements with respect to road and vehicle use;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl11:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl11.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl12:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl12.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl12.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl12:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="12.  Shall respond fully and accurately to any requests for information – whether from a Goodman Fielder leader / representative, a Health Professional, or relevant authorities including (but not limited to) LTA Officers, Police, etc.;"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl12:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl12.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl13:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl13.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl13.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl13:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="13.  Will immediately declare to my Supervisor if any of the above is in the negative and provide the necessary detail in the 'Comments' section below."
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl13:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl13.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDecl14:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(chkDecl14.Value, RGBA(8, 144, 144, 1), RGBA(0, 0, 0, 0))
+                        BorderThickness: =2
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDecl14.Height + 32
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDecl14:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: ="14.  Shall be subject to the company disciplinary processes with consequences leading up to and including summary dismissal, for making a false declaration."
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 76
+                              Wrap: =true
+                              X: =60
+                              Y: =16
+                        - chkDecl14:
+                            Control: Classic/CheckBox@2.1.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
+                              CheckboxBorderColor: =RGBA(8, 144, 144, 1)
+                              CheckboxSize: =30
+                              CheckmarkFill: =RGBA(8, 144, 144, 1)
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =false
+                              DisabledColor: =RGBA(31, 41, 51, 1)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              Font: =Font.'Segoe UI'
+                              Height: =lblDecl14.Height + 16
+                              HoverColor: =RGBA(31, 41, 51, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(31, 41, 51, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Size: =14
+                              Text: =""
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.Width - 24
+                              X: =12
+                              Y: =8
+                  - conDeclComments:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =lblDeclCommentsHint.Height + 176
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                      Children:
+                        - lblDeclCommentsLabel:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =24
+                              PaddingLeft: =0
+                              Size: =14
+                              Text: =If(CountIf([chkDecl01.Value, chkDecl02.Value, chkDecl03.Value, chkDecl04.Value, chkDecl05.Value, chkDecl06.Value, chkDecl07.Value, chkDecl08.Value, chkDecl09.Value, chkDecl10.Value, chkDecl11.Value, chkDecl12.Value, chkDecl13.Value, chkDecl14.Value], !Value) > 0, "Comments *", "Comments")
+                        - lblDeclCommentsHint:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: ="Required if you leave any declaration unticked. You can also note your last finish time and start time."
+                              VerticalAlign: =VerticalAlign.Top
+                              Wrap: =true
+                        - txtDeclComments:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              BorderColor: =RGBA(208, 216, 218, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =""
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              Height: =104
+                              HintText: ="Details for your Supervisor"
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              MaxLength: =255
+                              Mode: =TextMode.MultiLine
+                              PaddingLeft: =12
+                              PressedBorderColor: =RGBA(8, 144, 144, 1)
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Size: =15
+                  - lblDeclNoWarning:
+                      Control: Label@2.5.1
+                      Properties:
+                        PaddingBottom: =12
+                        PaddingTop: =12
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(196, 49, 75, 1)
+                        Fill: =RGBA(250, 228, 232, 1)
+                        FillPortions: =0
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =64
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        Size: =13
+                        Text: |-
+                          =CountIf([chkDecl01.Value, chkDecl02.Value, chkDecl03.Value, chkDecl04.Value, chkDecl05.Value, chkDecl06.Value, chkDecl07.Value, chkDecl08.Value, chkDecl09.Value, chkDecl10.Value, chkDecl11.Value, chkDecl12.Value, chkDecl13.Value, chkDecl14.Value], !Value) & If(CountIf([chkDecl01.Value, chkDecl02.Value, chkDecl03.Value, chkDecl04.Value, chkDecl05.Value, chkDecl06.Value, chkDecl07.Value, chkDecl08.Value, chkDecl09.Value, chkDecl10.Value, chkDecl11.Value, chkDecl12.Value, chkDecl13.Value, chkDecl14.Value], !Value) = 1, " declaration is", " declarations are") & " not ticked. Unticked means No: explain in Comments and tell your Supervisor before you drive."
+                        Visible: =CountIf([chkDecl01.Value, chkDecl02.Value, chkDecl03.Value, chkDecl04.Value, chkDecl05.Value, chkDecl06.Value, chkDecl07.Value, chkDecl08.Value, chkDecl09.Value, chkDecl10.Value, chkDecl11.Value, chkDecl12.Value, chkDecl13.Value, chkDecl14.Value], !Value) > 0
+                        Wrap: =true
+            - conDeclFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.Light
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - btnSubmitDeclaration:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        DisplayMode: |-
+                          =If(!IsBlank(Trim(txtDeclEmpNo.Text)) &&
+                          (CountIf([chkDecl01.Value, chkDecl02.Value, chkDecl03.Value, chkDecl04.Value, chkDecl05.Value, chkDecl06.Value, chkDecl07.Value, chkDecl08.Value, chkDecl09.Value, chkDecl10.Value, chkDecl11.Value, chkDecl12.Value, chkDecl13.Value, chkDecl14.Value], !Value) = 0 || !IsBlank(Trim(txtDeclComments.Text))), DisplayMode.Edit, DisplayMode.Disabled)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        OnSelect: |-
+                          =UpdateContext({ctxDeclSaved: IfError(
+                              Patch('Driver Declarations', Defaults('Driver Declarations'), {
+                                      Title: User().FullName,
+                                      field_0: Now(),
+                                      field_2: Trim(txtDeclEmpNo.Text),
+                                      field_3: If(chkDecl01.Value, "Yes", "No"),
+                                      field_4: If(chkDecl02.Value, "Yes", "No"),
+                                      field_5: If(chkDecl03.Value, "Yes", "No"),
+                                      field_6: If(chkDecl04.Value, "Yes", "No"),
+                                      field_7: If(chkDecl05.Value, "Yes", "No"),
+                                      field_8: If(chkDecl06.Value, "Yes", "No"),
+                                      field_9: If(chkDecl07.Value, "Yes", "No"),
+                                      field_10: If(chkDecl08.Value, "Yes", "No"),
+                                      field_11: If(chkDecl09.Value, "Yes", "No"),
+                                      field_12: If(chkDecl10.Value, "Yes", "No"),
+                                      field_13: If(chkDecl11.Value, "Yes", "No"),
+                                      field_14: If(chkDecl12.Value, "Yes", "No"),
+                                      field_15: If(chkDecl13.Value, "Yes", "No"),
+                                      field_16: If(chkDecl14.Value, "Yes", "No"),
+                                      field_17: Trim(txtDeclComments.Text)
+                                  }),
+                              Notify("Declaration not saved: " & FirstError.Message, NotificationType.Error, 0);
+                              Blank())});
+                          If(!IsBlank(ctxDeclSaved),
+                              If(CountIf([chkDecl01.Value, chkDecl02.Value, chkDecl03.Value, chkDecl04.Value, chkDecl05.Value, chkDecl06.Value, chkDecl07.Value, chkDecl08.Value, chkDecl09.Value, chkDecl10.Value, chkDecl11.Value, chkDecl12.Value, chkDecl13.Value, chkDecl14.Value], !Value) > 0,
+                                  Notify("Declaration saved. Some declarations were not ticked: tell your Supervisor before you drive.", NotificationType.Warning, 0),
+                                  Notify("Declaration saved. Drive safely.", NotificationType.Success));
+                              Navigate(scrHome))
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: =If(!IsBlank(Trim(txtDeclEmpNo.Text)) && (CountIf([chkDecl01.Value, chkDecl02.Value, chkDecl03.Value, chkDecl04.Value, chkDecl05.Value, chkDecl06.Value, chkDecl07.Value, chkDecl08.Value, chkDecl09.Value, chkDecl10.Value, chkDecl11.Value, chkDecl12.Value, chkDecl13.Value, chkDecl14.Value], !Value) = 0 || !IsBlank(Trim(txtDeclComments.Text))), "Submit declaration", If(IsBlank(Trim(txtDeclEmpNo.Text)), "Enter your employee number", "Explain the unticked declarations in Comments"))

@@ -1,0 +1,479 @@
+Screens:
+  scrPhotos:
+    Properties:
+      Fill: =RGBA(243, 246, 246, 1)
+      LoadingSpinnerColor: =RGBA(8, 144, 144, 1)
+      OnVisible: |-
+        =Reset(drpPhotoType);
+        Reset(txtPhotoItem)
+    Children:
+      - conPhotos:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            Fill: =RGBA(243, 246, 246, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =0
+            Width: =Parent.Width
+          Children:
+            - conPhotosHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =84
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =84
+                  LayoutMinWidth: =16
+                  PaddingBottom: =14
+                  PaddingLeft: =12
+                  PaddingRight: =16
+                  PaddingTop: =14
+                Children:
+                  - icoPhotosBack:
+                      Control: Classic/Icon@2.5.0
+                      Properties:
+                        AccessibleLabel: ="Go back"
+                        Color: =RGBA(0, 112, 112, 1)
+                        Height: =40
+                        Icon: =Icon.ChevronLeft
+                        OnSelect: =Back()
+                        PaddingBottom: =8
+                        PaddingLeft: =8
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        Tooltip: ="Go back"
+                        Width: =40
+                  - imgPhotosLogo:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="GF logo"
+                        Height: =48
+                        Image: ='gf-logo'
+                        ImagePosition: =ImagePosition.Fit
+                        Width: =48
+                  - conPhotosTitles:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Height: =58
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =2
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                      Children:
+                        - lblPhotosTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 112, 112, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              PaddingLeft: =0
+                              Size: =18
+                              Text: ="Checklist photos"
+                        - lblPhotosSubtitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =22
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: |-
+                                ="Truck: " & Coalesce(varTruck, "not selected")
+            - conPhotosStripe:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =6
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =0
+                  LayoutMinHeight: =6
+                  LayoutMinWidth: =16
+                Children:
+                  - recPhotosStripe1:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recPhotosStripe2:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(0, 184, 216, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recPhotosStripe3:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(248, 208, 0, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recPhotosStripe4:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(160, 200, 80, 1)
+                        FillPortions: =1
+                        Height: =6
+            - conPhotosBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(243, 246, 246, 1)
+                  FillPortions: =1
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =12
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - lblPhotoTypeHeading:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =28
+                        PaddingLeft: =0
+                        Size: =14
+                        Text: ="What is this photo of?"
+                  - drpPhotoType:
+                      Control: Classic/DropDown@2.3.1
+                      Properties:
+                        BorderColor: =RGBA(208, 216, 218, 1)
+                        BorderThickness: =1
+                        ChevronBackground: =RGBA(8, 144, 144, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =RGBA(0, 112, 112, 1)
+                        ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                        Color: =RGBA(31, 41, 51, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =52
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(31, 41, 51, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        Items: =["Odometer", "Accessory", "Defect"]
+                        Items.Value: =Value
+                        Default: =Coalesce(varPhotoType, "Odometer")
+                        PaddingLeft: =12
+                        PressedBorderColor: =RGBA(8, 144, 144, 1)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(8, 144, 144, 1)
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(8, 144, 144, 1)
+                        Size: =15
+                  - txtPhotoItem:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        Mode: =TextMode.MultiLine
+                        BorderColor: =RGBA(208, 216, 218, 1)
+                        BorderThickness: =1
+                        Color: =RGBA(31, 41, 51, 1)
+                        Default: =Coalesce(varPhotoItem, "")
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =80
+                        HintText: ="Describe the photo (optional)"
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        PaddingLeft: =12
+                        PressedBorderColor: =RGBA(8, 144, 144, 1)
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Size: =15
+                  - lblCameraHint:
+                      Control: Label@2.5.1
+                      Properties:
+                        Wrap: =true
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(96, 108, 118, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        PaddingLeft: =0
+                        PaddingTop: =6
+                        Size: =12
+                        Text: ="Line the item up in the frame, then tap Take photo."
+                  - conCameraFrame:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.Light
+                        Fill: =RGBA(31, 41, 51, 1)
+                        FillPortions: =0
+                        Height: =camCheck.Height + 20
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =0
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =10
+                        PaddingLeft: =10
+                        PaddingRight: =10
+                        PaddingTop: =10
+                        RadiusBottomLeft: =18
+                        RadiusBottomRight: =18
+                        RadiusTopLeft: =18
+                        RadiusTopRight: =18
+                      Children:
+                        - camCheck:
+                            Control: Camera@2.4.0
+                            Properties:
+                              BorderColor: =RGBA(31, 41, 51, 1)
+                              Camera: =varCam
+                              FillPortions: =0
+                              Height: =Self.Width * 0.75
+                              OnSelect: =Select(btnTakePhoto)
+                              StreamRate: =100
+                  - conCameraButtons:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =56
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =12
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                      Children:
+                        - btnTakePhoto:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(255, 255, 255, 1)
+                              DisabledFill: =RGBA(186, 198, 200, 1)
+                              Fill: =RGBA(8, 144, 144, 1)
+                              FillPortions: =2
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =56
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =RGBA(0, 112, 112, 1)
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(255, 255, 255, 1)
+                              PressedFill: =RGBA(0, 112, 112, 1)
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Size: =15
+                              Text: ="Take photo"
+                              OnSelect: |-
+                                =Collect(colPhotos, {Img: camCheck.Stream, Type: drpPhotoType.Selected.Value, Item: txtPhotoItem.Text});
+                                Reset(txtPhotoItem);
+                                Notify("Photo added", NotificationType.Success);
+                                If(varPhotoType = "Accessory", Set(varPhotoType, Blank()); Set(varPhotoItem, Blank()); Back())
+                        - btnSwitchCam:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(8, 144, 144, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =2
+                              Color: =RGBA(0, 112, 112, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(255, 255, 255, 1)
+                              DisabledFill: =RGBA(186, 198, 200, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =56
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              HoverColor: =RGBA(0, 112, 112, 1)
+                              HoverFill: =RGBA(226, 243, 242, 1)
+                              PressedBorderColor: =RGBA(0, 112, 112, 1)
+                              PressedColor: =RGBA(0, 112, 112, 1)
+                              PressedFill: =RGBA(226, 243, 242, 1)
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Size: =15
+                              Text: ="Switch camera"
+                              OnSelect: |-
+                                =Set(varCam, If(varCam = 1, 0, 1))
+                  - lblPhotosTaken:
+                      Control: Label@2.5.1
+                      Properties:
+                        PaddingBottom: =4
+                        Wrap: =true
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =32
+                        PaddingLeft: =0
+                        PaddingTop: =4
+                        Size: =14
+                        Text: ="Photos taken (" & CountRows(colPhotos) & ") – tap the bin to remove one"
+                  - galPhotos:
+                      Control: Gallery@2.15.0
+                      Variant: BrowseLayout_Horizontal_TwoTextOneImageVariant_ver5.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =236
+                        Items: =colPhotos
+                        TemplatePadding: =8
+                        TemplateSize: =150
+                      Children:
+                        - imgPhoto:
+                            Control: Image@2.2.3
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              BorderThickness: =2
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =4
+                              Height: =Parent.TemplateHeight - 80
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              Image: =ThisItem.Img
+                              ImagePosition: =ImagePosition.Fill
+                              OnSelect: =Select(Parent)
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =Parent.TemplateWidth
+                        - lblPhotoItem:
+                            Control: Label@2.5.1
+                            Properties:
+                              Wrap: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =52
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =0
+                              PaddingLeft: =6
+                              PaddingRight: =6
+                              PaddingTop: =4
+                              Size: =12
+                              Text: =Coalesce(ThisItem.Item, ThisItem.Type)
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.TemplateWidth
+                              Y: =imgPhoto.Y + imgPhoto.Height + 4
+                        - lblPhotoType:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =20
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =0
+                              PaddingLeft: =6
+                              PaddingRight: =6
+                              PaddingTop: =0
+                              Size: =11
+                              Text: =ThisItem.Type
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =Parent.TemplateWidth
+                              Y: =lblPhotoItem.Y + lblPhotoItem.Height
+                        - icoDeletePhoto:
+                            Control: Classic/Icon@2.5.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              Color: =Color.White
+                              DisabledBorderColor: =RGBA(245, 245, 245, 1)
+                              DisabledColor: =RGBA(225, 223, 221, 1)
+                              DisabledFill: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(31, 41, 51, 0.55)
+                              FocusedBorderThickness: =4
+                              Height: =40
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(16, 110, 190, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              Icon: =Icon.Trash
+                              OnSelect: =Remove(colPhotos, ThisItem)
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(16, 110, 190, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Width: =40
+                              X: =Parent.TemplateWidth - 46
+                              Y: =6
+            - conPhotosFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.Light
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =16
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - btnPhotosDone:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        OnSelect: =Back()
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: ="Done (" & CountRows(colPhotos) & " photos)"
