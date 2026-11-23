@@ -192,13 +192,9 @@ Screens:
                               {f: "AccCabinClean", name: DataCardKey106.Text, no: chkCabinCleanNo.Value, c: txtCabinCleanCmt.Text},
                               {f: "AccMats", name: DataCardKey107.Text, no: chkMatsNo.Value, c: txtMatsCmt.Text},
                               {f: "AccFuelCard", name: DataCardKey108.Text, no: chkFuelCardNo.Value, c: txtFuelCardCmt.Text},
-                              {f: "field_38", name: DataCardKey40.Text, no: chkDriverPPENo.Value, c: txtDriverPPECmt.Text},
                               {f: "AccFireExtinguisher", name: DataCardKey109.Text, no: chkAccFireExtinguisherNo.Value, c: txtAccFireExtinguisherCmt.Text},
                               {f: "AccFirstAidKit", name: DataCardKey110.Text, no: chkAccFirstAidKitNo.Value, c: txtAccFirstAidKitCmt.Text},
-                              {f: "field_41", name: DataCardKey50.Text, no: chkHandTorchNo.Value, c: txtHandTorchCmt.Text},
-                              {f: "field_42", name: DataCardKey58.Text, no: chkRainCoatHelmetNo.Value, c: txtRainCoatHelmetCmt.Text},
                               {f: "AccTrafficCones", name: DataCardKey111.Text, no: chkTrafficConesNo.Value, c: txtTrafficConesCmt.Text},
-                              {f: "field_45", name: DataCardKey33.Text, no: chkAngleBlocksNo.Value, c: txtAngleBlocksCmt.Text},
                               {f: "field_12", name: DataCardKey29.Text, no: chkBatteryIsolatorNo.Value, c: txtBatteryIsolatorCmt.Text},
                               {f: "field_10", name: DataCardKey24.Text, no: chkBatteryWaterNo.Value, c: txtBatteryWaterCmt.Text},
                               {f: "field_11", name: DataCardKey30.Text, no: chkBatteryTerminalsNo.Value, c: txtBatteryTerminalsCmt.Text},
@@ -3729,201 +3725,6 @@ Screens:
                         X: =192
                         Y: =ErrorMessage108.Y + ErrorMessage108.Height - 4
                         Wrap: =true
-            - crdDriverPPE:
-                Control: TypedDataCard@1.0.7
-                Variant: ClassicComboBoxEdit
-                Properties:
-                  BorderColor: =RGBA(208, 216, 218, 1)
-                  DataField: ="field_38"
-                  Default: =ThisItem.field_38
-                  DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
-                  DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_38')
-                  Required: =false
-                  Update: |-
-                    =If(DataCardValue40.Value, {Value: "Yes"}, chkDriverPPENo.Value, {Value: "No"}, Blank())
-                  Visible: =ctxSec = "cabin"
-                  Width: =Parent.Width
-                  WidthFit: =true
-                  X: =0
-                  Y: =20
-                Children:
-                  - DataCardKey40:
-                      Control: Label@2.5.1
-                      MetadataKey: FieldName
-                      Properties:
-                        AutoHeight: =true
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(31, 41, 51, 1)
-                        Size: =14
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =34
-                        PaddingLeft: =0
-                        Text: =Parent.DisplayName
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =18
-                  - DataCardValue40:
-                      Control: Classic/CheckBox@2.1.0
-                      Properties:
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
-                        CheckboxBorderColor: =RGBA(8, 144, 144, 1)
-                        CheckboxSize: =30
-                        CheckmarkFill: =RGBA(8, 144, 144, 1)
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, ThisItem.field_38.Value = "Yes", LookUp(colDraft, f = "field_38").a = "Yes")
-                        DisabledColor: =RGBA(31, 41, 51, 1)
-                        DisplayMode: =Parent.DisplayMode
-                        Fill: =RGBA(0, 0, 0, 0)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =48
-                        HoverColor: =RGBA(31, 41, 51, 1)
-                        HoverFill: =RGBA(226, 243, 242, 1)
-                        OnCheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_38");
-                              Collect(colDraft, {f: "field_38", a: "Yes", c: txtDriverPPECmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
-                          Reset(chkDriverPPENo)
-                        OnUncheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_38");
-                              Collect(colDraft, {f: "field_38", a: If(DataCardValue40.Value, "Yes", chkDriverPPENo.Value, "No", ""), c: txtDriverPPECmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PressedColor: =RGBA(31, 41, 51, 1)
-                        PressedFill: =RGBA(226, 243, 242, 1)
-                        Size: =15
-                        Text: ="Yes"
-                        Width: =110
-                        X: =30
-                        Y: =DataCardKey40.Y + DataCardKey40.Height + 4
-                  - chkDriverPPENo:
-                      Control: Classic/CheckBox@2.1.0
-                      Properties:
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
-                        CheckboxBorderColor: =RGBA(8, 144, 144, 1)
-                        CheckboxSize: =30
-                        CheckmarkFill: =RGBA(8, 144, 144, 1)
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, ThisItem.field_38.Value = "No", LookUp(colDraft, f = "field_38").a = "No")
-                        DisabledColor: =RGBA(31, 41, 51, 1)
-                        DisplayMode: =Parent.DisplayMode
-                        Fill: =RGBA(0, 0, 0, 0)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =48
-                        HoverColor: =RGBA(31, 41, 51, 1)
-                        HoverFill: =RGBA(226, 243, 242, 1)
-                        OnCheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_38");
-                              Collect(colDraft, {f: "field_38", a: "No", c: txtDriverPPECmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
-                          Reset(DataCardValue40)
-                        OnUncheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_38");
-                              Collect(colDraft, {f: "field_38", a: If(DataCardValue40.Value, "Yes", chkDriverPPENo.Value, "No", ""), c: txtDriverPPECmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PressedColor: =RGBA(31, 41, 51, 1)
-                        PressedFill: =RGBA(226, 243, 242, 1)
-                        Size: =15
-                        Text: ="No"
-                        Width: =110
-                        X: =150
-                        Y: =DataCardKey40.Y + DataCardKey40.Height + 4
-                  - txtDriverPPECmt:
-                      Control: Classic/TextInput@2.3.2
-                      Properties:
-                        Mode: =TextMode.MultiLine
-                        BorderColor: =If(IsBlank(Self.Text) && Self.DisplayMode = DisplayMode.Edit, RGBA(196, 49, 75, 1), RGBA(208, 216, 218, 1))
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, LookUp(colCheckDefects, ItemField = "field_38").Comment, LookUp(colDraft, f = "field_38").c)
-                        DelayOutput: =true
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        DisabledFill: =RGBA(242, 242, 241, 0)
-                        DisplayMode: =Parent.DisplayMode
-                        Font: =Font.'Segoe UI'
-                        Height: =80
-                        HintText: ="Say what is wrong"
-                        HoverBorderColor: =RGBA(8, 144, 144, 1)
-                        HoverColor: =RGBA(50, 49, 48, 1)
-                        HoverFill: =RGBA(255, 255, 255, 1)
-                        OnChange: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_38");
-                              Collect(colDraft, {f: "field_38", a: If(DataCardValue40.Value, "Yes", chkDriverPPENo.Value, "No", ""), c: Self.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PaddingLeft: =5
-                        PressedBorderColor: =RGBA(8, 144, 144, 1)
-                        PressedColor: =RGBA(50, 49, 48, 1)
-                        PressedFill: =RGBA(255, 255, 255, 1)
-                        RadiusBottomLeft: =8
-                        RadiusBottomRight: =8
-                        RadiusTopLeft: =8
-                        RadiusTopRight: =8
-                        Size: =15
-                        Tooltip: ="Say what is wrong"
-                        Visible: =chkDriverPPENo.Value
-                        Width: =Parent.Width - 60
-                        X: =30
-                        Y: =DataCardValue40.Y + DataCardValue40.Height + 4
-                  - ErrorMessage40:
-                      Control: Label@2.5.1
-                      MetadataKey: ErrorMessage
-                      Properties:
-                        AutoHeight: =true
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(168, 0, 0, 1)
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(168, 0, 0, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =10
-                        Live: =Live.Assertive
-                        PaddingBottom: =12
-                        PaddingLeft: =0
-                        PaddingRight: =0
-                        PaddingTop: =0
-                        Text: =Parent.Error
-                        Visible: =Parent.DisplayMode=DisplayMode.Edit
-                        Width: =Parent.Width - 60
-                        X: =30
-                        Y: =If(txtDriverPPECmt.Visible, txtDriverPPECmt.Y + txtDriverPPECmt.Height, DataCardValue40.Y + DataCardValue40.Height)
-                  - StarVisible40:
-                      Control: Label@2.5.1
-                      MetadataKey: FieldRequired
-                      Properties:
-                        Align: =Align.Center
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(196, 49, 75, 1)
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =DataCardKey40.Height
-                        PaddingLeft: =0
-                        Text: ="*"
-                        Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
-                        Width: =30
-                        Wrap: =false
-                        Y: =DataCardKey40.Y
             - crdAccFireExtinguisher:
                 Control: TypedDataCard@1.0.7
                 Variant: ClassicComboBoxEdit
@@ -3940,7 +3741,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =21
+                  Y: =20
                 Children:
                   - DataCardKey109:
                       Control: Label@2.5.1
@@ -4183,7 +3984,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =22
+                  Y: =21
                 Children:
                   - DataCardKey110:
                       Control: Label@2.5.1
@@ -4410,396 +4211,6 @@ Screens:
                         X: =192
                         Y: =ErrorMessage110.Y + ErrorMessage110.Height - 4
                         Wrap: =true
-            - crdHandTorch:
-                Control: TypedDataCard@1.0.7
-                Variant: ClassicComboBoxEdit
-                Properties:
-                  BorderColor: =RGBA(208, 216, 218, 1)
-                  DataField: ="field_41"
-                  Default: =ThisItem.field_41
-                  DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
-                  DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_41')
-                  Required: =false
-                  Update: |-
-                    =If(DataCardValue50.Value, {Value: "Yes"}, chkHandTorchNo.Value, {Value: "No"}, Blank())
-                  Visible: =ctxSec = "cabin"
-                  Width: =Parent.Width
-                  WidthFit: =true
-                  X: =0
-                  Y: =23
-                Children:
-                  - DataCardKey50:
-                      Control: Label@2.5.1
-                      MetadataKey: FieldName
-                      Properties:
-                        AutoHeight: =true
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(31, 41, 51, 1)
-                        Size: =14
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =34
-                        PaddingLeft: =0
-                        Text: =Parent.DisplayName
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =18
-                  - DataCardValue50:
-                      Control: Classic/CheckBox@2.1.0
-                      Properties:
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
-                        CheckboxBorderColor: =RGBA(8, 144, 144, 1)
-                        CheckboxSize: =30
-                        CheckmarkFill: =RGBA(8, 144, 144, 1)
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, ThisItem.field_41.Value = "Yes", LookUp(colDraft, f = "field_41").a = "Yes")
-                        DisabledColor: =RGBA(31, 41, 51, 1)
-                        DisplayMode: =Parent.DisplayMode
-                        Fill: =RGBA(0, 0, 0, 0)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =48
-                        HoverColor: =RGBA(31, 41, 51, 1)
-                        HoverFill: =RGBA(226, 243, 242, 1)
-                        OnCheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_41");
-                              Collect(colDraft, {f: "field_41", a: "Yes", c: txtHandTorchCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
-                          Reset(chkHandTorchNo)
-                        OnUncheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_41");
-                              Collect(colDraft, {f: "field_41", a: If(DataCardValue50.Value, "Yes", chkHandTorchNo.Value, "No", ""), c: txtHandTorchCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PressedColor: =RGBA(31, 41, 51, 1)
-                        PressedFill: =RGBA(226, 243, 242, 1)
-                        Size: =15
-                        Text: ="Yes"
-                        Width: =110
-                        X: =30
-                        Y: =DataCardKey50.Y + DataCardKey50.Height + 4
-                  - chkHandTorchNo:
-                      Control: Classic/CheckBox@2.1.0
-                      Properties:
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
-                        CheckboxBorderColor: =RGBA(8, 144, 144, 1)
-                        CheckboxSize: =30
-                        CheckmarkFill: =RGBA(8, 144, 144, 1)
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, ThisItem.field_41.Value = "No", LookUp(colDraft, f = "field_41").a = "No")
-                        DisabledColor: =RGBA(31, 41, 51, 1)
-                        DisplayMode: =Parent.DisplayMode
-                        Fill: =RGBA(0, 0, 0, 0)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =48
-                        HoverColor: =RGBA(31, 41, 51, 1)
-                        HoverFill: =RGBA(226, 243, 242, 1)
-                        OnCheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_41");
-                              Collect(colDraft, {f: "field_41", a: "No", c: txtHandTorchCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
-                          Reset(DataCardValue50)
-                        OnUncheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_41");
-                              Collect(colDraft, {f: "field_41", a: If(DataCardValue50.Value, "Yes", chkHandTorchNo.Value, "No", ""), c: txtHandTorchCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PressedColor: =RGBA(31, 41, 51, 1)
-                        PressedFill: =RGBA(226, 243, 242, 1)
-                        Size: =15
-                        Text: ="No"
-                        Width: =110
-                        X: =150
-                        Y: =DataCardKey50.Y + DataCardKey50.Height + 4
-                  - txtHandTorchCmt:
-                      Control: Classic/TextInput@2.3.2
-                      Properties:
-                        Mode: =TextMode.MultiLine
-                        BorderColor: =If(IsBlank(Self.Text) && Self.DisplayMode = DisplayMode.Edit, RGBA(196, 49, 75, 1), RGBA(208, 216, 218, 1))
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, LookUp(colCheckDefects, ItemField = "field_41").Comment, LookUp(colDraft, f = "field_41").c)
-                        DelayOutput: =true
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        DisabledFill: =RGBA(242, 242, 241, 0)
-                        DisplayMode: =Parent.DisplayMode
-                        Font: =Font.'Segoe UI'
-                        Height: =80
-                        HintText: ="Say what is wrong"
-                        HoverBorderColor: =RGBA(8, 144, 144, 1)
-                        HoverColor: =RGBA(50, 49, 48, 1)
-                        HoverFill: =RGBA(255, 255, 255, 1)
-                        OnChange: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_41");
-                              Collect(colDraft, {f: "field_41", a: If(DataCardValue50.Value, "Yes", chkHandTorchNo.Value, "No", ""), c: Self.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PaddingLeft: =5
-                        PressedBorderColor: =RGBA(8, 144, 144, 1)
-                        PressedColor: =RGBA(50, 49, 48, 1)
-                        PressedFill: =RGBA(255, 255, 255, 1)
-                        RadiusBottomLeft: =8
-                        RadiusBottomRight: =8
-                        RadiusTopLeft: =8
-                        RadiusTopRight: =8
-                        Size: =15
-                        Tooltip: ="Say what is wrong"
-                        Visible: =chkHandTorchNo.Value
-                        Width: =Parent.Width - 60
-                        X: =30
-                        Y: =DataCardValue50.Y + DataCardValue50.Height + 4
-                  - ErrorMessage50:
-                      Control: Label@2.5.1
-                      MetadataKey: ErrorMessage
-                      Properties:
-                        AutoHeight: =true
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(168, 0, 0, 1)
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(168, 0, 0, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =10
-                        Live: =Live.Assertive
-                        PaddingBottom: =12
-                        PaddingLeft: =0
-                        PaddingRight: =0
-                        PaddingTop: =0
-                        Text: =Parent.Error
-                        Visible: =Parent.DisplayMode=DisplayMode.Edit
-                        Width: =Parent.Width - 60
-                        X: =30
-                        Y: =If(txtHandTorchCmt.Visible, txtHandTorchCmt.Y + txtHandTorchCmt.Height, DataCardValue50.Y + DataCardValue50.Height)
-                  - StarVisible50:
-                      Control: Label@2.5.1
-                      MetadataKey: FieldRequired
-                      Properties:
-                        Align: =Align.Center
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(196, 49, 75, 1)
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =DataCardKey50.Height
-                        PaddingLeft: =0
-                        Text: ="*"
-                        Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
-                        Width: =30
-                        Wrap: =false
-                        Y: =DataCardKey50.Y
-            - crdRainCoatHelmet:
-                Control: TypedDataCard@1.0.7
-                Variant: ClassicComboBoxEdit
-                Properties:
-                  BorderColor: =RGBA(208, 216, 218, 1)
-                  DataField: ="field_42"
-                  Default: =ThisItem.field_42
-                  DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
-                  DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_42')
-                  Required: =false
-                  Update: |-
-                    =If(DataCardValue58.Value, {Value: "Yes"}, chkRainCoatHelmetNo.Value, {Value: "No"}, Blank())
-                  Visible: =ctxSec = "cabin"
-                  Width: =Parent.Width
-                  WidthFit: =true
-                  X: =0
-                  Y: =24
-                Children:
-                  - DataCardKey58:
-                      Control: Label@2.5.1
-                      MetadataKey: FieldName
-                      Properties:
-                        AutoHeight: =true
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(31, 41, 51, 1)
-                        Size: =14
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =34
-                        PaddingLeft: =0
-                        Text: =Parent.DisplayName
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =18
-                  - DataCardValue58:
-                      Control: Classic/CheckBox@2.1.0
-                      Properties:
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
-                        CheckboxBorderColor: =RGBA(8, 144, 144, 1)
-                        CheckboxSize: =30
-                        CheckmarkFill: =RGBA(8, 144, 144, 1)
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, ThisItem.field_42.Value = "Yes", LookUp(colDraft, f = "field_42").a = "Yes")
-                        DisabledColor: =RGBA(31, 41, 51, 1)
-                        DisplayMode: =Parent.DisplayMode
-                        Fill: =RGBA(0, 0, 0, 0)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =48
-                        HoverColor: =RGBA(31, 41, 51, 1)
-                        HoverFill: =RGBA(226, 243, 242, 1)
-                        OnCheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_42");
-                              Collect(colDraft, {f: "field_42", a: "Yes", c: txtRainCoatHelmetCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
-                          Reset(chkRainCoatHelmetNo)
-                        OnUncheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_42");
-                              Collect(colDraft, {f: "field_42", a: If(DataCardValue58.Value, "Yes", chkRainCoatHelmetNo.Value, "No", ""), c: txtRainCoatHelmetCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PressedColor: =RGBA(31, 41, 51, 1)
-                        PressedFill: =RGBA(226, 243, 242, 1)
-                        Size: =15
-                        Text: ="Yes"
-                        Width: =110
-                        X: =30
-                        Y: =DataCardKey58.Y + DataCardKey58.Height + 4
-                  - chkRainCoatHelmetNo:
-                      Control: Classic/CheckBox@2.1.0
-                      Properties:
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
-                        CheckboxBorderColor: =RGBA(8, 144, 144, 1)
-                        CheckboxSize: =30
-                        CheckmarkFill: =RGBA(8, 144, 144, 1)
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, ThisItem.field_42.Value = "No", LookUp(colDraft, f = "field_42").a = "No")
-                        DisabledColor: =RGBA(31, 41, 51, 1)
-                        DisplayMode: =Parent.DisplayMode
-                        Fill: =RGBA(0, 0, 0, 0)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =48
-                        HoverColor: =RGBA(31, 41, 51, 1)
-                        HoverFill: =RGBA(226, 243, 242, 1)
-                        OnCheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_42");
-                              Collect(colDraft, {f: "field_42", a: "No", c: txtRainCoatHelmetCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
-                          Reset(DataCardValue58)
-                        OnUncheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_42");
-                              Collect(colDraft, {f: "field_42", a: If(DataCardValue58.Value, "Yes", chkRainCoatHelmetNo.Value, "No", ""), c: txtRainCoatHelmetCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PressedColor: =RGBA(31, 41, 51, 1)
-                        PressedFill: =RGBA(226, 243, 242, 1)
-                        Size: =15
-                        Text: ="No"
-                        Width: =110
-                        X: =150
-                        Y: =DataCardKey58.Y + DataCardKey58.Height + 4
-                  - txtRainCoatHelmetCmt:
-                      Control: Classic/TextInput@2.3.2
-                      Properties:
-                        Mode: =TextMode.MultiLine
-                        BorderColor: =If(IsBlank(Self.Text) && Self.DisplayMode = DisplayMode.Edit, RGBA(196, 49, 75, 1), RGBA(208, 216, 218, 1))
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, LookUp(colCheckDefects, ItemField = "field_42").Comment, LookUp(colDraft, f = "field_42").c)
-                        DelayOutput: =true
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        DisabledFill: =RGBA(242, 242, 241, 0)
-                        DisplayMode: =Parent.DisplayMode
-                        Font: =Font.'Segoe UI'
-                        Height: =80
-                        HintText: ="Say what is wrong"
-                        HoverBorderColor: =RGBA(8, 144, 144, 1)
-                        HoverColor: =RGBA(50, 49, 48, 1)
-                        HoverFill: =RGBA(255, 255, 255, 1)
-                        OnChange: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_42");
-                              Collect(colDraft, {f: "field_42", a: If(DataCardValue58.Value, "Yes", chkRainCoatHelmetNo.Value, "No", ""), c: Self.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PaddingLeft: =5
-                        PressedBorderColor: =RGBA(8, 144, 144, 1)
-                        PressedColor: =RGBA(50, 49, 48, 1)
-                        PressedFill: =RGBA(255, 255, 255, 1)
-                        RadiusBottomLeft: =8
-                        RadiusBottomRight: =8
-                        RadiusTopLeft: =8
-                        RadiusTopRight: =8
-                        Size: =15
-                        Tooltip: ="Say what is wrong"
-                        Visible: =chkRainCoatHelmetNo.Value
-                        Width: =Parent.Width - 60
-                        X: =30
-                        Y: =DataCardValue58.Y + DataCardValue58.Height + 4
-                  - ErrorMessage58:
-                      Control: Label@2.5.1
-                      MetadataKey: ErrorMessage
-                      Properties:
-                        AutoHeight: =true
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(168, 0, 0, 1)
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(168, 0, 0, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =10
-                        Live: =Live.Assertive
-                        PaddingBottom: =12
-                        PaddingLeft: =0
-                        PaddingRight: =0
-                        PaddingTop: =0
-                        Text: =Parent.Error
-                        Visible: =Parent.DisplayMode=DisplayMode.Edit
-                        Width: =Parent.Width - 60
-                        X: =30
-                        Y: =If(txtRainCoatHelmetCmt.Visible, txtRainCoatHelmetCmt.Y + txtRainCoatHelmetCmt.Height, DataCardValue58.Y + DataCardValue58.Height)
-                  - StarVisible58:
-                      Control: Label@2.5.1
-                      MetadataKey: FieldRequired
-                      Properties:
-                        Align: =Align.Center
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(196, 49, 75, 1)
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =DataCardKey58.Height
-                        PaddingLeft: =0
-                        Text: ="*"
-                        Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
-                        Width: =30
-                        Wrap: =false
-                        Y: =DataCardKey58.Y
             - crdTrafficCones:
                 Control: TypedDataCard@1.0.7
                 Variant: ClassicComboBoxEdit
@@ -4816,7 +4227,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =25
+                  Y: =22
                 Children:
                   - DataCardKey111:
                       Control: Label@2.5.1
@@ -5043,201 +4454,6 @@ Screens:
                         X: =192
                         Y: =ErrorMessage111.Y + ErrorMessage111.Height - 4
                         Wrap: =true
-            - crdAngleBlocks:
-                Control: TypedDataCard@1.0.7
-                Variant: ClassicComboBoxEdit
-                Properties:
-                  BorderColor: =RGBA(208, 216, 218, 1)
-                  DataField: ="field_45"
-                  Default: =ThisItem.field_45
-                  DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
-                  DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_45')
-                  Required: =false
-                  Update: |-
-                    =If(DataCardValue33.Value, {Value: "Yes"}, chkAngleBlocksNo.Value, {Value: "No"}, Blank())
-                  Visible: =ctxSec = "cabin"
-                  Width: =Parent.Width
-                  WidthFit: =true
-                  X: =0
-                  Y: =26
-                Children:
-                  - DataCardKey33:
-                      Control: Label@2.5.1
-                      MetadataKey: FieldName
-                      Properties:
-                        AutoHeight: =true
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(31, 41, 51, 1)
-                        Size: =14
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =34
-                        PaddingLeft: =0
-                        Text: =Parent.DisplayName
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =18
-                  - DataCardValue33:
-                      Control: Classic/CheckBox@2.1.0
-                      Properties:
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
-                        CheckboxBorderColor: =RGBA(8, 144, 144, 1)
-                        CheckboxSize: =30
-                        CheckmarkFill: =RGBA(8, 144, 144, 1)
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, ThisItem.field_45.Value = "Yes", LookUp(colDraft, f = "field_45").a = "Yes")
-                        DisabledColor: =RGBA(31, 41, 51, 1)
-                        DisplayMode: =Parent.DisplayMode
-                        Fill: =RGBA(0, 0, 0, 0)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =48
-                        HoverColor: =RGBA(31, 41, 51, 1)
-                        HoverFill: =RGBA(226, 243, 242, 1)
-                        OnCheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_45");
-                              Collect(colDraft, {f: "field_45", a: "Yes", c: txtAngleBlocksCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
-                          Reset(chkAngleBlocksNo)
-                        OnUncheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_45");
-                              Collect(colDraft, {f: "field_45", a: If(DataCardValue33.Value, "Yes", chkAngleBlocksNo.Value, "No", ""), c: txtAngleBlocksCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PressedColor: =RGBA(31, 41, 51, 1)
-                        PressedFill: =RGBA(226, 243, 242, 1)
-                        Size: =15
-                        Text: ="Yes"
-                        Width: =110
-                        X: =30
-                        Y: =DataCardKey33.Y + DataCardKey33.Height + 4
-                  - chkAngleBlocksNo:
-                      Control: Classic/CheckBox@2.1.0
-                      Properties:
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        CheckboxBackgroundFill: =RGBA(255, 255, 255, 1)
-                        CheckboxBorderColor: =RGBA(8, 144, 144, 1)
-                        CheckboxSize: =30
-                        CheckmarkFill: =RGBA(8, 144, 144, 1)
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, ThisItem.field_45.Value = "No", LookUp(colDraft, f = "field_45").a = "No")
-                        DisabledColor: =RGBA(31, 41, 51, 1)
-                        DisplayMode: =Parent.DisplayMode
-                        Fill: =RGBA(0, 0, 0, 0)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =48
-                        HoverColor: =RGBA(31, 41, 51, 1)
-                        HoverFill: =RGBA(226, 243, 242, 1)
-                        OnCheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_45");
-                              Collect(colDraft, {f: "field_45", a: "No", c: txtAngleBlocksCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
-                          Reset(DataCardValue33)
-                        OnUncheck: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_45");
-                              Collect(colDraft, {f: "field_45", a: If(DataCardValue33.Value, "Yes", chkAngleBlocksNo.Value, "No", ""), c: txtAngleBlocksCmt.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PressedColor: =RGBA(31, 41, 51, 1)
-                        PressedFill: =RGBA(226, 243, 242, 1)
-                        Size: =15
-                        Text: ="No"
-                        Width: =110
-                        X: =150
-                        Y: =DataCardKey33.Y + DataCardKey33.Height + 4
-                  - txtAngleBlocksCmt:
-                      Control: Classic/TextInput@2.3.2
-                      Properties:
-                        Mode: =TextMode.MultiLine
-                        BorderColor: =If(IsBlank(Self.Text) && Self.DisplayMode = DisplayMode.Edit, RGBA(196, 49, 75, 1), RGBA(208, 216, 218, 1))
-                        Color: =RGBA(31, 41, 51, 1)
-                        Default: =If(varReviewing, LookUp(colCheckDefects, ItemField = "field_45").Comment, LookUp(colDraft, f = "field_45").c)
-                        DelayOutput: =true
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        DisabledFill: =RGBA(242, 242, 241, 0)
-                        DisplayMode: =Parent.DisplayMode
-                        Font: =Font.'Segoe UI'
-                        Height: =80
-                        HintText: ="Say what is wrong"
-                        HoverBorderColor: =RGBA(8, 144, 144, 1)
-                        HoverColor: =RGBA(50, 49, 48, 1)
-                        HoverFill: =RGBA(255, 255, 255, 1)
-                        OnChange: |-
-                          =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_45");
-                              Collect(colDraft, {f: "field_45", a: If(DataCardValue33.Value, "Yes", chkAngleBlocksNo.Value, "No", ""), c: Self.Text});
-                              IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
-                        PaddingLeft: =5
-                        PressedBorderColor: =RGBA(8, 144, 144, 1)
-                        PressedColor: =RGBA(50, 49, 48, 1)
-                        PressedFill: =RGBA(255, 255, 255, 1)
-                        RadiusBottomLeft: =8
-                        RadiusBottomRight: =8
-                        RadiusTopLeft: =8
-                        RadiusTopRight: =8
-                        Size: =15
-                        Tooltip: ="Say what is wrong"
-                        Visible: =chkAngleBlocksNo.Value
-                        Width: =Parent.Width - 60
-                        X: =30
-                        Y: =DataCardValue33.Y + DataCardValue33.Height + 4
-                  - ErrorMessage33:
-                      Control: Label@2.5.1
-                      MetadataKey: ErrorMessage
-                      Properties:
-                        AutoHeight: =true
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(168, 0, 0, 1)
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(168, 0, 0, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =10
-                        Live: =Live.Assertive
-                        PaddingBottom: =12
-                        PaddingLeft: =0
-                        PaddingRight: =0
-                        PaddingTop: =0
-                        Text: =Parent.Error
-                        Visible: =Parent.DisplayMode=DisplayMode.Edit
-                        Width: =Parent.Width - 60
-                        X: =30
-                        Y: =If(txtAngleBlocksCmt.Visible, txtAngleBlocksCmt.Y + txtAngleBlocksCmt.Height, DataCardValue33.Y + DataCardValue33.Height)
-                  - StarVisible33:
-                      Control: Label@2.5.1
-                      MetadataKey: FieldRequired
-                      Properties:
-                        Align: =Align.Center
-                        BorderColor: =RGBA(0, 0, 0, 0)
-                        BorderStyle: =BorderStyle.None
-                        BorderThickness: =2
-                        Color: =RGBA(196, 49, 75, 1)
-                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                        DisabledColor: =RGBA(161, 159, 157, 1)
-                        FocusedBorderThickness: =4
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =DataCardKey33.Height
-                        PaddingLeft: =0
-                        Text: ="*"
-                        Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
-                        Width: =30
-                        Wrap: =false
-                        Y: =DataCardKey33.Y
             - crdCabTilt:
                 Control: TypedDataCard@1.0.7
                 Variant: ClassicComboBoxEdit
@@ -5254,7 +4470,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =27
+                  Y: =23
                 Children:
                   - DataCardKey112:
                       Control: Label@2.5.1
@@ -5443,7 +4659,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =28
+                  Y: =24
                 Children:
                   - DataCardKey49:
                       Control: Label@2.5.1
@@ -5627,7 +4843,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =29
+                  Y: =25
                 Children:
                   - lblSecStickers:
                       Control: Label@2.5.1
@@ -5665,7 +4881,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =30
+                  Y: =26
                 Children:
                   - DataCardKey113:
                       Control: Label@2.5.1
@@ -5787,7 +5003,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =31
+                  Y: =27
                 Children:
                   - DataCardKey114:
                       Control: Label@2.5.1
@@ -5987,7 +5203,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =32
+                  Y: =28
                 Children:
                   - DataCardKey115:
                       Control: Label@2.5.1
@@ -6187,7 +5403,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =33
+                  Y: =29
                 Children:
                   - DataCardKey116:
                       Control: Label@2.5.1
@@ -6382,7 +5598,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =34
+                  Y: =30
                 Children:
                   - lblNetGrossWeightTitle:
                       Control: Label@2.5.1
@@ -6460,7 +5676,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =35
+                  Y: =31
                 Children:
                   - lblSecElectrical:
                       Control: Label@2.5.1
@@ -6500,7 +5716,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =36
+                  Y: =32
                 Children:
                   - DataCardKey29:
                       Control: Label@2.5.1
@@ -6695,7 +5911,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =37
+                  Y: =33
                 Children:
                   - DataCardKey24:
                       Control: Label@2.5.1
@@ -6890,7 +6106,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =38
+                  Y: =34
                 Children:
                   - DataCardKey30:
                       Control: Label@2.5.1
@@ -7085,7 +6301,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =39
+                  Y: =35
                 Children:
                   - DataCardKey51:
                       Control: Label@2.5.1
@@ -7280,7 +6496,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =40
+                  Y: =36
                 Children:
                   - DataCardKey53:
                       Control: Label@2.5.1
@@ -7475,7 +6691,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =41
+                  Y: =37
                 Children:
                   - DataCardKey25:
                       Control: Label@2.5.1
@@ -7670,7 +6886,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =42
+                  Y: =38
                 Children:
                   - DataCardKey61:
                       Control: Label@2.5.1
@@ -7865,7 +7081,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =43
+                  Y: =39
                 Children:
                   - DataCardKey59:
                       Control: Label@2.5.1
@@ -8060,7 +7276,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =44
+                  Y: =40
                 Children:
                   - DataCardKey70:
                       Control: Label@2.5.1
@@ -8251,7 +7467,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =45
+                  Y: =41
                 Children:
                   - lblSecBody:
                       Control: Label@2.5.1
@@ -8291,7 +7507,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =46
+                  Y: =42
                 Children:
                   - DataCardKey47:
                       Control: Label@2.5.1
@@ -8486,7 +7702,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =47
+                  Y: =43
                 Children:
                   - DataCardKey21:
                       Control: Label@2.5.1
@@ -8681,7 +7897,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =48
+                  Y: =44
                 Children:
                   - DataCardKey22:
                       Control: Label@2.5.1
@@ -8876,7 +8092,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =49
+                  Y: =45
                 Children:
                   - DataCardKey42:
                       Control: Label@2.5.1
@@ -9071,7 +8287,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =50
+                  Y: =46
                 Children:
                   - DataCardKey56:
                       Control: Label@2.5.1
@@ -9266,7 +8482,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =51
+                  Y: =47
                 Children:
                   - DataCardKey27:
                       Control: Label@2.5.1
@@ -9461,7 +8677,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =52
+                  Y: =48
                 Children:
                   - DataCardKey66:
                       Control: Label@2.5.1
@@ -9656,7 +8872,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =53
+                  Y: =49
                 Children:
                   - DataCardKey57:
                       Control: Label@2.5.1
@@ -9851,7 +9067,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =54
+                  Y: =50
                 Children:
                   - DataCardKey45:
                       Control: Label@2.5.1
@@ -10046,7 +9262,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =55
+                  Y: =51
                 Children:
                   - DataCardKey117:
                       Control: Label@2.5.1
@@ -10289,7 +9505,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =56
+                  Y: =52
                 Children:
                   - DataCardKey118:
                       Control: Label@2.5.1
@@ -10532,7 +9748,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =57
+                  Y: =53
                 Children:
                   - DataCardKey119:
                       Control: Label@2.5.1
@@ -10771,7 +9987,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =58
+                  Y: =54
                 Children:
                   - lblSecTyres:
                       Control: Label@2.5.1
@@ -10811,7 +10027,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =59
+                  Y: =55
                 Children:
                   - DataCardKey120:
                       Control: Label@2.5.1
@@ -11393,7 +10609,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =60
+                  Y: =56
                 Children:
                   - DataCardKey67:
                       Control: Label@2.5.1
@@ -11588,7 +10804,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =61
+                  Y: =57
                 Children:
                   - DataCardKey121:
                       Control: Label@2.5.1
@@ -11831,7 +11047,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =62
+                  Y: =58
                 Children:
                   - DataCardKey122:
                       Control: Label@2.5.1
@@ -12074,7 +11290,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =63
+                  Y: =59
                 Children:
                   - DataCardKey123:
                       Control: Label@2.5.1
@@ -12317,7 +11533,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =64
+                  Y: =60
                 Children:
                   - DataCardKey124:
                       Control: Label@2.5.1
@@ -12560,7 +11776,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =65
+                  Y: =61
                 Children:
                   - DataCardKey125:
                       Control: Label@2.5.1
@@ -12798,7 +12014,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =66
+                  Y: =62
                 Children:
                   - lblSecAccident:
                       Control: Label@2.5.1
@@ -12837,7 +12053,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =67
+                  Y: =63
                 Children:
                   - DataCardKey126:
                       Control: Label@2.5.1
@@ -13075,7 +12291,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =68
+                  Y: =64
                 Children:
                   - lblSecProfiles:
                       Control: Label@2.5.1
@@ -13109,7 +12325,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =69
+                  Y: =65
                 Children:
                   - lblProfilePhotosTitle:
                       Control: Label@2.5.1
@@ -13278,7 +12494,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =70
+                  Y: =66
                 Children:
                   - lblSecRemarks:
                       Control: Label@2.5.1
@@ -13317,7 +12533,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =71
+                  Y: =67
                 Children:
                   - DataCardKey26:
                       Control: Label@2.5.1
@@ -13439,7 +12655,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =72
+                  Y: =68
                 Children:
                   - DataCardKey1:
                       Control: Label@2.5.1
@@ -13599,7 +12815,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =73
+                  Y: =69
                 Children:
                   - DataCardKey2:
                       Control: Label@2.5.1
@@ -13720,7 +12936,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =74
+                  Y: =70
                 Children:
                   - DataCardKey4:
                       Control: Label@2.5.1
@@ -13833,7 +13049,7 @@ Screens:
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
-                  Y: =75
+                  Y: =71
                 Children:
                   - DataCardKey3:
                       Control: Label@2.5.1
@@ -14044,23 +13260,15 @@ Screens:
                                   If(!DataCardValue108.Value && !chkFuelCardNo.Value, 1, 0) +
                                   If(chkFuelCardNo.Value && IsBlank(txtFuelCardCmt.Text), 1, 0) +
                                   If(IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in truck")), 1, 0) +
-                                  If(!DataCardValue40.Value && !chkDriverPPENo.Value, 1, 0) +
-                                  If(chkDriverPPENo.Value && IsBlank(txtDriverPPECmt.Text), 1, 0) +
                                   If(!DataCardValue109.Value && !chkAccFireExtinguisherNo.Value, 1, 0) +
                                   If(chkAccFireExtinguisherNo.Value && IsBlank(txtAccFireExtinguisherCmt.Text), 1, 0) +
                                   If(IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted, serviceable and in date")), 1, 0) +
                                   If(!DataCardValue110.Value && !chkAccFirstAidKitNo.Value, 1, 0) +
                                   If(chkAccFirstAidKitNo.Value && IsBlank(txtAccFirstAidKitCmt.Text), 1, 0) +
                                   If(IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in truck and stocked")), 1, 0) +
-                                  If(!DataCardValue50.Value && !chkHandTorchNo.Value, 1, 0) +
-                                  If(chkHandTorchNo.Value && IsBlank(txtHandTorchCmt.Text), 1, 0) +
-                                  If(!DataCardValue58.Value && !chkRainCoatHelmetNo.Value, 1, 0) +
-                                  If(chkRainCoatHelmetNo.Value && IsBlank(txtRainCoatHelmetCmt.Text), 1, 0) +
                                   If(!DataCardValue111.Value && !chkTrafficConesNo.Value, 1, 0) +
                                   If(chkTrafficConesNo.Value && IsBlank(txtTrafficConesCmt.Text), 1, 0) +
-                                  If(IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cones and reflector triangle in truck")), 1, 0) +
-                                  If(!DataCardValue33.Value && !chkAngleBlocksNo.Value, 1, 0) +
-                                  If(chkAngleBlocksNo.Value && IsBlank(txtAngleBlocksCmt.Text), 1, 0),
+                                  If(IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cones and reflector triangle in truck")), 1, 0),
                               "stickers",
                                   If(IsBlank(varTruckInfo.COFExpiry) && IsBlank(DataCardValue114.SelectedDate), 1, 0) +
                                   If(IsBlank(varTruckInfo.COFExpiry) && IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "COF expiry date")), 1, 0) +
@@ -14257,10 +13465,6 @@ Screens:
                                   "cabin",
                               IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in truck")),
                                   "cabin",
-                              !DataCardValue40.Value && !chkDriverPPENo.Value,
-                                  "cabin",
-                              chkDriverPPENo.Value && IsBlank(txtDriverPPECmt.Text),
-                                  "cabin",
                               !DataCardValue109.Value && !chkAccFireExtinguisherNo.Value,
                                   "cabin",
                               chkAccFireExtinguisherNo.Value && IsBlank(txtAccFireExtinguisherCmt.Text),
@@ -14273,23 +13477,11 @@ Screens:
                                   "cabin",
                               IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in truck and stocked")),
                                   "cabin",
-                              !DataCardValue50.Value && !chkHandTorchNo.Value,
-                                  "cabin",
-                              chkHandTorchNo.Value && IsBlank(txtHandTorchCmt.Text),
-                                  "cabin",
-                              !DataCardValue58.Value && !chkRainCoatHelmetNo.Value,
-                                  "cabin",
-                              chkRainCoatHelmetNo.Value && IsBlank(txtRainCoatHelmetCmt.Text),
-                                  "cabin",
                               !DataCardValue111.Value && !chkTrafficConesNo.Value,
                                   "cabin",
                               chkTrafficConesNo.Value && IsBlank(txtTrafficConesCmt.Text),
                                   "cabin",
                               IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cones and reflector triangle in truck")),
-                                  "cabin",
-                              !DataCardValue33.Value && !chkAngleBlocksNo.Value,
-                                  "cabin",
-                              chkAngleBlocksNo.Value && IsBlank(txtAngleBlocksCmt.Text),
                                   "cabin",
                               IsBlank(varTruckInfo.COFExpiry) && IsBlank(DataCardValue114.SelectedDate),
                                   "stickers",
@@ -14678,10 +13870,6 @@ Screens:
                                   "Comment needed: " & DataCardKey108.Text,
                               IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in truck")),
                                   "Photo needed: Fuel card in truck",
-                              !DataCardValue40.Value && !chkDriverPPENo.Value,
-                                  "Answer: " & DataCardKey40.Text,
-                              chkDriverPPENo.Value && IsBlank(txtDriverPPECmt.Text),
-                                  "Comment needed: " & DataCardKey40.Text,
                               !DataCardValue109.Value && !chkAccFireExtinguisherNo.Value,
                                   "Answer: " & DataCardKey109.Text,
                               chkAccFireExtinguisherNo.Value && IsBlank(txtAccFireExtinguisherCmt.Text),
@@ -14694,24 +13882,12 @@ Screens:
                                   "Comment needed: " & DataCardKey110.Text,
                               IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in truck and stocked")),
                                   "Photo needed: First aid kit in truck and stocked",
-                              !DataCardValue50.Value && !chkHandTorchNo.Value,
-                                  "Answer: " & DataCardKey50.Text,
-                              chkHandTorchNo.Value && IsBlank(txtHandTorchCmt.Text),
-                                  "Comment needed: " & DataCardKey50.Text,
-                              !DataCardValue58.Value && !chkRainCoatHelmetNo.Value,
-                                  "Answer: " & DataCardKey58.Text,
-                              chkRainCoatHelmetNo.Value && IsBlank(txtRainCoatHelmetCmt.Text),
-                                  "Comment needed: " & DataCardKey58.Text,
                               !DataCardValue111.Value && !chkTrafficConesNo.Value,
                                   "Answer: " & DataCardKey111.Text,
                               chkTrafficConesNo.Value && IsBlank(txtTrafficConesCmt.Text),
                                   "Comment needed: " & DataCardKey111.Text,
                               IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cones and reflector triangle in truck")),
                                   "Photo needed: Cones and reflector triangle in truck",
-                              !DataCardValue33.Value && !chkAngleBlocksNo.Value,
-                                  "Answer: " & DataCardKey33.Text,
-                              chkAngleBlocksNo.Value && IsBlank(txtAngleBlocksCmt.Text),
-                                  "Comment needed: " & DataCardKey33.Text,
                               IsBlank(varTruckInfo.COFExpiry) && IsBlank(DataCardValue114.SelectedDate),
                                   "Fill in: " & DataCardKey114.Text,
                               IsBlank(varTruckInfo.COFExpiry) && IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "COF expiry date")),

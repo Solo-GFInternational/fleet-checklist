@@ -312,6 +312,12 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 - The cut-off meeting note about truck numbers was dropped.
 - **Four checklist improvements (user's choice, same day):** COF / blower / truck service dates read from the Trucks list with an Expired / Due soon / OK status (date picker + photo only as fallback) (an odometer sanity check was also built, then removed with the Trucks list's odometer columns at the user's request); a draft saved on the phone with Carry on / Discard on Home, plus a local retry queue for defect rows and photos that fail after save; and one section per page with Back / Next and a progress bar.
 
+## Update 24 Nov 2026: Krish's reply on the wording
+
+- Krish Kumar (Logistics Manager) asked to remove four In the cabin items: Drivers PPE, Hand Torch, Rain Coat and Helmet, and Braking Angle Blocks. They're hidden (columns kept), and the checklist screen and wording documents are regenerated.
+- He sent the truck list (Truck Details.xlsx) for the GF Fleet Trucks import.
+- He'll sit with Solomone to review and edit the wording before the checklist is finalised, so the wording isn't final yet.
+
 ## Suggested next steps
 
 1. Run the new scripts:

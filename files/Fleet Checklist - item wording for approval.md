@@ -46,13 +46,9 @@ Other changes:
 | 13 | Cabin clean and tidy | 1 photo | Cabin Cleanliness |
 | 14 | Floor mats in cabin | 1 photo | Mats Available |
 | 15 | Fuel card in truck | 1 photo | Fuel Card Available |
-| 16 | Your PPE with you | – | Drivers PPE (All Present) |
-| 17 | Fire extinguisher mounted, serviceable and in date | 1 photo | Fire Extinguishers (Present / Functional) + Accessory Check "Fire Extinguisher Mounted and Serviceable" (merged) |
-| 18 | First aid kit in truck and stocked | 1 photo | First Aid Box (Present and Stocked) + Accessory Check "First Aid Kit Available" (merged) |
-| 19 | Torch working | – | Hand Torch (Operational) |
-| 20 | Raincoat and helmet in truck | – | Rain Coat and Helmet (Present / Good Condition) |
-| 21 | Cones and reflector triangle in truck | 1 photo | Cones & Reflector + Accessory Check "Traffic Cones Available" (merged) |
-| 22 | Braking Angle Blocks (Present) | – | Braking Angle Blocks (Present) |
+| 16 | Fire extinguisher mounted, serviceable and in date | 1 photo | Fire Extinguishers (Present / Functional) + Accessory Check "Fire Extinguisher Mounted and Serviceable" (merged) |
+| 17 | First aid kit in truck and stocked | 1 photo | First Aid Box (Present and Stocked) + Accessory Check "First Aid Kit Available" (merged) |
+| 18 | Cones and reflector triangle in truck | 1 photo | Cones & Reflector + Accessory Check "Traffic Cones Available" (merged) |
 
 ## Expiry and weight stickers
 
@@ -138,6 +134,10 @@ Drivers do not see these. A reviewer answers them when signing off a checklist; 
 
 - Money Bag and Lock (Available)
 - Money Box Available in the Truck
+- Drivers PPE (All Present) (removed at Krish's request)
+- Hand Torch (Operational) (removed at Krish's request)
+- Rain Coat and Helmet (Present / Good Condition) (removed at Krish's request)
+- Braking Angle Blocks (Present) (removed at Krish's request)
 - The comment box at the end of each section (replaced by a comment on each No)
 - Items replaced by the matching Accessory Check (see "Was" above): Cones & Reflector, Fire Extinguishers (Present / Functional), First Aid Box (Present and Stocked), Jack / Wheel Brace / Accessories (All Present and Functional), Spare Tyre (In Good Condition), Tyre Condition (Any Retreads on Steer Wheels)
 

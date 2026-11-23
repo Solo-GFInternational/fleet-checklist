@@ -433,9 +433,9 @@
       "answeredBy": "driver",
       "weekly": false,
       "truckType": "all",
-      "required": true,
-      "hidden": false,
-      "notes": null
+      "required": false,
+      "hidden": true,
+      "notes": "Removed at Krish Kumar's request (email, 24 Nov 2026); column kept."
     },
     {
       "order": 20,
@@ -499,9 +499,9 @@
       "answeredBy": "driver",
       "weekly": false,
       "truckType": "all",
-      "required": true,
-      "hidden": false,
-      "notes": null
+      "required": false,
+      "hidden": true,
+      "notes": "Removed at Krish Kumar's request (email, 24 Nov 2026); column kept."
     },
     {
       "order": 23,
@@ -519,9 +519,9 @@
       "answeredBy": "driver",
       "weekly": false,
       "truckType": "all",
-      "required": true,
-      "hidden": false,
-      "notes": null
+      "required": false,
+      "hidden": true,
+      "notes": "Removed at Krish Kumar's request (email, 24 Nov 2026); column kept."
     },
     {
       "order": 24,
@@ -562,9 +562,9 @@
       "answeredBy": "driver",
       "weekly": false,
       "truckType": "all",
-      "required": true,
-      "hidden": false,
-      "notes": null
+      "required": false,
+      "hidden": true,
+      "notes": "Removed at Krish Kumar's request (email, 24 Nov 2026); column kept."
     },
     {
       "order": 26,
