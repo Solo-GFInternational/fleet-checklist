@@ -1,8 +1,7 @@
 /*
   Creates the "GF Fleet Trucks" list: one row per truck. scrPreTrip looks the truck up in it to get
-  the number of tyres (tyre photos), the truck type (Ambient / Frozen items), the due dates (shown
-  read-only on the checklist with an Expired / Due within 30 days / OK status) and the last odometer
-  reading (sanity check on the odometer entry).
+  the number of tyres (tyre photos), the truck type (Ambient / Frozen items) and the due dates (shown
+  read-only on the checklist with an Expired / Due within 30 days / OK status).
 
   Columns:
     Title      (display name "Truck number")  e.g. "FJ 101", unique
@@ -10,8 +9,6 @@
     NoOfTyres  number (whole, 1-30)
     ActiveYN   yes/no, default Yes (set No instead of deleting a truck)
     COFExpiry, BlowerServiceDue, TruckServiceDue   date only; the office keeps these current here
-    LastOdometer      number (km); LastOdometerDate  date and time. Written by the UpdateTruckOdometer
-                      flow after each checklist (see PROJECT_HANDOVER.md), not by hand.
   Running it on an existing list adds any missing columns.
 
   Permissions: the list stops inheriting site permissions, COPYING every existing permission first
@@ -53,8 +50,6 @@
     ['COFExpiry', '<Field Type="DateTime" Name="COFExpiry" StaticName="COFExpiry" DisplayName="COF expiry" Required="FALSE" Format="DateOnly" />'],
     ['BlowerServiceDue', '<Field Type="DateTime" Name="BlowerServiceDue" StaticName="BlowerServiceDue" DisplayName="Blower service due" Required="FALSE" Format="DateOnly" />'],
     ['TruckServiceDue', '<Field Type="DateTime" Name="TruckServiceDue" StaticName="TruckServiceDue" DisplayName="Truck service due" Required="FALSE" Format="DateOnly" />'],
-    ['LastOdometer', '<Field Type="Number" Name="LastOdometer" StaticName="LastOdometer" DisplayName="Last odometer (km)" Required="FALSE" Decimals="0" Min="0" />'],
-    ['LastOdometerDate', '<Field Type="DateTime" Name="LastOdometerDate" StaticName="LastOdometerDate" DisplayName="Last odometer date" Required="FALSE" Format="DateTime" />'],
   ];
 
   const web = _spPageContextInfo.webAbsoluteUrl;

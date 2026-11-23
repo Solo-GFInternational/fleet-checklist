@@ -30,8 +30,6 @@ What it builds:
     SaveData "fcCheckDraft"; a new checklist's Defaults read it back (reviewing ignores it).
   - Items with "truckDate": the date comes from the GF Fleet Trucks column of that name, shown
     read-only with Expired / Due within 30 days / OK; date picker and photo only when it is blank.
-  - Odometer: "Last reading" hint and a warning when the entry is below the truck's LastOdometer
-    or more than 1,000 km above it.
 
 Items with "hidden": true are left off the screen (their SharePoint columns stay).
 Stdlib only.
@@ -673,36 +671,8 @@ class Builder:
                                  photo_onselect(ptype, fx_str(item)), '150', '30', y, '!varReviewing')
         extra += status_label('lblOdometerPhoto', taken, '"✓ Photo taken"', '"Photo required"',
                               'Parent.Width - 210', '192', y, '!varReviewing')
-        k = ' ' * KID
-        last = 'varTruckInfo.LastOdometer'
-        odo = 'Value(DataCardValue69.Text)'
-        extra += control('lblOdometerLast', 'Label@2.5.1', [
-            ('AutoHeight', 'true'), ('BorderStyle', 'BorderStyle.None'), ('Color', MUTED),
-            ('Font', "Font.'Segoe UI'"), ('Height', '24'), ('PaddingLeft', '0'), ('PaddingTop', '0'), ('Size', '12'),
-            ('Text', f'"Last reading: " & Text({last}, "#,##0") & " km" & '
-                     f'If(IsBlank(varTruckInfo.LastOdometerDate), "", " on " & Text(varTruckInfo.LastOdometerDate, "dd mmm yyyy"))'),
-            ('Visible', f'!varReviewing && !IsBlank({last})'), ('Width', 'Parent.Width - 60'), ('Wrap', 'true'),
-            ('X', '30'), ('Y', 'DataCardKey69.Y + DataCardKey69.Height + 2'),
-        ], KID)
-        extra += control('lblOdometerWarn', 'Label@2.5.1', [
-            ('AutoHeight', 'true'), ('BorderStyle', 'BorderStyle.None'), ('Color', INK), ('Fill', YELLOW_TINT),
-            ('Font', "Font.'Segoe UI'"), ('FontWeight', 'FontWeight.Semibold'), ('Height', '40'),
-            ('PaddingBottom', '8'), ('PaddingLeft', '12'), ('PaddingRight', '12'), ('PaddingTop', '8'), ('Size', '13'),
-            ('Text', f'If({odo} < {last}, "Lower than the last reading of " & Text({last}, "#,##0") & " km", '
-                     f'"More than 1,000 km since the last reading of " & Text({last}, "#,##0") & " km – check the number")'),
-            ('Visible', f'!varReviewing && !IsBlank({last}) && !IsBlank(DataCardValue69.Text) && '
-                        f'({odo} < {last} || {odo} > {last} + 1000)'),
-            ('Width', 'Parent.Width - 60'), ('Wrap', 'true'), ('X', '30'),
-            ('Y', 'DataCardValue69.Y + DataCardValue69.Height + 4'),
-        ], KID)
         self.add_template(
             T_ODOMETER + '\n'.join(extra) + '\n',
-            (f'{k}      Y: =DataCardKey69.Y + DataCardKey69.Height + 5\n',
-             f'{k}      Y: =If(lblOdometerLast.Visible, lblOdometerLast.Y + lblOdometerLast.Height, '
-             f'DataCardKey69.Y + DataCardKey69.Height) + 5\n'),
-            (f'{k}      Y: =DataCardValue69.Y + DataCardValue69.Height\n',
-             f'{k}      Y: =If(lblOdometerWarn.Visible, lblOdometerWarn.Y + lblOdometerWarn.Height, '
-             f'DataCardValue69.Y + DataCardValue69.Height)\n'),
             draft_text_mod('field_50', numeric=True))
         self.missing.append(('IsBlank(DataCardValue69.Text)', '"Fill in: " & DataCardKey69.Text'))
         self.missing.append((missing, '"Photo needed: odometer"'))

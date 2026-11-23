@@ -970,7 +970,7 @@ Screens:
                         Tooltip: =Parent.DisplayName
                         Width: =Parent.Width - 60
                         X: =30
-                        Y: =If(lblOdometerLast.Visible, lblOdometerLast.Y + lblOdometerLast.Height, DataCardKey69.Y + DataCardKey69.Height) + 5
+                        Y: =DataCardKey69.Y + DataCardKey69.Height + 5
                   - ErrorMessage69:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -995,7 +995,7 @@ Screens:
                         Visible: =Parent.DisplayMode=DisplayMode.Edit
                         Width: =Parent.Width - 60
                         X: =30
-                        Y: =If(lblOdometerWarn.Visible, lblOdometerWarn.Y + lblOdometerWarn.Height, DataCardValue69.Y + DataCardValue69.Height)
+                        Y: =DataCardValue69.Y + DataCardValue69.Height
                   - StarVisible69:
                       Control: Label@2.5.1
                       MetadataKey: FieldRequired
@@ -1065,45 +1065,6 @@ Screens:
                         X: =192
                         Y: =ErrorMessage69.Y + ErrorMessage69.Height - 4
                         Wrap: =true
-                  - lblOdometerLast:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: |-
-                          ="Last reading: " & Text(varTruckInfo.LastOdometer, "#,##0") & " km" & If(IsBlank(varTruckInfo.LastOdometerDate), "", " on " & Text(varTruckInfo.LastOdometerDate, "dd mmm yyyy"))
-                        Visible: =!varReviewing && !IsBlank(varTruckInfo.LastOdometer)
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey69.Y + DataCardKey69.Height + 2
-                  - lblOdometerWarn:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(31, 41, 51, 1)
-                        Fill: =RGBA(254, 246, 204, 1)
-                        Font: =Font.'Segoe UI'
-                        FontWeight: =FontWeight.Semibold
-                        Height: =40
-                        PaddingBottom: =8
-                        PaddingLeft: =12
-                        PaddingRight: =12
-                        PaddingTop: =8
-                        Size: =13
-                        Text: =If(Value(DataCardValue69.Text) < varTruckInfo.LastOdometer, "Lower than the last reading of " & Text(varTruckInfo.LastOdometer, "#,##0") & " km", "More than 1,000 km since the last reading of " & Text(varTruckInfo.LastOdometer, "#,##0") & " km – check the number")
-                        Visible: =!varReviewing && !IsBlank(varTruckInfo.LastOdometer) && !IsBlank(DataCardValue69.Text) && (Value(DataCardValue69.Text) < varTruckInfo.LastOdometer || Value(DataCardValue69.Text) > varTruckInfo.LastOdometer + 1000)
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardValue69.Y + DataCardValue69.Height + 4
             - crdNextServiceDue:
                 Control: TypedDataCard@1.0.7
                 Variant: ClassicNumberEdit

@@ -317,18 +317,7 @@ Steps:
 
 In the app: Power Automate pane → Add flow → RunSheetSubmitted.
 
-### 4.6 Automated flow: UpdateTruckOdometer (designed 23 Nov 2026, not built yet)
-
-Keeps `LastOdometer` / `LastOdometerDate` on the GF Fleet Trucks list current, for the odometer check on the checklist. Drivers can't edit the Trucks list, so the app doesn't write it; this flow runs as its owner.
-
-1. Trigger: SharePoint **When an item is created**, list Fleet Checklist.
-2. **Get items**, list GF Fleet Trucks, filter `Title eq '<field_1>'` (the truck number), top 1.
-3. Condition: a truck was found **and** (`LastOdometer` is empty **or** `field_50` > `LastOdometer`).
-4. If yes: **Update item** on that truck, `LastOdometer = field_50`, `LastOdometerDate = Created` (of the checklist).
-
-A lower reading never overwrites a higher one, so one typo doesn't reset the check. The flow owner needs edit rights on GF Fleet Trucks.
-
-### 4.7 Licensing, ownership, service account
+### 4.6 Licensing, ownership, service account
 
 - **Drivers ideally have Microsoft 365 accounts** (Frontline F1/F3 are cheaper): Forms then records who submitted and when, and file upload (photos) works only on organisation-only forms. Confirm with IT.
 - Forms + standard SharePoint/Outlook/Teams connectors run on standard M365 licences. Anything premium (Dataverse, premium connectors, Power Apps offline-first on Dataverse) needs Power Apps/Automate premium licences: check before designing for it.
@@ -399,7 +388,7 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 - When a reviewer opens a checklist, `OnVisible` loads its rows into `colCheckDefects` and each comment box shows its row's comment, view-only.
 
 **GF Fleet Trucks list** (`scripts/create_trucks_list.js`):
-- Columns: Title = truck number ("FJ 101" format), `TruckType` (Ambient/Frozen), `NoOfTyres`, `ActiveYN`, due dates `COFExpiry`, `BlowerServiceDue`, `TruckServiceDue` (date only), and `LastOdometer` / `LastOdometerDate` (written by the UpdateTruckOdometer flow, 4.6). Rerun the script on the existing list to add the new columns; the optional CSV can carry `COF,BlowerService,TruckService` dates (new trucks only).
+- Columns: Title = truck number ("FJ 101" format), `TruckType` (Ambient/Frozen), `NoOfTyres`, `ActiveYN`, due dates `COFExpiry`, `BlowerServiceDue`, `TruckServiceDue` (date only). Rerun the script on the existing list to add the new columns; the optional CSV can carry `COF,BlowerService,TruckService` dates (new trucks only).
 - Drivers have Read. Fleet App Reviewers have Fleet App Reviewer (edit items) so the office keeps the due dates current; the script removes their old Read grant.
 - scrPreTrip looks up the truck into `varTruckInfo`. It sets the tyre-photo count and hides items whose truck type doesn't match. Today only Blower service due and Plug wire are Frozen-only, as placeholders until Krish confirms. Krish provides the full truck table.
 
@@ -413,7 +402,6 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 
 **Checklist improvements (23 Nov 2026, approved by the user):**
 - **Due dates from the truck.** COF expiry, Blower service due and Truck service due (`"truckDate"` in the JSON) show the truck's date read-only with **Expired** (red), **Due within 30 days** (amber) or **OK** (teal); no date picker or photo, and the date is saved on the checklist as a snapshot. If the truck isn't listed or the date is blank, the old date picker + required photo come back.
-- **Odometer check.** Under the odometer: "Last reading: N km on <date>" and an amber warning when the entry is lower than `LastOdometer` or more than 1,000 km above it. A warning only; Submit isn't blocked.
 - **Draft on the phone.** Answers, comments, dates and header fields are saved on the phone as the driver goes ("fcCheckDraft", photos "fcCheckPhotos"). If the app closes, Home shows "You have an unfinished checklist for <truck> started <time>" with **Carry on** and **Discard** (tap twice). Start fleet checklist stays disabled until the draft is finished or discarded. Defect rows and photos that fail after the checklist row is saved are kept on the phone ("fcCheckRetry", "fcCheckRetryPhotos") and resent from Home when there's signal, which closes the two-step-save gap.
 - **One section per page.** 12 pages for drivers (Truck and driver + Licence and Odometer on page 1), 11 when reviewing (no Truck Profiles page). Footer: progress label "Section 3 of 12 · Tyres" with a thin bar, **Back** / **Next**, "N still to do" for the page (Next is never blocked), and on the last page Submit plus **Go to it**, which jumps to the page of the first missing item. Sign-off cards are on the last page.
 
@@ -550,7 +538,6 @@ Then have the office fill in each truck's **COF expiry, blower service due and t
 
 1. **SaveFleetPhoto**: add two optional text inputs at the end, `RunKey` and `StopKey`. Map them in *Update file properties* (section 4.3).
 2. **RunSheetSubmitted**: build it (section 4.5). It sends from your own mailbox until IT grants Send As on the shared mailbox.
-3. **UpdateTruckOdometer**: build it (section 4.6). The flow owner needs edit rights on GF Fleet Trucks.
 
 ### Step 3: Power Apps Studio
 
