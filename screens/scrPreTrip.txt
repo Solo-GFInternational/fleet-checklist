@@ -627,22 +627,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblLicenceValidHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Tick Yes only if your licence is on you today and has not expired."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey103.Y + DataCardKey103.Height + 2
                   - DataCardValue103:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -668,7 +652,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblLicenceValidHint.Y + lblLicenceValidHint.Height + 4
+                        Y: =DataCardKey103.Y + DataCardKey103.Height + 4
                   - chkLicenceValidNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -694,7 +678,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblLicenceValidHint.Y + lblLicenceValidHint.Height + 4
+                        Y: =DataCardKey103.Y + DataCardKey103.Height + 4
                   - ErrorMessage103:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -1210,22 +1194,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCabinDoorsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Open, close and lock both doors; each must shut and lock properly."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey35.Y + DataCardKey35.Height + 2
                   - DataCardValue35:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -1251,7 +1219,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblCabinDoorsHint.Y + lblCabinDoorsHint.Height + 4
+                        Y: =DataCardKey35.Y + DataCardKey35.Height + 4
                   - chkCabinDoorsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -1277,7 +1245,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblCabinDoorsHint.Y + lblCabinDoorsHint.Height + 4
+                        Y: =DataCardKey35.Y + DataCardKey35.Height + 4
                   - ErrorMessage35:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -1482,22 +1450,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCabGlassFrontHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Look across the whole windscreen from inside and outside; any crack or chip is a No."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey107.Y + DataCardKey107.Height + 2
                   - DataCardValue107:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -1523,7 +1475,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblCabGlassFrontHint.Y + lblCabGlassFrontHint.Height + 4
+                        Y: =DataCardKey107.Y + DataCardKey107.Height + 4
                   - chkCabGlassFrontNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -1549,7 +1501,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblCabGlassFrontHint.Y + lblCabGlassFrontHint.Height + 4
+                        Y: =DataCardKey107.Y + DataCardKey107.Height + 4
                   - ErrorMessage107:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -1754,22 +1706,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCabGlassRearHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Look at the small window behind the seats; any crack is a No."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey109.Y + DataCardKey109.Height + 2
                   - DataCardValue109:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -1795,7 +1731,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblCabGlassRearHint.Y + lblCabGlassRearHint.Height + 4
+                        Y: =DataCardKey109.Y + DataCardKey109.Height + 4
                   - chkCabGlassRearNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -1821,7 +1757,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblCabGlassRearHint.Y + lblCabGlassRearHint.Height + 4
+                        Y: =DataCardKey109.Y + DataCardKey109.Height + 4
                   - ErrorMessage109:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -2026,22 +1962,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCabGlassDriverHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Wind the window fully down and up; it must move freely and have no cracks."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey111.Y + DataCardKey111.Height + 2
                   - DataCardValue111:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -2067,7 +1987,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblCabGlassDriverHint.Y + lblCabGlassDriverHint.Height + 4
+                        Y: =DataCardKey111.Y + DataCardKey111.Height + 4
                   - chkCabGlassDriverNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -2093,7 +2013,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblCabGlassDriverHint.Y + lblCabGlassDriverHint.Height + 4
+                        Y: =DataCardKey111.Y + DataCardKey111.Height + 4
                   - ErrorMessage111:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -2298,22 +2218,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCabGlassPassengerHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Wind the window fully down and up; it must move freely and have no cracks."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey113.Y + DataCardKey113.Height + 2
                   - DataCardValue113:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -2339,7 +2243,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblCabGlassPassengerHint.Y + lblCabGlassPassengerHint.Height + 4
+                        Y: =DataCardKey113.Y + DataCardKey113.Height + 4
                   - chkCabGlassPassengerNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -2365,7 +2269,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblCabGlassPassengerHint.Y + lblCabGlassPassengerHint.Height + 4
+                        Y: =DataCardKey113.Y + DataCardKey113.Height + 4
                   - ErrorMessage113:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -2570,22 +2474,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblMirrorsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Check every mirror is clean, not cracked or loose, and you can see down both sides of the truck."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey60.Y + DataCardKey60.Height + 2
                   - DataCardValue60:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -2611,7 +2499,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblMirrorsHint.Y + lblMirrorsHint.Height + 4
+                        Y: =DataCardKey60.Y + DataCardKey60.Height + 4
                   - chkMirrorsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -2637,7 +2525,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblMirrorsHint.Y + lblMirrorsHint.Height + 4
+                        Y: =DataCardKey60.Y + DataCardKey60.Height + 4
                   - ErrorMessage60:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -2842,22 +2730,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblSeatBeltsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Pull each belt out, click it in and release it; it must lock, unlock and roll back freely."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey38.Y + DataCardKey38.Height + 2
                   - DataCardValue38:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -2883,7 +2755,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblSeatBeltsHint.Y + lblSeatBeltsHint.Height + 4
+                        Y: =DataCardKey38.Y + DataCardKey38.Height + 4
                   - chkSeatBeltsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -2909,7 +2781,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblSeatBeltsHint.Y + lblSeatBeltsHint.Height + 4
+                        Y: =DataCardKey38.Y + DataCardKey38.Height + 4
                   - ErrorMessage38:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -3114,22 +2986,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblDashGaugesHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Start the engine; all gauges move and no warning light stays on."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey34.Y + DataCardKey34.Height + 2
                   - DataCardValue34:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -3155,7 +3011,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblDashGaugesHint.Y + lblDashGaugesHint.Height + 4
+                        Y: =DataCardKey34.Y + DataCardKey34.Height + 4
                   - chkDashGaugesNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -3181,7 +3037,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblDashGaugesHint.Y + lblDashGaugesHint.Height + 4
+                        Y: =DataCardKey34.Y + DataCardKey34.Height + 4
                   - ErrorMessage34:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -3386,22 +3242,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCabinCleanHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="No rubbish, food or loose items in the cabin; take a photo of the cabin."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey118.Y + DataCardKey118.Height + 2
                   - DataCardValue118:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -3427,7 +3267,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblCabinCleanHint.Y + lblCabinCleanHint.Height + 4
+                        Y: =DataCardKey118.Y + DataCardKey118.Height + 4
                   - chkCabinCleanNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -3453,7 +3293,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblCabinCleanHint.Y + lblCabinCleanHint.Height + 4
+                        Y: =DataCardKey118.Y + DataCardKey118.Height + 4
                   - ErrorMessage118:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -3516,7 +3356,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Cabin clean and tidy?");
+                          Set(varPhotoItem, "Cabin clean and tidy");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -3526,7 +3366,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cabin clean and tidy?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cabin clean and tidy")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -3535,14 +3375,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cabin clean and tidy?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cabin clean and tidy")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cabin clean and tidy?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cabin clean and tidy")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -3706,22 +3546,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblMatsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Both floor mats are in place; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey120.Y + DataCardKey120.Height + 2
                   - DataCardValue120:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -3747,7 +3571,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblMatsHint.Y + lblMatsHint.Height + 4
+                        Y: =DataCardKey120.Y + DataCardKey120.Height + 4
                   - chkMatsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -3773,7 +3597,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblMatsHint.Y + lblMatsHint.Height + 4
+                        Y: =DataCardKey120.Y + DataCardKey120.Height + 4
                   - ErrorMessage120:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -3836,7 +3660,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Floor mats in the cabin?");
+                          Set(varPhotoItem, "Floor mats in cabin");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -3846,7 +3670,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Floor mats in the cabin?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Floor mats in cabin")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -3855,14 +3679,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Floor mats in the cabin?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Floor mats in cabin")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Floor mats in the cabin?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Floor mats in cabin")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -4027,22 +3851,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCabTiltHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Tilt the cabin, check underneath for leaks, loose parts or damage, then lower and lock it."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey122.Y + DataCardKey122.Height + 2
                   - DataCardValue122:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -4069,7 +3877,7 @@ Screens:
                         Visible: =IsBlank(varWeekTilt)
                         Width: =110
                         X: =30
-                        Y: =lblCabTiltHint.Y + lblCabTiltHint.Height + 4
+                        Y: =DataCardKey122.Y + DataCardKey122.Height + 4
                   - chkCabTiltNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -4096,7 +3904,7 @@ Screens:
                         Visible: =IsBlank(varWeekTilt)
                         Width: =110
                         X: =150
-                        Y: =lblCabTiltHint.Y + lblCabTiltHint.Height + 4
+                        Y: =DataCardKey122.Y + DataCardKey122.Height + 4
                   - lblCabTiltDone:
                       Control: Label@2.5.1
                       Properties:
@@ -4113,7 +3921,7 @@ Screens:
                         Width: =Parent.Width - 60
                         Wrap: =true
                         X: =30
-                        Y: =lblCabTiltHint.Y + lblCabTiltHint.Height + 4
+                        Y: =DataCardKey122.Y + DataCardKey122.Height + 4
                   - ErrorMessage122:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -4138,7 +3946,7 @@ Screens:
                         Visible: =Parent.DisplayMode=DisplayMode.Edit
                         Width: =Parent.Width - 60
                         X: =30
-                        Y: =lblCabTiltHint.Y + lblCabTiltHint.Height + 4 + If(IsBlank(varWeekTilt), DataCardValue122.Height, lblCabTiltDone.Height)
+                        Y: =DataCardKey122.Y + DataCardKey122.Height + 4 + If(IsBlank(varWeekTilt), DataCardValue122.Height, lblCabTiltDone.Height)
                   - StarVisible122:
                       Control: Label@2.5.1
                       MetadataKey: FieldRequired
@@ -4284,7 +4092,7 @@ Screens:
                 Variant: BlankCard
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
-                  DisplayName: ="Net / Gross weight plate"
+                  DisplayName: ="Net / gross weight plate photo"
                   Visible: =!varReviewing
                   Width: =Parent.Width
                   WidthFit: =true
@@ -4302,27 +4110,11 @@ Screens:
                         FontWeight: =FontWeight.Semibold
                         Height: =34
                         PaddingLeft: =0
-                        Text: ="Net / Gross weight plate"
+                        Text: ="Net / gross weight plate photo"
                         Width: =Parent.Width - 60
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblNetGrossWeightHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Take a clear photo of the weight plate (usually on the door pillar) so the numbers can be read."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =lblNetGrossWeightTitle.Y + lblNetGrossWeightTitle.Height + 2
                   - btnNetGrossWeightPhoto:
                       Control: Classic/Button@2.2.0
                       Properties:
@@ -4339,7 +4131,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Net / Gross weight plate");
+                          Set(varPhotoItem, "Net / gross weight plate photo");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -4349,27 +4141,27 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Net / Gross weight plate")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Net / gross weight plate photo")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
-                        Y: =lblNetGrossWeightHint.Y + lblNetGrossWeightHint.Height + 8
+                        Y: =lblNetGrossWeightTitle.Y + lblNetGrossWeightTitle.Height + 8
                   - lblNetGrossWeightPhoto:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Net / Gross weight plate")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Net / gross weight plate photo")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Net / Gross weight plate")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Net / gross weight plate photo")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
-                        Y: =lblNetGrossWeightHint.Y + lblNetGrossWeightHint.Height + 8
+                        Y: =lblNetGrossWeightTitle.Y + lblNetGrossWeightTitle.Height + 8
                         Wrap: =true
             - crdHdrElectrical:
                 Control: TypedDataCard@1.0.7
@@ -4443,22 +4235,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblBatteryWaterHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Look at the battery cells; water must reach the top mark."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey24.Y + DataCardKey24.Height + 2
                   - DataCardValue24:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -4484,7 +4260,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblBatteryWaterHint.Y + lblBatteryWaterHint.Height + 4
+                        Y: =DataCardKey24.Y + DataCardKey24.Height + 4
                   - chkBatteryWaterNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -4510,7 +4286,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblBatteryWaterHint.Y + lblBatteryWaterHint.Height + 4
+                        Y: =DataCardKey24.Y + DataCardKey24.Height + 4
                   - ErrorMessage24:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -4715,22 +4491,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblBatteryTerminalsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Terminals must not move by hand and have no white or green build-up."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey30.Y + DataCardKey30.Height + 2
                   - DataCardValue30:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -4756,7 +4516,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblBatteryTerminalsHint.Y + lblBatteryTerminalsHint.Height + 4
+                        Y: =DataCardKey30.Y + DataCardKey30.Height + 4
                   - chkBatteryTerminalsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -4782,7 +4542,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblBatteryTerminalsHint.Y + lblBatteryTerminalsHint.Height + 4
+                        Y: =DataCardKey30.Y + DataCardKey30.Height + 4
                   - ErrorMessage30:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -4987,22 +4747,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblBatteryIsolatorHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Turn the isolator off and on; power cuts and returns."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey29.Y + DataCardKey29.Height + 2
                   - DataCardValue29:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -5028,7 +4772,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblBatteryIsolatorHint.Y + lblBatteryIsolatorHint.Height + 4
+                        Y: =DataCardKey29.Y + DataCardKey29.Height + 4
                   - chkBatteryIsolatorNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -5054,7 +4798,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblBatteryIsolatorHint.Y + lblBatteryIsolatorHint.Height + 4
+                        Y: =DataCardKey29.Y + DataCardKey29.Height + 4
                   - ErrorMessage29:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -5259,22 +5003,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblHeadFogLightsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Switch on low beam, high beam and fog lights; left and right must all light."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey51.Y + DataCardKey51.Height + 2
                   - DataCardValue51:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -5300,7 +5028,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblHeadFogLightsHint.Y + lblHeadFogLightsHint.Height + 4
+                        Y: =DataCardKey51.Y + DataCardKey51.Height + 4
                   - chkHeadFogLightsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -5326,7 +5054,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblHeadFogLightsHint.Y + lblHeadFogLightsHint.Height + 4
+                        Y: =DataCardKey51.Y + DataCardKey51.Height + 4
                   - ErrorMessage51:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -5531,22 +5259,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblIndicatorsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Switch on left then right indicators and hazards; walk around and check front and rear flash."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey53.Y + DataCardKey53.Height + 2
                   - DataCardValue53:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -5572,7 +5284,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblIndicatorsHint.Y + lblIndicatorsHint.Height + 4
+                        Y: =DataCardKey53.Y + DataCardKey53.Height + 4
                   - chkIndicatorsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -5598,7 +5310,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblIndicatorsHint.Y + lblIndicatorsHint.Height + 4
+                        Y: =DataCardKey53.Y + DataCardKey53.Height + 4
                   - ErrorMessage53:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -5803,22 +5515,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblBrakeLightsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Press the brake (or ask someone to) and check both rear brake lights come on."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey25.Y + DataCardKey25.Height + 2
                   - DataCardValue25:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -5844,7 +5540,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblBrakeLightsHint.Y + lblBrakeLightsHint.Height + 4
+                        Y: =DataCardKey25.Y + DataCardKey25.Height + 4
                   - chkBrakeLightsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -5870,7 +5566,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblBrakeLightsHint.Y + lblBrakeLightsHint.Height + 4
+                        Y: =DataCardKey25.Y + DataCardKey25.Height + 4
                   - ErrorMessage25:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -6075,22 +5771,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblReverseAlarmHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Select reverse; the alarm beeps and both reverse lights come on."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey61.Y + DataCardKey61.Height + 2
                   - DataCardValue61:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -6116,7 +5796,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblReverseAlarmHint.Y + lblReverseAlarmHint.Height + 4
+                        Y: =DataCardKey61.Y + DataCardKey61.Height + 4
                   - chkReverseAlarmNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -6142,7 +5822,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblReverseAlarmHint.Y + lblReverseAlarmHint.Height + 4
+                        Y: =DataCardKey61.Y + DataCardKey61.Height + 4
                   - ErrorMessage61:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -6347,22 +6027,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCabinSpotLightHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Switch on the cabin light; it must light."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey36.Y + DataCardKey36.Height + 2
                   - DataCardValue36:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -6388,7 +6052,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblCabinSpotLightHint.Y + lblCabinSpotLightHint.Height + 4
+                        Y: =DataCardKey36.Y + DataCardKey36.Height + 4
                   - chkCabinSpotLightNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -6414,7 +6078,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblCabinSpotLightHint.Y + lblCabinSpotLightHint.Height + 4
+                        Y: =DataCardKey36.Y + DataCardKey36.Height + 4
                   - ErrorMessage36:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -6619,22 +6283,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblRearSpotLightHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Switch on the rear spotlight; it must light."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey59.Y + DataCardKey59.Height + 2
                   - DataCardValue59:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -6660,7 +6308,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblRearSpotLightHint.Y + lblRearSpotLightHint.Height + 4
+                        Y: =DataCardKey59.Y + DataCardKey59.Height + 4
                   - chkRearSpotLightNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -6686,7 +6334,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblRearSpotLightHint.Y + lblRearSpotLightHint.Height + 4
+                        Y: =DataCardKey59.Y + DataCardKey59.Height + 4
                   - ErrorMessage59:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -6891,22 +6539,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblHornHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Press the horn; it must sound clearly."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey52.Y + DataCardKey52.Height + 2
                   - DataCardValue52:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -6932,7 +6564,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblHornHint.Y + lblHornHint.Height + 4
+                        Y: =DataCardKey52.Y + DataCardKey52.Height + 4
                   - chkHornNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -6958,7 +6590,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblHornHint.Y + lblHornHint.Height + 4
+                        Y: =DataCardKey52.Y + DataCardKey52.Height + 4
                   - ErrorMessage52:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -7163,22 +6795,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblElectricalCablesHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Look along visible cables; no cuts, bare wire or loose plugs."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey70.Y + DataCardKey70.Height + 2
                   - DataCardValue70:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -7204,7 +6820,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblElectricalCablesHint.Y + lblElectricalCablesHint.Height + 4
+                        Y: =DataCardKey70.Y + DataCardKey70.Height + 4
                   - chkElectricalCablesNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -7230,7 +6846,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblElectricalCablesHint.Y + lblElectricalCablesHint.Height + 4
+                        Y: =DataCardKey70.Y + DataCardKey70.Height + 4
                   - ErrorMessage70:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -7468,23 +7084,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblTyreConditionHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: |-
-                          ="Walk around every tyre: no cuts, bulges or bald spots, and no retreads on the front (steering) wheels."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey68.Y + DataCardKey68.Height + 2
                   - DataCardValue68:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -7510,7 +7109,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblTyreConditionHint.Y + lblTyreConditionHint.Height + 4
+                        Y: =DataCardKey68.Y + DataCardKey68.Height + 4
                   - chkTyreConditionNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -7536,7 +7135,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblTyreConditionHint.Y + lblTyreConditionHint.Height + 4
+                        Y: =DataCardKey68.Y + DataCardKey68.Height + 4
                   - ErrorMessage68:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -7741,22 +7340,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblWheelStudsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Look at every wheel; no nut or stud missing or loose."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey67.Y + DataCardKey67.Height + 2
                   - DataCardValue67:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -7782,7 +7365,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblWheelStudsHint.Y + lblWheelStudsHint.Height + 4
+                        Y: =DataCardKey67.Y + DataCardKey67.Height + 4
                   - chkWheelStudsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -7808,7 +7391,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblWheelStudsHint.Y + lblWheelStudsHint.Height + 4
+                        Y: =DataCardKey67.Y + DataCardKey67.Height + 4
                   - ErrorMessage67:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -8013,22 +7596,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblSpareTyreHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The spare is on the truck, inflated and with no cuts or bald spots."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey65.Y + DataCardKey65.Height + 2
                   - DataCardValue65:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -8054,7 +7621,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblSpareTyreHint.Y + lblSpareTyreHint.Height + 4
+                        Y: =DataCardKey65.Y + DataCardKey65.Height + 4
                   - chkSpareTyreNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -8080,7 +7647,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblSpareTyreHint.Y + lblSpareTyreHint.Height + 4
+                        Y: =DataCardKey65.Y + DataCardKey65.Height + 4
                   - ErrorMessage65:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -8285,22 +7852,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblJackWheelBraceHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The jack and wheel brace are on the truck and not broken."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey54.Y + DataCardKey54.Height + 2
                   - DataCardValue54:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -8326,7 +7877,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblJackWheelBraceHint.Y + lblJackWheelBraceHint.Height + 4
+                        Y: =DataCardKey54.Y + DataCardKey54.Height + 4
                   - chkJackWheelBraceNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -8352,7 +7903,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblJackWheelBraceHint.Y + lblJackWheelBraceHint.Height + 4
+                        Y: =DataCardKey54.Y + DataCardKey54.Height + 4
                   - ErrorMessage54:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -8590,22 +8141,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblOilWaterLeaksHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Look on the ground under the engine and gearbox; no fresh drips or puddles."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey56.Y + DataCardKey56.Height + 2
                   - DataCardValue56:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -8631,7 +8166,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblOilWaterLeaksHint.Y + lblOilWaterLeaksHint.Height + 4
+                        Y: =DataCardKey56.Y + DataCardKey56.Height + 4
                   - chkOilWaterLeaksNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -8657,7 +8192,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblOilWaterLeaksHint.Y + lblOilWaterLeaksHint.Height + 4
+                        Y: =DataCardKey56.Y + DataCardKey56.Height + 4
                   - ErrorMessage56:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -8862,22 +8397,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblOilLevelsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Check the dipstick and hydraulic tank; oil must be at the top mark."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey21.Y + DataCardKey21.Height + 2
                   - DataCardValue21:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -8903,7 +8422,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblOilLevelsHint.Y + lblOilLevelsHint.Height + 4
+                        Y: =DataCardKey21.Y + DataCardKey21.Height + 4
                   - chkOilLevelsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -8929,7 +8448,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblOilLevelsHint.Y + lblOilLevelsHint.Height + 4
+                        Y: =DataCardKey21.Y + DataCardKey21.Height + 4
                   - ErrorMessage21:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -9134,22 +8653,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCoolantLevelsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="With the engine cold, the coolant tank must be at the top mark."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey22.Y + DataCardKey22.Height + 2
                   - DataCardValue22:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -9175,7 +8678,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblCoolantLevelsHint.Y + lblCoolantLevelsHint.Height + 4
+                        Y: =DataCardKey22.Y + DataCardKey22.Height + 4
                   - chkCoolantLevelsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -9201,7 +8704,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblCoolantLevelsHint.Y + lblCoolantLevelsHint.Height + 4
+                        Y: =DataCardKey22.Y + DataCardKey22.Height + 4
                   - ErrorMessage22:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -9406,22 +8909,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblAirHosesHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Listen for hissing and look along the hoses; no cracks, rubbing or leaks."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey27.Y + DataCardKey27.Height + 2
                   - DataCardValue27:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -9447,7 +8934,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblAirHosesHint.Y + lblAirHosesHint.Height + 4
+                        Y: =DataCardKey27.Y + DataCardKey27.Height + 4
                   - chkAirHosesNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -9473,7 +8960,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblAirHosesHint.Y + lblAirHosesHint.Height + 4
+                        Y: =DataCardKey27.Y + DataCardKey27.Height + 4
                   - ErrorMessage27:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -9678,22 +9165,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblFanBeltsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Belts are not cracked or frayed and do not move more than a finger's width when pressed."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey42.Y + DataCardKey42.Height + 2
                   - DataCardValue42:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -9719,7 +9190,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblFanBeltsHint.Y + lblFanBeltsHint.Height + 4
+                        Y: =DataCardKey42.Y + DataCardKey42.Height + 4
                   - chkFanBeltsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -9745,7 +9216,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblFanBeltsHint.Y + lblFanBeltsHint.Height + 4
+                        Y: =DataCardKey42.Y + DataCardKey42.Height + 4
                   - ErrorMessage42:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -9983,22 +9454,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblSpringsUBoltsHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Look at the springs and bin mountings; nothing broken, missing or loose."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey66.Y + DataCardKey66.Height + 2
                   - DataCardValue66:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -10024,7 +9479,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblSpringsUBoltsHint.Y + lblSpringsUBoltsHint.Height + 4
+                        Y: =DataCardKey66.Y + DataCardKey66.Height + 4
                   - chkSpringsUBoltsNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -10050,7 +9505,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblSpringsUBoltsHint.Y + lblSpringsUBoltsHint.Height + 4
+                        Y: =DataCardKey66.Y + DataCardKey66.Height + 4
                   - ErrorMessage66:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -10255,22 +9710,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblBumpersHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Bumpers are firmly fixed with no loose or broken parts."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey47.Y + DataCardKey47.Height + 2
                   - DataCardValue47:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -10296,7 +9735,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblBumpersHint.Y + lblBumpersHint.Height + 4
+                        Y: =DataCardKey47.Y + DataCardKey47.Height + 4
                   - chkBumpersNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -10322,7 +9761,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblBumpersHint.Y + lblBumpersHint.Height + 4
+                        Y: =DataCardKey47.Y + DataCardKey47.Height + 4
                   - ErrorMessage47:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -10527,22 +9966,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblPTOHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Check the pump, seals, cable, shaft, augers and universal joint; nothing leaking, loose or damaged."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey57.Y + DataCardKey57.Height + 2
                   - DataCardValue57:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -10568,7 +9991,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblPTOHint.Y + lblPTOHint.Height + 4
+                        Y: =DataCardKey57.Y + DataCardKey57.Height + 4
                   - chkPTONo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -10594,7 +10017,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblPTOHint.Y + lblPTOHint.Height + 4
+                        Y: =DataCardKey57.Y + DataCardKey57.Height + 4
                   - ErrorMessage57:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -10832,22 +10255,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblParkBrakeHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The truck holds still on the park brake and the foot brake feels firm."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey64.Y + DataCardKey64.Height + 2
                   - DataCardValue64:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -10873,7 +10280,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblParkBrakeHint.Y + lblParkBrakeHint.Height + 4
+                        Y: =DataCardKey64.Y + DataCardKey64.Height + 4
                   - chkParkBrakeNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -10899,7 +10306,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblParkBrakeHint.Y + lblParkBrakeHint.Height + 4
+                        Y: =DataCardKey64.Y + DataCardKey64.Height + 4
                   - ErrorMessage64:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -11104,22 +10511,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblConesReflectorHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The cones and the reflector triangle are on the truck."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey37.Y + DataCardKey37.Height + 2
                   - DataCardValue37:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -11145,7 +10536,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblConesReflectorHint.Y + lblConesReflectorHint.Height + 4
+                        Y: =DataCardKey37.Y + DataCardKey37.Height + 4
                   - chkConesReflectorNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -11171,7 +10562,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblConesReflectorHint.Y + lblConesReflectorHint.Height + 4
+                        Y: =DataCardKey37.Y + DataCardKey37.Height + 4
                   - ErrorMessage37:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -11376,22 +10767,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblDriverPPEHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="You have your hi-vis vest, safety boots and gloves."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey40.Y + DataCardKey40.Height + 2
                   - DataCardValue40:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -11417,7 +10792,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblDriverPPEHint.Y + lblDriverPPEHint.Height + 4
+                        Y: =DataCardKey40.Y + DataCardKey40.Height + 4
                   - chkDriverPPENo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -11443,7 +10818,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblDriverPPEHint.Y + lblDriverPPEHint.Height + 4
+                        Y: =DataCardKey40.Y + DataCardKey40.Height + 4
                   - ErrorMessage40:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -11648,22 +11023,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblFireExtinguishersHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The extinguisher is mounted, the gauge is in the green and the tag is in date."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey43.Y + DataCardKey43.Height + 2
                   - DataCardValue43:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -11689,7 +11048,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblFireExtinguishersHint.Y + lblFireExtinguishersHint.Height + 4
+                        Y: =DataCardKey43.Y + DataCardKey43.Height + 4
                   - chkFireExtinguishersNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -11715,7 +11074,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblFireExtinguishersHint.Y + lblFireExtinguishersHint.Height + 4
+                        Y: =DataCardKey43.Y + DataCardKey43.Height + 4
                   - ErrorMessage43:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -11920,22 +11279,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblFirstAidBoxHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Open the box; it is on the truck and not empty."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey44.Y + DataCardKey44.Height + 2
                   - DataCardValue44:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -11961,7 +11304,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblFirstAidBoxHint.Y + lblFirstAidBoxHint.Height + 4
+                        Y: =DataCardKey44.Y + DataCardKey44.Height + 4
                   - chkFirstAidBoxNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -11987,7 +11330,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblFirstAidBoxHint.Y + lblFirstAidBoxHint.Height + 4
+                        Y: =DataCardKey44.Y + DataCardKey44.Height + 4
                   - ErrorMessage44:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -12192,22 +11535,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblHandTorchHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Switch on the torch; it must light."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey50.Y + DataCardKey50.Height + 2
                   - DataCardValue50:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -12233,7 +11560,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblHandTorchHint.Y + lblHandTorchHint.Height + 4
+                        Y: =DataCardKey50.Y + DataCardKey50.Height + 4
                   - chkHandTorchNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -12259,7 +11586,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblHandTorchHint.Y + lblHandTorchHint.Height + 4
+                        Y: =DataCardKey50.Y + DataCardKey50.Height + 4
                   - ErrorMessage50:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -12464,22 +11791,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblRainCoatHelmetHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Both are on the truck and not torn or broken."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey58.Y + DataCardKey58.Height + 2
                   - DataCardValue58:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -12505,7 +11816,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblRainCoatHelmetHint.Y + lblRainCoatHelmetHint.Height + 4
+                        Y: =DataCardKey58.Y + DataCardKey58.Height + 4
                   - chkRainCoatHelmetNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -12531,7 +11842,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblRainCoatHelmetHint.Y + lblRainCoatHelmetHint.Height + 4
+                        Y: =DataCardKey58.Y + DataCardKey58.Height + 4
                   - ErrorMessage58:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -12770,22 +12081,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblGreasingHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Check the grease points under the truck have fresh grease; grease any that are dry."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey49.Y + DataCardKey49.Height + 2
                   - DataCardValue49:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -12812,7 +12107,7 @@ Screens:
                         Visible: =IsBlank(varWeekGrease)
                         Width: =110
                         X: =30
-                        Y: =lblGreasingHint.Y + lblGreasingHint.Height + 4
+                        Y: =DataCardKey49.Y + DataCardKey49.Height + 4
                   - chkGreasingNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -12839,7 +12134,7 @@ Screens:
                         Visible: =IsBlank(varWeekGrease)
                         Width: =110
                         X: =150
-                        Y: =lblGreasingHint.Y + lblGreasingHint.Height + 4
+                        Y: =DataCardKey49.Y + DataCardKey49.Height + 4
                   - lblGreasingDone:
                       Control: Label@2.5.1
                       Properties:
@@ -12856,7 +12151,7 @@ Screens:
                         Width: =Parent.Width - 60
                         Wrap: =true
                         X: =30
-                        Y: =lblGreasingHint.Y + lblGreasingHint.Height + 4
+                        Y: =DataCardKey49.Y + DataCardKey49.Height + 4
                   - ErrorMessage49:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -12881,7 +12176,7 @@ Screens:
                         Visible: =Parent.DisplayMode=DisplayMode.Edit
                         Width: =Parent.Width - 60
                         X: =30
-                        Y: =lblGreasingHint.Y + lblGreasingHint.Height + 4 + If(IsBlank(varWeekGrease), DataCardValue49.Height, lblGreasingDone.Height)
+                        Y: =DataCardKey49.Y + DataCardKey49.Height + 4 + If(IsBlank(varWeekGrease), DataCardValue49.Height, lblGreasingDone.Height)
                   - StarVisible49:
                       Control: Label@2.5.1
                       MetadataKey: FieldRequired
@@ -13061,22 +12356,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblAngleBlocksHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The wheel chocks (angle blocks) are on the truck."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey33.Y + DataCardKey33.Height + 2
                   - DataCardValue33:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -13102,7 +12381,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblAngleBlocksHint.Y + lblAngleBlocksHint.Height + 4
+                        Y: =DataCardKey33.Y + DataCardKey33.Height + 4
                   - chkAngleBlocksNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -13128,7 +12407,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblAngleBlocksHint.Y + lblAngleBlocksHint.Height + 4
+                        Y: =DataCardKey33.Y + DataCardKey33.Height + 4
                   - ErrorMessage33:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -13333,22 +12612,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblFreezerLockedHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Each box has its padlock or seal fitted."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey45.Y + DataCardKey45.Height + 2
                   - DataCardValue45:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -13374,7 +12637,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblFreezerLockedHint.Y + lblFreezerLockedHint.Height + 4
+                        Y: =DataCardKey45.Y + DataCardKey45.Height + 4
                   - chkFreezerLockedNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -13400,7 +12663,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblFreezerLockedHint.Y + lblFreezerLockedHint.Height + 4
+                        Y: =DataCardKey45.Y + DataCardKey45.Height + 4
                   - ErrorMessage45:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -13605,22 +12868,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblMoneyBagHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The money bag and its lock are on the truck."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey39.Y + DataCardKey39.Height + 2
                   - DataCardValue39:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -13646,7 +12893,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblMoneyBagHint.Y + lblMoneyBagHint.Height + 4
+                        Y: =DataCardKey39.Y + DataCardKey39.Height + 4
                   - chkMoneyBagNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -13672,7 +12919,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblMoneyBagHint.Y + lblMoneyBagHint.Height + 4
+                        Y: =DataCardKey39.Y + DataCardKey39.Height + 4
                   - ErrorMessage39:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -13909,22 +13156,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblCOFExpiryHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Read the expiry date on the COF label, pick it in the date box and take a photo of the label."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey158.Y + DataCardKey158.Height + 2
                   - DataCardValue158:
                       Control: Classic/DatePicker@2.6.0
                       MetadataKey: FieldValue
@@ -13950,7 +13181,7 @@ Screens:
                         Tooltip: =Parent.DisplayName
                         Width: =Parent.Width - 60
                         X: =30
-                        Y: =lblCOFExpiryHint.Y + lblCOFExpiryHint.Height + 5
+                        Y: =DataCardKey158.Y + DataCardKey158.Height + 5
                   - ErrorMessage158:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -14084,22 +13315,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblBlowerServiceDueHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Read the due date on the blower service label, pick it in the date box and take a photo of the label."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey159.Y + DataCardKey159.Height + 2
                   - DataCardValue159:
                       Control: Classic/DatePicker@2.6.0
                       MetadataKey: FieldValue
@@ -14125,7 +13340,7 @@ Screens:
                         Tooltip: =Parent.DisplayName
                         Width: =Parent.Width - 60
                         X: =30
-                        Y: =lblBlowerServiceDueHint.Y + lblBlowerServiceDueHint.Height + 5
+                        Y: =DataCardKey159.Y + DataCardKey159.Height + 5
                   - ErrorMessage159:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -14258,22 +13473,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblTruckServiceDueHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Read the due date on the service sticker, pick it in the date box and take a photo of the sticker."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey160.Y + DataCardKey160.Height + 2
                   - DataCardValue160:
                       Control: Classic/DatePicker@2.6.0
                       MetadataKey: FieldValue
@@ -14299,7 +13498,7 @@ Screens:
                         Tooltip: =Parent.DisplayName
                         Width: =Parent.Width - 60
                         X: =30
-                        Y: =lblTruckServiceDueHint.Y + lblTruckServiceDueHint.Height + 5
+                        Y: =DataCardKey160.Y + DataCardKey160.Height + 5
                   - ErrorMessage160:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -14433,22 +13632,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblAccSpareTyreHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The spare tyre is on the truck; take a photo of it."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey161.Y + DataCardKey161.Height + 2
                   - DataCardValue161:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -14474,7 +13657,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblAccSpareTyreHint.Y + lblAccSpareTyreHint.Height + 4
+                        Y: =DataCardKey161.Y + DataCardKey161.Height + 4
                   - chkAccSpareTyreNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -14500,7 +13683,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblAccSpareTyreHint.Y + lblAccSpareTyreHint.Height + 4
+                        Y: =DataCardKey161.Y + DataCardKey161.Height + 4
                   - ErrorMessage161:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -14563,7 +13746,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Spare tyre in the truck?");
+                          Set(varPhotoItem, "Spare tyre in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -14573,7 +13756,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Spare tyre in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Spare tyre in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -14582,14 +13765,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Spare tyre in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Spare tyre in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Spare tyre in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Spare tyre in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -14753,22 +13936,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblAccTyreConditionHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Take one photo of each tyre; tick Yes if every tyre has good tread and no damage."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey163.Y + DataCardKey163.Height + 2
                   - DataCardValue163:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -14794,7 +13961,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblAccTyreConditionHint.Y + lblAccTyreConditionHint.Height + 4
+                        Y: =DataCardKey163.Y + DataCardKey163.Height + 4
                   - chkAccTyreConditionNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -14820,7 +13987,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblAccTyreConditionHint.Y + lblAccTyreConditionHint.Height + 4
+                        Y: =DataCardKey163.Y + DataCardKey163.Height + 4
                   - ErrorMessage163:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -15412,22 +14579,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblAccFireExtinguisherHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The extinguisher is mounted and its tag is in date; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey165.Y + DataCardKey165.Height + 2
                   - DataCardValue165:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -15453,7 +14604,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblAccFireExtinguisherHint.Y + lblAccFireExtinguisherHint.Height + 4
+                        Y: =DataCardKey165.Y + DataCardKey165.Height + 4
                   - chkAccFireExtinguisherNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -15479,7 +14630,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblAccFireExtinguisherHint.Y + lblAccFireExtinguisherHint.Height + 4
+                        Y: =DataCardKey165.Y + DataCardKey165.Height + 4
                   - ErrorMessage165:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -15542,7 +14693,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Fire extinguisher mounted and serviceable?");
+                          Set(varPhotoItem, "Fire extinguisher mounted and serviceable");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -15552,7 +14703,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted and serviceable?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted and serviceable")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -15561,14 +14712,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted and serviceable?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted and serviceable")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted and serviceable?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted and serviceable")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -15732,22 +14883,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblAccFirstAidKitHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The first aid kit is on the truck; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey167.Y + DataCardKey167.Height + 2
                   - DataCardValue167:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -15773,7 +14908,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblAccFirstAidKitHint.Y + lblAccFirstAidKitHint.Height + 4
+                        Y: =DataCardKey167.Y + DataCardKey167.Height + 4
                   - chkAccFirstAidKitNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -15799,7 +14934,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblAccFirstAidKitHint.Y + lblAccFirstAidKitHint.Height + 4
+                        Y: =DataCardKey167.Y + DataCardKey167.Height + 4
                   - ErrorMessage167:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -15862,7 +14997,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "First aid kit in the truck?");
+                          Set(varPhotoItem, "First aid kit in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -15872,7 +15007,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -15881,14 +15016,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -16052,22 +15187,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblTrafficConesHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The traffic cones are on the truck; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey169.Y + DataCardKey169.Height + 2
                   - DataCardValue169:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -16093,7 +15212,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblTrafficConesHint.Y + lblTrafficConesHint.Height + 4
+                        Y: =DataCardKey169.Y + DataCardKey169.Height + 4
                   - chkTrafficConesNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -16119,7 +15238,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblTrafficConesHint.Y + lblTrafficConesHint.Height + 4
+                        Y: =DataCardKey169.Y + DataCardKey169.Height + 4
                   - ErrorMessage169:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -16182,7 +15301,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Traffic cones in the truck?");
+                          Set(varPhotoItem, "Traffic cones in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -16192,7 +15311,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Traffic cones in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Traffic cones in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -16201,14 +15320,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Traffic cones in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Traffic cones in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Traffic cones in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Traffic cones in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -16372,22 +15491,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblFuelCardHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The truck's fuel card is in the cabin; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey171.Y + DataCardKey171.Height + 2
                   - DataCardValue171:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -16413,7 +15516,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblFuelCardHint.Y + lblFuelCardHint.Height + 4
+                        Y: =DataCardKey171.Y + DataCardKey171.Height + 4
                   - chkFuelCardNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -16439,7 +15542,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblFuelCardHint.Y + lblFuelCardHint.Height + 4
+                        Y: =DataCardKey171.Y + DataCardKey171.Height + 4
                   - ErrorMessage171:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -16502,7 +15605,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Fuel card in the truck?");
+                          Set(varPhotoItem, "Fuel card in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -16512,7 +15615,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -16521,14 +15624,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -16693,22 +15796,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblPlugWireHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The plug-in lead for the fridge unit is on the truck; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey173.Y + DataCardKey173.Height + 2
                   - DataCardValue173:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -16734,7 +15821,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblPlugWireHint.Y + lblPlugWireHint.Height + 4
+                        Y: =DataCardKey173.Y + DataCardKey173.Height + 4
                   - chkPlugWireNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -16760,7 +15847,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblPlugWireHint.Y + lblPlugWireHint.Height + 4
+                        Y: =DataCardKey173.Y + DataCardKey173.Height + 4
                   - ErrorMessage173:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -16823,7 +15910,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Fridge plug-in lead in the truck?");
+                          Set(varPhotoItem, "Fridge plug-in lead in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -16833,7 +15920,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fridge plug-in lead in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fridge plug-in lead in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -16842,14 +15929,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fridge plug-in lead in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fridge plug-in lead in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fridge plug-in lead in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fridge plug-in lead in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -17013,22 +16100,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblEngJackHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The jack with this truck's engraving is on the truck; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey175.Y + DataCardKey175.Height + 2
                   - DataCardValue175:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -17054,7 +16125,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblEngJackHint.Y + lblEngJackHint.Height + 4
+                        Y: =DataCardKey175.Y + DataCardKey175.Height + 4
                   - chkEngJackNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -17080,7 +16151,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblEngJackHint.Y + lblEngJackHint.Height + 4
+                        Y: =DataCardKey175.Y + DataCardKey175.Height + 4
                   - ErrorMessage175:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -17143,7 +16214,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Engraved jack in the truck?");
+                          Set(varPhotoItem, "Engraved jack in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -17153,7 +16224,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved jack in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved jack in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -17162,14 +16233,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved jack in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved jack in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved jack in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved jack in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -17333,22 +16404,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblEngWheelBraceHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The wheel brace with this truck's engraving is on the truck; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey177.Y + DataCardKey177.Height + 2
                   - DataCardValue177:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -17374,7 +16429,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblEngWheelBraceHint.Y + lblEngWheelBraceHint.Height + 4
+                        Y: =DataCardKey177.Y + DataCardKey177.Height + 4
                   - chkEngWheelBraceNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -17400,7 +16455,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblEngWheelBraceHint.Y + lblEngWheelBraceHint.Height + 4
+                        Y: =DataCardKey177.Y + DataCardKey177.Height + 4
                   - ErrorMessage177:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -17463,7 +16518,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Engraved wheel brace in the truck?");
+                          Set(varPhotoItem, "Engraved wheel brace in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -17473,7 +16528,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved wheel brace in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved wheel brace in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -17482,14 +16537,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved wheel brace in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved wheel brace in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved wheel brace in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved wheel brace in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -17653,22 +16708,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblEngPipeHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The pipe with this truck's engraving is on the truck; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey179.Y + DataCardKey179.Height + 2
                   - DataCardValue179:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -17694,7 +16733,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblEngPipeHint.Y + lblEngPipeHint.Height + 4
+                        Y: =DataCardKey179.Y + DataCardKey179.Height + 4
                   - chkEngPipeNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -17720,7 +16759,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblEngPipeHint.Y + lblEngPipeHint.Height + 4
+                        Y: =DataCardKey179.Y + DataCardKey179.Height + 4
                   - ErrorMessage179:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -17783,7 +16822,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Engraved pipe in the truck?");
+                          Set(varPhotoItem, "Engraved pipe in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -17793,7 +16832,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved pipe in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved pipe in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -17802,14 +16841,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved pipe in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved pipe in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved pipe in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved pipe in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -17973,22 +17012,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblEngTyreWinderHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The spare-tyre winder with this truck's engraving is on the truck; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey181.Y + DataCardKey181.Height + 2
                   - DataCardValue181:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -18014,7 +17037,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblEngTyreWinderHint.Y + lblEngTyreWinderHint.Height + 4
+                        Y: =DataCardKey181.Y + DataCardKey181.Height + 4
                   - chkEngTyreWinderNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -18040,7 +17063,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblEngTyreWinderHint.Y + lblEngTyreWinderHint.Height + 4
+                        Y: =DataCardKey181.Y + DataCardKey181.Height + 4
                   - ErrorMessage181:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -18103,7 +17126,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Engraved spare-tyre winder in the truck?");
+                          Set(varPhotoItem, "Engraved spare-tyre winder in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -18113,7 +17136,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved spare-tyre winder in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved spare-tyre winder in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -18122,14 +17145,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved spare-tyre winder in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved spare-tyre winder in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved spare-tyre winder in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved spare-tyre winder in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -18293,22 +17316,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblEngTrolleyHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The trolley with this truck's engraving is on the truck; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey183.Y + DataCardKey183.Height + 2
                   - DataCardValue183:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -18334,7 +17341,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblEngTrolleyHint.Y + lblEngTrolleyHint.Height + 4
+                        Y: =DataCardKey183.Y + DataCardKey183.Height + 4
                   - chkEngTrolleyNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -18360,7 +17367,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblEngTrolleyHint.Y + lblEngTrolleyHint.Height + 4
+                        Y: =DataCardKey183.Y + DataCardKey183.Height + 4
                   - ErrorMessage183:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -18423,7 +17430,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Engraved trolley in the truck?");
+                          Set(varPhotoItem, "Engraved trolley in truck");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -18433,7 +17440,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved trolley in the truck?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved trolley in truck")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -18442,14 +17449,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved trolley in the truck?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved trolley in truck")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved trolley in the truck?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved trolley in truck")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -18613,22 +17620,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblTruckFloorHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="The floor of the load area is clean with no holes or broken boards; take a photo."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey185.Y + DataCardKey185.Height + 2
                   - DataCardValue185:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -18654,7 +17645,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblTruckFloorHint.Y + lblTruckFloorHint.Height + 4
+                        Y: =DataCardKey185.Y + DataCardKey185.Height + 4
                   - chkTruckFloorNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -18680,7 +17671,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblTruckFloorHint.Y + lblTruckFloorHint.Height + 4
+                        Y: =DataCardKey185.Y + DataCardKey185.Height + 4
                   - ErrorMessage185:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -18743,7 +17734,7 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =Set(varPhotoType, "Accessory");
-                          Set(varPhotoItem, "Load floor clean and undamaged?");
+                          Set(varPhotoItem, "Load floor clean and undamaged");
                           Navigate(scrPhotos)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
@@ -18753,7 +17744,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =14
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Load floor clean and undamaged?")), "Retake photo", "Take photo")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Load floor clean and undamaged")), "Retake photo", "Take photo")
                         Visible: =!varReviewing
                         Width: =150
                         X: =30
@@ -18762,14 +17753,14 @@ Screens:
                       Control: Label@2.5.1
                       Properties:
                         BorderStyle: =BorderStyle.None
-                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Load floor clean and undamaged?")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Load floor clean and undamaged")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
                         PaddingBottom: =12
                         PaddingLeft: =0
                         Size: =13
-                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Load floor clean and undamaged?")), "✓ Photo taken", "Photo required")
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Load floor clean and undamaged")), "✓ Photo taken", "Photo required")
                         Visible: =!varReviewing
                         Width: =Parent.Width - 210
                         X: =192
@@ -18966,22 +17957,6 @@ Screens:
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblAccidentDamageHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Walk around the truck. If you find new damage, tick Yes, describe it and take a photo of each spot."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =DataCardKey187.Y + DataCardKey187.Height + 2
                   - DataCardValue187:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -19007,7 +17982,7 @@ Screens:
                         Text: ="Yes"
                         Width: =110
                         X: =30
-                        Y: =lblAccidentDamageHint.Y + lblAccidentDamageHint.Height + 4
+                        Y: =DataCardKey187.Y + DataCardKey187.Height + 4
                   - chkAccidentDamageNo:
                       Control: Classic/CheckBox@2.1.0
                       Properties:
@@ -19033,7 +18008,7 @@ Screens:
                         Text: ="No"
                         Width: =110
                         X: =150
-                        Y: =lblAccidentDamageHint.Y + lblAccidentDamageHint.Height + 4
+                        Y: =DataCardKey187.Y + DataCardKey187.Height + 4
                   - ErrorMessage187:
                       Control: Label@2.5.1
                       MetadataKey: ErrorMessage
@@ -19107,7 +18082,7 @@ Screens:
                         RadiusTopRight: =10
                         Size: =14
                         Text: ="Add photo"
-                        Visible: =!varReviewing && DataCardValue187.Value
+                        Visible: =!varReviewing && chkAccidentDamageNo.Value
                         Width: =150
                         X: =30
                         Y: =ErrorMessage187.Y + ErrorMessage187.Height - 4
@@ -19123,7 +18098,7 @@ Screens:
                         PaddingLeft: =0
                         Size: =13
                         Text: =If(CountRows(Filter(colPhotos, Type = "Accident")) > 0, CountRows(Filter(colPhotos, Type = "Accident")) & " photo(s) taken", "Take a photo of each spot")
-                        Visible: =!varReviewing && DataCardValue187.Value
+                        Visible: =!varReviewing && chkAccidentDamageNo.Value
                         Width: =Parent.Width - 210
                         X: =192
                         Y: =ErrorMessage187.Y + ErrorMessage187.Height - 4
@@ -19138,9 +18113,9 @@ Screens:
                   DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'AccidentDamageCmt')
                   MaxLength: =DataSourceInfo([@'Fleet Checklist'], DataSourceInfo.MaxLength, 'AccidentDamageCmt')
-                  Required: =DataCardValue187.Value && !varReviewing
-                  Update: =If(DataCardValue187.Value, DataCardValue188.Text, "")
-                  Visible: =DataCardValue187.Value
+                  Required: =chkAccidentDamageNo.Value && !varReviewing
+                  Update: =If(chkAccidentDamageNo.Value, DataCardValue188.Text, "")
+                  Visible: =chkAccidentDamageNo.Value
                   Width: =Parent.Width
                   WidthFit: =true
                   X: =0
@@ -19184,7 +18159,7 @@ Screens:
                         DisabledFill: =RGBA(242, 242, 241, 0)
                         DisplayMode: =Parent.DisplayMode
                         Font: =Font.'Segoe UI'
-                        HintText: ="Describe the damage"
+                        HintText: ="Say what is wrong"
                         HoverBorderColor: =RGBA(8, 144, 144, 1)
                         HoverColor: =RGBA(50, 49, 48, 1)
                         HoverFill: =RGBA(255, 255, 255, 1)
@@ -19287,7 +18262,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DisplayName: |-
-                    ="Truck photos: front, rear, left and right"
+                    ="Truck photos: front, rear, left, right"
                   Visible: =!varReviewing
                   Width: =Parent.Width
                   WidthFit: =true
@@ -19306,27 +18281,11 @@ Screens:
                         Height: =34
                         PaddingLeft: =0
                         Text: |-
-                          ="Truck photos: front, rear, left and right"
+                          ="Truck photos: front, rear, left, right"
                         Width: =Parent.Width - 60
                         Wrap: =true
                         X: =30
                         Y: =18
-                  - lblProfilePhotosHint:
-                      Control: Label@2.5.1
-                      Properties:
-                        AutoHeight: =true
-                        BorderStyle: =BorderStyle.None
-                        Color: =RGBA(96, 108, 118, 1)
-                        Font: =Font.'Segoe UI'
-                        Height: =24
-                        PaddingLeft: =0
-                        PaddingTop: =0
-                        Size: =12
-                        Text: ="Stand back and take one photo of each side so the whole truck is in the picture."
-                        Width: =Parent.Width - 60
-                        Wrap: =true
-                        X: =30
-                        Y: =lblProfilePhotosTitle.Y + lblProfilePhotosTitle.Height + 2
                   - btnProfilePhotosFront:
                       Control: Classic/Button@2.2.0
                       Properties:
@@ -19357,7 +18316,7 @@ Screens:
                         Visible: =!varReviewing
                         Width: =(Parent.Width - 68) / 2
                         X: =30
-                        Y: =lblProfilePhotosHint.Y + lblProfilePhotosHint.Height + 8
+                        Y: =lblProfilePhotosTitle.Y + lblProfilePhotosTitle.Height + 8
                   - btnProfilePhotosRear:
                       Control: Classic/Button@2.2.0
                       Properties:
@@ -19388,7 +18347,7 @@ Screens:
                         Visible: =!varReviewing
                         Width: =(Parent.Width - 68) / 2
                         X: =30 + 1 * ((Parent.Width - 68) / 2 + 8)
-                        Y: =lblProfilePhotosHint.Y + lblProfilePhotosHint.Height + 8
+                        Y: =lblProfilePhotosTitle.Y + lblProfilePhotosTitle.Height + 8
                   - btnProfilePhotosLeft:
                       Control: Classic/Button@2.2.0
                       Properties:
@@ -19419,7 +18378,7 @@ Screens:
                         Visible: =!varReviewing
                         Width: =(Parent.Width - 68) / 2
                         X: =30
-                        Y: =lblProfilePhotosHint.Y + lblProfilePhotosHint.Height + 8 + 56
+                        Y: =lblProfilePhotosTitle.Y + lblProfilePhotosTitle.Height + 8 + 56
                   - btnProfilePhotosRight:
                       Control: Classic/Button@2.2.0
                       Properties:
@@ -19450,7 +18409,7 @@ Screens:
                         Visible: =!varReviewing
                         Width: =(Parent.Width - 68) / 2
                         X: =30 + 1 * ((Parent.Width - 68) / 2 + 8)
-                        Y: =lblProfilePhotosHint.Y + lblProfilePhotosHint.Height + 8 + 56
+                        Y: =lblProfilePhotosTitle.Y + lblProfilePhotosTitle.Height + 8 + 56
                   - lblProfilePhotosPhoto:
                       Control: Label@2.5.1
                       Properties:
@@ -19465,7 +18424,7 @@ Screens:
                         Visible: =!varReviewing
                         Width: =Parent.Width - 60
                         X: =30
-                        Y: =lblProfilePhotosHint.Y + lblProfilePhotosHint.Height + 8 + 112
+                        Y: =lblProfilePhotosTitle.Y + lblProfilePhotosTitle.Height + 8 + 112
             - crdHdrRemarks:
                 Control: TypedDataCard@1.0.7
                 Variant: BlankCard
@@ -20252,16 +19211,16 @@ Screens:
                             "Answer: " & DataCardKey118.Text,
                         chkCabinCleanNo.Value && IsBlank(DataCardValue119.Text),
                             "Comment needed: " & DataCardKey118.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cabin clean and tidy?")),
-                            "Photo needed: Cabin clean and tidy?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Cabin clean and tidy")),
+                            "Photo needed: Cabin clean and tidy",
                         !DataCardValue120.Value && !chkMatsNo.Value,
                             "Answer: " & DataCardKey120.Text,
                         chkMatsNo.Value && IsBlank(DataCardValue121.Text),
                             "Comment needed: " & DataCardKey120.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Floor mats in the cabin?")),
-                            "Photo needed: Floor mats in the cabin?",
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Net / Gross weight plate")),
-                            "Photo needed: Net / Gross weight plate",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Floor mats in cabin")),
+                            "Photo needed: Floor mats in cabin",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Net / gross weight plate photo")),
+                            "Photo needed: Net / gross weight plate photo",
                         !DataCardValue24.Value && !chkBatteryWaterNo.Value,
                             "Answer: " & DataCardKey24.Text,
                         chkBatteryWaterNo.Value && IsBlank(DataCardValue124.Text),
@@ -20410,8 +19369,8 @@ Screens:
                             "Answer: " & DataCardKey161.Text,
                         chkAccSpareTyreNo.Value && IsBlank(DataCardValue162.Text),
                             "Comment needed: " & DataCardKey161.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Spare tyre in the truck?")),
-                            "Photo needed: Spare tyre in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Spare tyre in truck")),
+                            "Photo needed: Spare tyre in truck",
                         !DataCardValue163.Value && !chkAccTyreConditionNo.Value,
                             "Answer: " & DataCardKey163.Text,
                         chkAccTyreConditionNo.Value && IsBlank(DataCardValue164.Text),
@@ -20444,74 +19403,74 @@ Screens:
                             "Answer: " & DataCardKey165.Text,
                         chkAccFireExtinguisherNo.Value && IsBlank(DataCardValue166.Text),
                             "Comment needed: " & DataCardKey165.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted and serviceable?")),
-                            "Photo needed: Fire extinguisher mounted and serviceable?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fire extinguisher mounted and serviceable")),
+                            "Photo needed: Fire extinguisher mounted and serviceable",
                         !DataCardValue167.Value && !chkAccFirstAidKitNo.Value,
                             "Answer: " & DataCardKey167.Text,
                         chkAccFirstAidKitNo.Value && IsBlank(DataCardValue168.Text),
                             "Comment needed: " & DataCardKey167.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in the truck?")),
-                            "Photo needed: First aid kit in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "First aid kit in truck")),
+                            "Photo needed: First aid kit in truck",
                         !DataCardValue169.Value && !chkTrafficConesNo.Value,
                             "Answer: " & DataCardKey169.Text,
                         chkTrafficConesNo.Value && IsBlank(DataCardValue170.Text),
                             "Comment needed: " & DataCardKey169.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Traffic cones in the truck?")),
-                            "Photo needed: Traffic cones in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Traffic cones in truck")),
+                            "Photo needed: Traffic cones in truck",
                         !DataCardValue171.Value && !chkFuelCardNo.Value,
                             "Answer: " & DataCardKey171.Text,
                         chkFuelCardNo.Value && IsBlank(DataCardValue172.Text),
                             "Comment needed: " & DataCardKey171.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in the truck?")),
-                            "Photo needed: Fuel card in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fuel card in truck")),
+                            "Photo needed: Fuel card in truck",
                         (IsBlank(varTruckInfo) || varTruckInfo.TruckType.Value = "Frozen") && !DataCardValue173.Value && !chkPlugWireNo.Value,
                             "Answer: " & DataCardKey173.Text,
                         (IsBlank(varTruckInfo) || varTruckInfo.TruckType.Value = "Frozen") && chkPlugWireNo.Value && IsBlank(DataCardValue174.Text),
                             "Comment needed: " & DataCardKey173.Text,
-                        (IsBlank(varTruckInfo) || varTruckInfo.TruckType.Value = "Frozen") && IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fridge plug-in lead in the truck?")),
-                            "Photo needed: Fridge plug-in lead in the truck?",
+                        (IsBlank(varTruckInfo) || varTruckInfo.TruckType.Value = "Frozen") && IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Fridge plug-in lead in truck")),
+                            "Photo needed: Fridge plug-in lead in truck",
                         !DataCardValue175.Value && !chkEngJackNo.Value,
                             "Answer: " & DataCardKey175.Text,
                         chkEngJackNo.Value && IsBlank(DataCardValue176.Text),
                             "Comment needed: " & DataCardKey175.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved jack in the truck?")),
-                            "Photo needed: Engraved jack in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved jack in truck")),
+                            "Photo needed: Engraved jack in truck",
                         !DataCardValue177.Value && !chkEngWheelBraceNo.Value,
                             "Answer: " & DataCardKey177.Text,
                         chkEngWheelBraceNo.Value && IsBlank(DataCardValue178.Text),
                             "Comment needed: " & DataCardKey177.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved wheel brace in the truck?")),
-                            "Photo needed: Engraved wheel brace in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved wheel brace in truck")),
+                            "Photo needed: Engraved wheel brace in truck",
                         !DataCardValue179.Value && !chkEngPipeNo.Value,
                             "Answer: " & DataCardKey179.Text,
                         chkEngPipeNo.Value && IsBlank(DataCardValue180.Text),
                             "Comment needed: " & DataCardKey179.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved pipe in the truck?")),
-                            "Photo needed: Engraved pipe in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved pipe in truck")),
+                            "Photo needed: Engraved pipe in truck",
                         !DataCardValue181.Value && !chkEngTyreWinderNo.Value,
                             "Answer: " & DataCardKey181.Text,
                         chkEngTyreWinderNo.Value && IsBlank(DataCardValue182.Text),
                             "Comment needed: " & DataCardKey181.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved spare-tyre winder in the truck?")),
-                            "Photo needed: Engraved spare-tyre winder in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved spare-tyre winder in truck")),
+                            "Photo needed: Engraved spare-tyre winder in truck",
                         !DataCardValue183.Value && !chkEngTrolleyNo.Value,
                             "Answer: " & DataCardKey183.Text,
                         chkEngTrolleyNo.Value && IsBlank(DataCardValue184.Text),
                             "Comment needed: " & DataCardKey183.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved trolley in the truck?")),
-                            "Photo needed: Engraved trolley in the truck?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Engraved trolley in truck")),
+                            "Photo needed: Engraved trolley in truck",
                         !DataCardValue185.Value && !chkTruckFloorNo.Value,
                             "Answer: " & DataCardKey185.Text,
                         chkTruckFloorNo.Value && IsBlank(DataCardValue186.Text),
                             "Comment needed: " & DataCardKey185.Text,
-                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Load floor clean and undamaged?")),
-                            "Photo needed: Load floor clean and undamaged?",
+                        IsEmpty(Filter(colPhotos, Type = "Accessory" && Item = "Load floor clean and undamaged")),
+                            "Photo needed: Load floor clean and undamaged",
                         !DataCardValue187.Value && !chkAccidentDamageNo.Value,
                             "Answer: " & DataCardKey187.Text,
-                        DataCardValue187.Value && IsBlank(DataCardValue188.Text),
+                        chkAccidentDamageNo.Value && IsBlank(DataCardValue188.Text),
                             "Comment needed: " & DataCardKey187.Text,
-                        DataCardValue187.Value && CountRows(Filter(colPhotos, Type = "Accident")) = 0,
-                            "Photo needed: Any new dents or cracks?",
+                        chkAccidentDamageNo.Value && CountRows(Filter(colPhotos, Type = "Accident")) = 0,
+                            "Photo needed: No new dents or cracks",
                         IsEmpty(Filter(colPhotos, Type = "Profile" && Item = "Front")),
                             "Photo needed: Front",
                         IsEmpty(Filter(colPhotos, Type = "Profile" && Item = "Rear")),

@@ -288,7 +288,7 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 
 - **Checklist:**
   - Reordered: Licence and Odometer, then Cabin, Electrical, Tyres, Leaks and Fluid Levels, and the rest.
-  - Rewritten with a plain check instruction under every item. The wording goes to Pawan for approval (`files/Fleet Checklist - item wording for approval.md`).
+  - Reworded so each item states what the driver should see, in 7 words at most, e.g. "Battery water at top mark". There's no instruction line, by the user's decision after a first, longer draft. The wording goes to Pawan for approval (`files/Fleet Checklist - item wording for approval.md`).
   - Every item is now an explicit **Yes / No** with a comment on No. This replaces the 19 Nov rule where ticked = Yes and unticked = No.
   - Added: licence, four glass checks (2-seat cabin), net/gross weight photo, accident imagery, and truck profile photos (Front, Rear, Left, Right).
   - Money Box removed. One photo per tyre.

@@ -369,11 +369,11 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 ### Meeting changes (23 Nov 2026, from the review with Pawan's team)
 
 **Fleet Checklist.** The screen is now generated, not hand-edited:
-- [scripts/checklist_items.json](scripts/checklist_items.json) is the single source for item order, section, wording, check instruction, photo rule, who answers it, weekly flag and truck-type rule.
+- [scripts/checklist_items.json](scripts/checklist_items.json) is the single source for item order, section, wording, optional instruction line (empty for now), photo rule, who answers it, weekly flag and truck-type rule.
 - `py -3 -I scripts/build_pretrip_screen.py screens` rebuilds [screens/scrPreTrip.txt](screens/scrPreTrip.txt). **Change the JSON and regenerate; don't edit scrPreTrip.txt by hand.**
 - The proposed wording for Pawan's approval is in [files/Fleet Checklist - item wording for approval.md](<files/Fleet Checklist - item wording for approval.md>). The screen shows each column's SharePoint display name, so approved wording is applied by renaming columns (`scripts/create_checklist_v2_columns.js`, rename mode), with no app change.
 - Sections in order: Truck and driver, Licence and Odometer, Cabin (ends with the Net/Gross weight photo), Electrical, Tyres, Leaks and Fluid Levels, Body and Chassis, Safety, General, Accessory Checks, Accident Imagery, Truck Profiles (Front, Rear, Left, Right photos), Other comments.
-- Every item has a Yes and a No box, with nothing ticked at the start. The comment box opens on No (on Yes for Accident damage) and is saved to the item's own `<field>Cmt` column. Submit waits until every item is answered, every comment is filled, Site and odometer are filled, and every required photo is taken.
+- Every item has a Yes and a No box, with nothing ticked at the start. Each item is worded as what the driver should see, 7 words at most (for example "No new dents or cracks"), so No always means a problem. The comment box opens on No (Accident damage also needs photos on No) and is saved to the item's own `<field>Cmt` column. Submit waits until every item is answered, every comment is filled, Site and odometer are filled, and every required photo is taken.
 - New columns: `LicenceValid`, `CabGlassFront`, `CabGlassRear`, `CabGlassDriver`, `CabGlassPassenger`, `CabTilt`, `AccidentDamage`, plus the `…Cmt` columns (`scripts/create_checklist_v2_columns.js`).
 - Hidden but kept in SharePoint: Money Box (`field_48`), the old windscreens item (`field_24`) and the per-section comment columns.
 - The truck number is locked to the truck chosen on Home, and Site is required.
