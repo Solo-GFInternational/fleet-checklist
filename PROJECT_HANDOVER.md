@@ -309,7 +309,7 @@ Setup: run `scripts/setup_app_permissions.js` (groups, permission levels, list p
 
 **Changes for the Nov 2026 release (not built yet):**
 - **Wait for the whole run.** Drivers are add-only, so the app creates the trip already Open, then its stops, then any invoice photos still waiting. The fixed 1-minute Delay becomes a *Do until* that checks every 2 minutes, for up to about an hour, until the run's stops reach `NoofStops` and its distinct invoice photos (Fleet Photos, `RunKey`) reach `NoofInvoicePhotos`. The app writes `NoofStops`, `NoofInvoicePhotos` and `RunKey` onto the trip when it creates it.
-- **Invoice PDF.** The flow builds one HTML page of the run's invoice photos (newest copy per stop and slot), converts it to PDF with OneDrive *Convert file*, and saves it in Fleet Photos / Run sheet PDFs. It attaches the PDF to the email when it's under about 19 MB, and links it either way.
+- **Invoice PDF.** The flow builds one HTML page of the run's invoice photos (newest copy per stop and slot), writes it to Fleet Photos / Run sheet PDFs, converts it to PDF inside SharePoint (*Send an HTTP request to SharePoint*, `_api/v2.0/drives/<library>/root:/<file>:/content?format=pdf`), saves the PDF there and deletes the HTML. No OneDrive connection is needed (the flow owner's OneDrive connection didn't work, 24 Nov 2026). It attaches the PDF to the email when it's under about 19 MB, and links it either way.
 - **Update item** moves out of the *For each* over the stops. Today it updates the same run once per stop.
 - **Optional failure email** to the flow owner.
 

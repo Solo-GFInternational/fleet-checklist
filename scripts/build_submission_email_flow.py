@@ -6,8 +6,9 @@ It reads the package you exported from Power Automate (My flows -> ... -> Export
 and writes a new package with the changes built in:
   - the fixed 1-minute Delay becomes a "Wait for the run" loop that checks every few minutes until
     every stop (NoofStops) and every invoice photo (NoofInvoicePhotos, by RunKey) has arrived;
-  - an invoice PDF (one page per photo, newest copy of each) is built with OneDrive "Convert file",
-    saved in the photo library, attached to your email when it's small enough and linked from it;
+  - an invoice PDF (one page per photo, newest copy of each) is built as an HTML file in the PDF
+    folder and converted to PDF with "Send an HTTP request to SharePoint" (no OneDrive connection
+    needed), saved in the photo library, attached to your email when it's small enough and linked;
   - "Update item" moves out of the per-stop For each, so the run is marked as emailed once;
   - optional: an email to you if the flow fails.
 Your trigger, trigger conditions, stops table, ⚠ flags and email layout are kept as they are.
@@ -18,19 +19,18 @@ e.g.
     py -3 -I scripts/build_submission_email_flow.py files "files/Solo_20261123212614.zip"
 
 Then in Power Automate: My flows -> Import -> Import Package (Legacy) -> upload the new .zip ->
-for the flow choose "Create as new", for each connection pick yours (incl. OneDrive for Business)
+for the flow choose "Create as new", for each connection (SharePoint, Office 365 Outlook) pick yours
 -> Import. Turn the new flow on and the old one off. Details: files/Setup guide - Nov 2026 release.md.
 
 The exported package and the new one contain your site address, list IDs and email address:
 keep both out of git (files/.gitignore ignores *.zip).
 """
-import copy
 import io
 import json
 import os
 import sys
-import uuid
 import zipfile
+from urllib.parse import quote
 
 # =====================================================================================
 # INPUTS: check these before running
@@ -44,23 +44,20 @@ PHOTOS_LIBRARY = 'Fleet Photos'
 # 3. Folder for the saved PDFs, as a path inside the site. The first part is the library's
 #    URL name, which can differ from its title: open the library and look at the address bar,
 #    e.g. ".../sites/<site>/Fleet%20Photos/Forms/AllItems.aspx" -> "/Fleet Photos". The folder
-#    itself must exist (setup guide step 1.6).
+#    itself must exist (setup guide step 1.6). The temporary HTML file is made here too, converted
+#    to PDF, then deleted.
 PDF_FOLDER = '/Fleet Photos/Run sheet PDFs'
 
-# 4. Folder in the flow owner's OneDrive for the temporary HTML file (create it first).
-ONEDRIVE_FOLDER = '/Run sheet PDFs'
+# 4. Who is told if the flow fails. Leave '' to leave the failure email out.
+FAILURE_EMAIL = 'Solomone.Tuilagivou@gfinternational.com.au'
 
-# 5. Who is told if the flow fails. Leave '' to leave the failure email out.
-FAILURE_EMAIL = ''
-
-# 6. Timing and size (defaults are fine).
+# 5. Timing and size (defaults are fine).
 WAIT_MINUTES = 2        # minutes between checks for stops and photos
 MAX_CHECKS = 30         # give up waiting after this many checks (30 x 2 min = about an hour)
 ATTACH_LIMIT_MB = 19    # attach the PDF only below this size; bigger ones are linked
 # =====================================================================================
 
 SP_API = '/providers/Microsoft.PowerApps/apis/shared_sharepointonline'
-OD_API = '/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness'
 O365_API = '/providers/Microsoft.PowerApps/apis/shared_office365'
 AUTH = "@parameters('$authentication')"
 
@@ -71,10 +68,12 @@ def sp(op, params, after):
                        'host': {'apiId': SP_API, 'connectionName': 'shared_sharepointonline', 'operationId': op}}}
 
 
-def od(op, params, after):
-    return {'type': 'OpenApiConnection', 'runAfter': after,
-            'inputs': {'parameters': params, 'authentication': AUTH,
-                       'host': {'apiId': OD_API, 'connectionName': 'shared_onedriveforbusiness', 'operationId': op}}}
+def sp_http(site, uri, after, json_reply=True):
+    """SharePoint "Send an HTTP request to SharePoint" (GET)."""
+    params = {'dataset': site, 'parameters/method': 'GET', 'parameters/uri': uri}
+    if json_reply:
+        params['parameters/headers'] = {'Accept': 'application/json'}
+    return sp('HttpRequest', params, after)
 
 
 def ok(name):
@@ -183,6 +182,15 @@ def main():
             top[name] = a
 
     # ---- PDF steps inside the Condition, between the stops table and the email
+    lib_part, _, in_lib = PDF_FOLDER.strip('/').partition('/')
+    if not lib_part:
+        fail('PDF_FOLDER must start with the library, e.g. "/Fleet Photos/Run sheet PDFs"')
+    in_lib_enc = ('/' + quote(in_lib)) if in_lib else ''
+    lib_q = PHOTOS_LIBRARY.replace("'", "''")
+    http_libs = sp_http(site, '_api/v2.0/drives?$select=id,name', ok('Create_HTML'))
+    convert = sp_http(site, f"_api/v2.0/drives/@{{first(body('Find_photo_library'))?['id']}}/root:{in_lib_enc}/"
+                            f"@{{outputs('Create_HTML')?['body/Name']}}:/content?format=pdf", ok('Find_photo_library'),
+                      json_reply=False)
     seen_key = "concat(items('For_each_file')?['StopKey'], '|', items('For_each_file')?['Item'])"
     pdf = {
         'Get_invoice_files': sp('GetFileItems', {'dataset': site, 'table': PHOTOS_LIBRARY,
@@ -219,15 +227,21 @@ def main():
                         "body('Get_invoice_content')?['$content'], '\" style=\"width:100%\"></div>')}")}}}},
         'Close_HTML': {'type': 'AppendToStringVariable', 'runAfter': ok('For_each_invoice'),
                        'inputs': {'name': 'html', 'value': '</body></html>'}},
-        'Create_HTML': od('CreateFile', {'folderPath': ONEDRIVE_FOLDER, 'name': f"@{{concat('Run_', {run_id}, '.html')}}",
+        'Create_HTML': sp('CreateFile', {'dataset': site, 'folderPath': PDF_FOLDER,
+                                         'name': f"@{{concat('Run_', {run_id}, '.html')}}",
                                          'body': "@variables('html')"}, ok('Close_HTML')),
-        'Convert_to_PDF': od('ConvertFile', {'id': "@outputs('Create_HTML')?['body/Id']", 'type': 'PDF'}, ok('Create_HTML')),
+        # the photo library's drive ID, then SharePoint's own file conversion (?format=pdf)
+        'Get_site_libraries': http_libs,
+        'Find_photo_library': {'type': 'Query', 'runAfter': ok('Get_site_libraries'),
+                               'inputs': {'from': "@body('Get_site_libraries')?['value']",
+                                          'where': f"@equals(item()?['name'], '{lib_q}')"}},
+        'Convert_to_PDF': convert,
         'Save_PDF': sp('CreateFile', {
             'dataset': site, 'folderPath': PDF_FOLDER,
             'name': (f"@{{concat('RunSheet_', replace(coalesce(triggerOutputs()?['body/Title'], 'NoTruck'), ' ', ''), '_', "
                      f"formatDateTime(triggerOutputs()?['body/RunDate'], 'yyyyMMdd'), '_', {run_id}, '.pdf')}}"),
             'body': "@body('Convert_to_PDF')"}, ok('Convert_to_PDF')),
-        'Delete_HTML': od('DeleteFile', {'id': "@outputs('Create_HTML')?['body/Id']"}, ok('Save_PDF')),
+        'Delete_HTML': sp('DeleteFile', {'dataset': site, 'id': "@outputs('Create_HTML')?['body/Id']"}, ok('Save_PDF')),
     }
 
     email = cond['Send_an_email_(V2)']
@@ -264,26 +278,14 @@ def main():
                                       'emailMessage/Importance': 'High'}}}
     df['actions'] = top
 
-    # ---- OneDrive connection + new flow name
+    # ---- new flow name (only SharePoint and Outlook connections: both already in the export)
+    if 'shared_office365' not in props['connectionReferences']:
+        fail('the export has no Office 365 Outlook connection: is this the Run Sheet - Submission email export?')
     props['displayName'] = FLOW_NAME
-    props['connectionReferences']['shared_onedriveforbusiness'] = {
-        'connectionName': 'shared-onedriveforbu-placeholder', 'source': 'Embedded', 'id': OD_API,
-        'tier': 'NotSpecified', 'apiName': 'onedriveforbusiness'}
-    api_res, conn_res = str(uuid.uuid4()), str(uuid.uuid4())
-    sp_api_res = apis['shared_sharepointonline']
     res = manifest['resources']
-    res[api_res] = copy.deepcopy(res[sp_api_res])
-    res[api_res].update(id=OD_API, name='shared_onedriveforbusiness')
-    res[api_res]['details'] = {'displayName': 'OneDrive for Business'}
-    res[conn_res] = copy.deepcopy(res[conns['shared_sharepointonline']])
-    res[conn_res]['details'] = {'displayName': 'OneDrive for Business connection'}
-    res[conn_res]['dependsOn'] = [api_res]
     flow_res = next(k for k, v in res.items() if v.get('type') == 'Microsoft.Flow/flows')
-    res[flow_res]['dependsOn'] += [api_res, conn_res]
     res[flow_res]['details']['displayName'] = FLOW_NAME
     res[flow_res]['suggestedCreationType'] = 'New'
-    apis['shared_onedriveforbusiness'] = api_res
-    conns['shared_onedriveforbusiness'] = conn_res
     manifest['details']['displayName'] = FLOW_NAME
 
     files[defs[0]] = json.dumps(flow, ensure_ascii=False).encode('utf-8')
@@ -301,7 +303,7 @@ def main():
         fh.write(buf.getvalue())
     print(f'wrote {out}')
     print(f'  waits up to {MAX_CHECKS} checks x {WAIT_MINUTES} min; attaches PDFs under {ATTACH_LIMIT_MB} MB')
-    print(f'  photo library "{PHOTOS_LIBRARY}", PDFs to "{PDF_FOLDER}", OneDrive temp folder "{ONEDRIVE_FOLDER}"')
+    print(f'  photo library "{PHOTOS_LIBRARY}", HTML + PDFs in "{PDF_FOLDER}" (converted in SharePoint, no OneDrive)')
     print('  failure email: ' + ('on' if FAILURE_EMAIL else 'off (FAILURE_EMAIL is empty)'))
 
 
