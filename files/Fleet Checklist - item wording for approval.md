@@ -31,16 +31,15 @@ For: Pawan (Fleet Operations). Each item is now a short statement of what the dr
 | # | Item (proposed wording) | Photo | Was |
 | -- | -- | -- | -- |
 | 1 | Cabin doors open, close and lock | – | Cabin Doors / Windows / Locks (Functional) |
-| 2 | Front windscreen free of cracks and chips | – | New |
-| 3 | Rear cabin window free of cracks | – | New |
-| 4 | Driver's window uncracked and winds freely | – | New |
-| 5 | Passenger's window uncracked and winds freely | – | New |
-| 6 | Mirrors clean, uncracked and adjusted | – | Rear Vision Mirrors / Immediate Vicinity Check Mirrors |
-| 7 | Both seat belts lock and release | – | Driver / Passenger Seat Belts (Functional) |
-| 8 | Dashboard gauges and warning lights working | – | Cabin Dashboard Gauges / Meters (Functional) |
-| 9 | Cabin clean and tidy | 1 photo | Cabin Cleanliness |
-| 10 | Floor mats in cabin | 1 photo | Mats Available |
-| 11 | Net / gross weight plate photo | 1 photo | New |
+| 2 | Front and rear windscreens free of cracks | – | Front / Rear Windscreens (Free of Cracks) |
+| 3 | Driver's window uncracked and winds freely | – | New |
+| 4 | Passenger's window uncracked and winds freely | – | New |
+| 5 | Mirrors clean, uncracked and adjusted | – | Rear Vision Mirrors / Immediate Vicinity Check Mirrors |
+| 6 | Both seat belts lock and release | – | Driver / Passenger Seat Belts (Functional) |
+| 7 | Dashboard gauges and warning lights working | – | Cabin Dashboard Gauges / Meters (Functional) |
+| 8 | Cabin clean and tidy | 1 photo | Cabin Cleanliness |
+| 9 | Floor mats in cabin | 1 photo | Mats Available |
+| 10 | Net / gross weight plate photo | 1 photo | New |
 
 ## Electrical
 
@@ -155,7 +154,6 @@ Drivers do not see these. A reviewer answers them when signing off a checklist; 
 
 ## Removed
 
-- Front / Rear Windscreens (Free of Cracks)
 - Money Box Available in the Truck
 - The comment box at the end of each section (replaced by per-item comments)
 

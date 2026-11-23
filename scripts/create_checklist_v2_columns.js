@@ -2,7 +2,7 @@
   Fleet Checklist v2 columns (checklist redesign, Nov 2026). Source: scripts/checklist_items.json.
 
   MODE = 'create' (run this first):
-    - creates the new Yes/No choice columns: LicenceValid, CabGlassFront, CabGlassRear, CabGlassDriver,
+    - creates the new Yes/No choice columns: LicenceValid, CabGlassDriver,
       CabGlassPassenger, CabTilt, AccidentDamage (same type as the existing field_N choice columns:
       Choice, choices Yes / No, no default)
     - indexes field_1 (Truck No) if it isn't indexed yet; the weekly cabin-tilt / greasing check
@@ -44,9 +44,7 @@
     ['field_50', "Odometer reading (km)", false],
     ['NextServiceDue', "Next service due (km)", false],
     ['field_23', "Cabin doors open, close and lock", false],
-    ['field_24', "Front / rear windscreens free of cracks", false],
-    ['CabGlassFront', "Front windscreen free of cracks and chips", true],
-    ['CabGlassRear', "Rear cabin window free of cracks", true],
+    ['field_24', "Front and rear windscreens free of cracks", false],
     ['CabGlassDriver', "Driver's window uncracked and winds freely", true],
     ['CabGlassPassenger', "Passenger's window uncracked and winds freely", true],
     ['field_25', "Mirrors clean, uncracked and adjusted", false],

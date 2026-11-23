@@ -386,8 +386,8 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 - The proposed wording for Pawan's approval is in [files/Fleet Checklist - item wording for approval.md](<files/Fleet Checklist - item wording for approval.md>). The screen shows each column's SharePoint display name, so approved wording is applied by renaming columns (`scripts/create_checklist_v2_columns.js`, rename mode), with no app change.
 - Sections in order: Truck and driver, Licence and Odometer, Cabin (ends with the Net/Gross weight photo), Electrical, Tyres, Leaks and Fluid Levels, Body and Chassis, Safety, General, Accessory Checks, Accident Imagery, Truck Profiles (Front, Rear, Left, Right photos), Other comments.
 - Every item has a Yes and a No box, with nothing ticked at the start. Each item is worded as what the driver should see, 7 words at most (for example "No new dents or cracks"), so No always means a problem. The comment box (inside the item's card) opens on No (Accident damage also needs photos on No). Each No is saved as a row in the **GF Fleet Checklist Defects** list after the checklist is saved, not in a column. Submit waits until every item is answered, every comment is filled, Site and odometer are filled, and every required photo is taken.
-- New columns: `LicenceValid`, `CabGlassFront`, `CabGlassRear`, `CabGlassDriver`, `CabGlassPassenger`, `CabTilt`, `AccidentDamage` (`scripts/create_checklist_v2_columns.js`). The earlier `…Cmt` comment columns were dropped for the Defects list; if any were already created they are unused and can be deleted.
-- Hidden but kept in SharePoint: Money Box (`field_48`), the old windscreens item (`field_24`) and the per-section comment columns.
+- New columns: `LicenceValid`, `CabGlassDriver`, `CabGlassPassenger`, `CabTilt`, `AccidentDamage` (`scripts/create_checklist_v2_columns.js`). The earlier `…Cmt` comment columns were dropped for the Defects list; if any were already created they are unused and can be deleted.
+- Hidden but kept in SharePoint: Money Box (`field_48`) and the per-section comment columns.
 - The truck number is locked to the truck chosen on Home, and Site is required.
 - **Weekly reviewer-only items:** Cabin tilting (`CabTilt`) and Underneath greasing (`field_44`). Drivers don't see them. When a reviewer opens a checklist, the app looks for a signed-off checklist for the same truck in the same Monday–Sunday week with that item = Yes. If one exists, it shows "… inspection conducted on {date} by {name}" (from that record's `field_55` / `field_54`) instead of the boxes.
 - **Photos:** a retake replaces the earlier photo. There is one photo per tyre (count from the Trucks list, 6 if the truck isn't listed), four profile photos and any number of accident photos.
@@ -538,7 +538,7 @@ For each script:
 
 | # | Script | What it does |
 | --- | --- | --- |
-| 1 | `scripts/create_checklist_v2_columns.js` (`MODE = 'create'`) | New Yes/No columns on Fleet Checklist (licence, 4 glass, cabin tilt, accident); index on Truck No |
+| 1 | `scripts/create_checklist_v2_columns.js` (`MODE = 'create'`) | New Yes/No columns on Fleet Checklist (licence, driver's and passenger's side windows, cabin tilt, accident); index on Truck No |
 | 2 | `scripts/create_checklist_defects.js` | **GF Fleet Checklist Defects** list (one row per item answered No), drivers add-only, own items |
 | 3 | `scripts/create_trucks_list.js` | **GF Fleet Trucks** list: type, tyres, due dates, last odometer. Paste Krish's truck table into `CSV_TEXT` if you have it, or add trucks later |
 | 4 | `scripts/create_runsheet_v2_columns.js` | `NoofInvoices` on Run Sheet Details; `RunKey` / `StopKey` on the Fleet Photos library |

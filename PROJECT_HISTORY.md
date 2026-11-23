@@ -291,7 +291,7 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
   - Reworded so each item states what the driver should see, in 7 words at most, e.g. "Battery water at top mark". There's no instruction line, by the user's decision after a first, longer draft. The wording goes to Pawan for approval (`files/Fleet Checklist - item wording for approval.md`).
   - Every item is now an explicit **Yes / No** with a comment on No. This replaces the 19 Nov rule where ticked = Yes and unticked = No.
   - Comments on No moved from one `<field>Cmt` column per item to a child list, **GF Fleet Checklist Defects** (one row per No, Status Open/Fixed), by the user's decision: 60-odd mostly empty columns on Fleet Checklist, and the list doubles as a defect register.
-  - Added: licence, four glass checks (2-seat cabin), net/gross weight photo, accident imagery, and truck profile photos (Front, Rear, Left, Right).
+  - Added: licence, glass checks for the driver's and passenger's side windows (the existing windscreens item stays), net/gross weight photo, accident imagery, and truck profile photos (Front, Rear, Left, Right).
   - Money Box removed. One photo per tyre.
   - Cabin tilting and underneath greasing are weekly and reviewer-only. The app shows "inspection conducted on … by …" when the truck was already done that week (user's design).
   - Truck number locked once set on Home. Site required.
