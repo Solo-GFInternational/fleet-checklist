@@ -44,11 +44,11 @@ The paper forms come from SOP **DC/16.0 Driver Responsibilities & Customer Servi
 | Screen | Purpose | Who |
 | --- | --- | --- |
 | `scrHome` | Truck scan or entry, role-based menu, offline banners | Everyone registered |
-| `scrPreTrip` | Fleet pre-trip checklist (40 items in 6 sections, accessory checks, odometer, next service due). Also the manager's approval view | Driver, then Reviewer |
-| `scrPhotos` | Camera for odometer, accessory and defect photos | Driver |
-| `scrRunSheet` | Trip details, unlimited delivery stops, return to CD. Works offline | Driver |
+| `scrPreTrip` | Fleet pre-trip checklist: Yes/No with comments, sections from Licence and Odometer to Truck Profiles, photos. Also the manager's approval view and the weekly reviewer-only checks. **Generated** from `scripts/checklist_items.json` by `scripts/build_pretrip_screen.py` | Driver, then Reviewer |
+| `scrPhotos` | Camera for checklist photos (odometer, items, tyres, profiles, accident, defects) | Driver |
+| `scrRunSheet` | Trip details, unlimited delivery stops with invoice photos, return to CD. Works offline | Driver |
 | `scrDecl` | Fitness for Driving declaration (14 statements) | Driver |
-| `scrReview` | Review and sign-off of checklists, run sheets and declarations | Reviewer, Admin |
+| `scrReview` | Review and sign-off of checklists, run sheets and declarations, plus the driver's **Daily review** (stars) | Reviewer, Admin |
 | `scrUsers` | Manage users: add a person, change their role, remove access (calls the `SyncAppUser` flow) | Admin |
 | `scrTest` | Scratch screen for testing controls | Developer |
 
@@ -60,13 +60,14 @@ The paper forms come from SOP **DC/16.0 Driver Responsibilities & Customer Servi
 
 1. Open the app and scan or enter the truck number on **Home**.
 2. Complete the **Fitness for Driving declaration**. Each statement is a checkbox. Any unticked statement makes Comments required and tells the driver to contact their supervisor.
-3. Complete the **Pre-Trip Checklist**. Tick each item that is checked and in order, add comments for defects, and enter the odometer and next service due.
-4. Take the required **photos**: the odometer and all 18 accessory items, plus any defects. Submit stays locked until these are taken. Photos upload through the `SaveFleetPhoto` flow after the checklist is saved.
+3. Complete the **Pre-Trip Checklist**, in order: Licence and Odometer, Cabin, Electrical, Tyres, Leaks and Fluid Levels, then the rest. Each item has a short instruction and a **Yes / No**. A **No** needs a comment. The truck number is locked to the truck chosen on Home, and Site is required.
+4. Take the required **photos**: odometer, accessory items, one per tyre, net/gross weight plate, four truck profiles (Front, Rear, Left, Right), and accident photos if there's new damage. Submit stays locked until everything is answered and photographed. Photos upload through the `SaveFleetPhoto` flow after the checklist is saved.
+5. If they were reviewed yesterday, Home shows their **Daily review** (stars and comment) until they tap "Got it".
 
 ### 2. During the run: driver
 
-1. Open the **Run Sheet**. **Trip** tab: date, truck, partner, area, number of invoices, start mileage, expected departure and arrival.
-2. **Stops** tab: add a row per delivery stop (time out, destination, cartons, arrival, truck temperature, operation start and finish, HSEQ comments). There is no limit on stops; a run is typically around 70.
+1. Open the **Run Sheet**. **Trip** tab: date, truck, partner, area, number of invoices, start mileage, actual departure time. Times are typed as HH : MM.
+2. **Stops** tab: add a row per delivery stop (arrival time, destination, cartons, number of invoices with a photo of each, truck temperature, operation start and finish, HSEQ comments, time left the premises). Invoice photos are taken with the in-app camera and upload whenever there's signal. There is no limit on stops; a run is typically around 70.
 3. **Return to CD** tab: time returned, end mileage, balance invoice, temperatures, quantity on balance delivery, invoice balanced with cashier. Then submit.
 4. Without signal, everything is saved on the phone. **Upload** (or the next save once there is signal) sends the trip, then its stops, then the submission.
 
@@ -79,6 +80,9 @@ On **Review**, each tab has a *Waiting* / *All* filter:
 - **Checklists**: the Fleet Controller / Site Engineer / Manager sets **Approval for Delivery** and **Send for Repairs**.
 - **Run sheets**: the Team Leader checks the trip and its stops (temperatures above −15 °C or unloading over 15 minutes show in red) and selects **Verify run sheet**.
 - **Declarations**: the Supervisor follows up any "No" answer (shown in red) and selects **Sign off**.
+- **Daily review**: pick a date, then give each driver who submitted anything that day 1–5 stars and an optional comment.
+
+When a reviewer opens a checklist, they also answer the weekly **Cabin tilting** and **Underneath greasing** checks. If that truck was already done this week, the app shows when and by whom instead.
 
 ### 4. Data
 
@@ -91,7 +95,9 @@ Everything is stored in SharePoint lists on the Fleet Operations site:
 | Run Sheet Details | Delivery stop (linked by `RunSheetID`) |
 | Driver Declarations | Declaration |
 | GF Fleet Checklist App Users | App user and role |
-| Photo library | Checklist photo (odometer, accessory, defect) |
+| GF Fleet Trucks | Truck (type Ambient/Frozen, number of tyres) |
+| GF Fleet Daily Reviews | Driver's star score for a day |
+| Photo library | Checklist and invoice photo |
 
 ---
 
@@ -158,14 +164,16 @@ Hiding buttons in the app is not security. **SharePoint list permissions are the
 | 16–18 Nov | Accessory checks with per-item photos (Krish Kumar's request) and Next Service Due added. Run sheet rebuilt as one offline-capable screen with unlimited stops. Delegation fix (`RunSheetID`) |
 | 19 Nov | Declaration screen, Review / sign-off screen and checkbox answers. Role-based access through the App Users list |
 | 20 Nov | Project put under git and published to GitHub |
+| 23 Nov | App-managed user access; drivers add-only. Meeting with Pawan's team: checklist reordered with Yes/No and comments, new photo items, Trucks list, weekly reviewer checks, run sheet invoice photos and HH : MM times, Daily review stars |
 
 ### Next steps
 
-1. Paste the latest screens, refresh data sources and test on a phone, including airplane mode for the run sheet.
-2. Confirm reviewer roles with Krish, then share and publish the app.
-3. Confirm the photo library used by `SaveFleetPhoto`; add photos to the review screen.
-4. Outstanding reporting emails: Trade Issue, Run Sheet Submission, Fleet Checklist export to Excel/MEX.
-5. Decide whether the checklist and declaration also need to work offline.
-6. Pilot with one or two trucks for a week, then roll out.
+1. Run the new setup scripts, add the new lists as data sources, update `SaveFleetPhoto`, paste the screens, and test on a phone (including airplane mode for the run sheet).
+2. Build the `RunSheetSubmitted` flow (invoice PDF email).
+3. Send the checklist wording to Pawan for approval; get the truck table from Krish and samples of the COF and blower labels.
+4. Confirm reviewer roles with Krish, then share and publish the app.
+5. Outstanding reporting emails: Trade Issue, Fleet Checklist export to Excel/MEX.
+6. Phase 2: monthly Driver Assessment with an Assessor role.
+7. Pilot with one or two trucks for a week, then roll out.
 
 See [PROJECT_HISTORY.md](PROJECT_HISTORY.md) for the full log and [PROJECT_HANDOVER.md](PROJECT_HANDOVER.md) for technical detail.

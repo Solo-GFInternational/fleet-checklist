@@ -210,7 +210,7 @@ Screens:
                         BorderThickness: =1
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =0
-                        Height: =Max(1, Min(CountRows(Self.AllItems), 5)) * 68
+                        Height: =Max(1, Min(CountRows(Self.AllItems), 5)) * 120
                         Items: |-
                           =If(Len(Trim(txtUsersSearch.Text)) >= 3,
                               Filter(
@@ -219,7 +219,7 @@ Screens:
                         OnSelect: |-
                           =UpdateContext({ctxPerson: {Name: ThisItem.DisplayName, Email: Lower(ThisItem.UserPrincipalName)}})
                         TemplatePadding: =0
-                        TemplateSize: =68
+                        TemplateSize: =120
                         Visible: =IsBlank(ctxPerson) && Len(Trim(txtUsersSearch.Text)) >= 3
                       Children:
                         - lblUsersPersonName:
@@ -228,27 +228,31 @@ Screens:
                               Color: =RGBA(31, 41, 51, 1)
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
-                              Height: =26
+                              Height: =44
                               OnSelect: =Select(Parent)
                               PaddingLeft: =0
                               Size: =15
+                              VerticalAlign: =VerticalAlign.Top
+                              Wrap: =true
                               Text: =ThisItem.DisplayName
                               Width: =Parent.TemplateWidth - 32
                               X: =16
-                              Y: =8
+                              Y: =12
                         - lblUsersPersonDetail:
                             Control: Label@2.5.1
                             Properties:
                               Color: =RGBA(96, 108, 118, 1)
                               Font: =Font.'Segoe UI'
-                              Height: =24
+                              Height: =52
                               OnSelect: =Select(Parent)
                               PaddingLeft: =0
                               Size: =12
+                              VerticalAlign: =VerticalAlign.Top
+                              Wrap: =true
                               Text: =Coalesce(ThisItem.JobTitle, "") & If(IsBlank(ThisItem.JobTitle), "", "  ·  ") & Lower(ThisItem.UserPrincipalName)
                               Width: =Parent.TemplateWidth - 32
                               X: =16
-                              Y: =36
+                              Y: =58
                         - recUsersPeopleSeparator:
                             Control: Rectangle@2.3.0
                             Properties:
@@ -264,10 +268,12 @@ Screens:
                         BorderStyle: =BorderStyle.None
                         Color: =RGBA(96, 108, 118, 1)
                         Font: =Font.'Segoe UI'
+                        AutoHeight: =true
                         Height: =32
                         PaddingLeft: =0
                         Size: =13
                         Text: ="No one found. Check the spelling, or try their surname."
+                        Wrap: =true
                         Visible: =IsBlank(ctxPerson) && Len(Trim(txtUsersSearch.Text)) >= 3 && IsEmpty(galUsersPeople.AllItems)
                   - conUsersPicked:
                       Control: GroupContainer@1.5.0
@@ -277,7 +283,7 @@ Screens:
                         BorderThickness: =2
                         Fill: =RGBA(226, 243, 242, 1)
                         FillPortions: =0
-                        Height: =72
+                        Height: =Max(72, 72 + (lblUsersPicked.Height - 60))
                         LayoutAlignItems: =LayoutAlignItems.Center
                         LayoutDirection: =LayoutDirection.Horizontal
                         LayoutGap: =8
@@ -294,6 +300,7 @@ Screens:
                         - lblUsersPicked:
                             Control: Label@2.5.1
                             Properties:
+                              AutoHeight: =true
                               BorderStyle: =BorderStyle.None
                               Color: =RGBA(31, 41, 51, 1)
                               FillPortions: =1
@@ -408,12 +415,12 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =0
-                        Height: =Max(1, CountRows(Self.AllItems)) * 76
+                        Height: =Max(1, CountRows(Self.AllItems)) * 120
                         Items: =SortByColumns('GF Fleet Checklist App Users', "ActiveYN", SortOrder.Descending, "Title", SortOrder.Ascending)
                         OnSelect: |-
                           =UpdateContext({ctxEdit: ThisItem})
                         TemplatePadding: =0
-                        TemplateSize: =76
+                        TemplateSize: =120
                       Children:
                         - lblUsersRowName:
                             Control: Label@2.5.1
@@ -421,10 +428,12 @@ Screens:
                               Color: =If(ThisItem.ActiveYN, RGBA(31, 41, 51, 1), RGBA(96, 108, 118, 1))
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
-                              Height: =26
+                              Height: =44
                               OnSelect: =Select(Parent)
                               PaddingLeft: =0
                               Size: =15
+                              VerticalAlign: =VerticalAlign.Top
+                              Wrap: =true
                               Text: =ThisItem.Title
                               Width: =Parent.TemplateWidth - 76
                               X: =16
@@ -434,14 +443,16 @@ Screens:
                             Properties:
                               Color: =If(ThisItem.ActiveYN, RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
                               Font: =Font.'Segoe UI'
-                              Height: =24
+                              Height: =52
                               OnSelect: =Select(Parent)
                               PaddingLeft: =0
                               Size: =12
+                              VerticalAlign: =VerticalAlign.Top
+                              Wrap: =true
                               Text: =ThisItem.AppRole.Value & If(ThisItem.ActiveYN, "", "  ·  Access removed") & "  ·  " & ThisItem.UserEmail
                               Width: =Parent.TemplateWidth - 76
                               X: =16
-                              Y: =40
+                              Y: =58
                         - icoUsersRowOpen:
                             Control: Classic/Icon@2.5.0
                             Properties:
@@ -456,7 +467,7 @@ Screens:
                               PaddingTop: =12
                               Width: =48
                               X: =Parent.TemplateWidth - 60
-                              Y: =(76 - 48) / 2
+                              Y: =(Parent.TemplateHeight - 48) / 2
                         - recUsersRowSeparator:
                             Control: Rectangle@2.3.0
                             Properties:
@@ -503,10 +514,12 @@ Screens:
                         BorderStyle: =BorderStyle.None
                         Color: =RGBA(96, 108, 118, 1)
                         Font: =Font.'Segoe UI'
+                        AutoHeight: =true
                         Height: =24
                         PaddingLeft: =0
                         Size: =13
                         Text: =ctxEdit.UserEmail
+                        Wrap: =true
                   - lblUsersEditStatus:
                       Control: Label@2.5.1
                       Properties:

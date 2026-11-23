@@ -11,7 +11,13 @@ Screens:
             IfError(SaveData(colRoleCache, "fcRole"); true, false),
             IfError(LoadData(colRoleCache, "fcRole", true); true, false);
             Set(varRole, Coalesce(First(colRoleCache).Role, "None")));
-        IfError(LoadData(colLocalRun, "fcRunHeader", true); true, false)
+        IfError(LoadData(colLocalRun, "fcRunHeader", true); true, false);
+        IfError(LoadData(colSeenReview, "fcSeenReview", true); true, false);
+        If(Connection.Connected && varRole in ["Driver", "Reviewer", "Admin"],
+            With({me: Lower(User().Email), tday: Today(), wk: DateAdd(Today(), -7, TimeUnit.Days)},
+                Set(varLastDailyReview, IfError(
+                    First(Sort(Filter('GF Fleet Daily Reviews', DriverEmail = me && ReviewDate >= wk && ReviewDate < tday && ActiveYN = true), ReviewDate, SortOrder.Descending)),
+                    Blank()))))
     Children:
       - conHome:
           Control: GroupContainer@1.5.0
@@ -141,6 +147,84 @@ Screens:
                   PaddingRight: =16
                   PaddingTop: =16
                 Children:
+                  - conHomeDailyReview:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(226, 243, 242, 1)
+                        FillPortions: =0
+                        Height: =32 + lblHomeDailyReview.Height + If(lblHomeDailyComment.Visible, lblHomeDailyComment.Height + 10, 0) + 10 + 48
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =10
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"] && !IsBlank(varLastDailyReview) && IsBlank(LookUp(colSeenReview, ID = varLastDailyReview.ID))
+                      Children:
+                        - lblHomeDailyReview:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 112, 112, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              PaddingLeft: =0
+                              Size: =15
+                              Text: |-
+                                =With({n: Coalesce(varLastDailyReview.Stars, 0)}, "Your daily review for " & Text(varLastDailyReview.ReviewDate, "dd mmm") & ": " & Left("★★★★★", n) & Left("☆☆☆☆☆", 5 - n))
+                              Wrap: =true
+                        - lblHomeDailyComment:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =24
+                              PaddingLeft: =0
+                              Size: =13
+                              Text: =varLastDailyReview.Comment
+                              Visible: =!IsBlank(varLastDailyReview.Comment)
+                              Wrap: =true
+                        - btnHomeDailySeen:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(8, 144, 144, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =2
+                              Color: =RGBA(0, 112, 112, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(255, 255, 255, 1)
+                              DisabledFill: =RGBA(186, 198, 200, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              HoverColor: =RGBA(0, 112, 112, 1)
+                              HoverFill: =RGBA(226, 243, 242, 1)
+                              OnSelect: |-
+                                =Collect(colSeenReview, {ID: varLastDailyReview.ID});
+                                IfError(SaveData(colSeenReview, "fcSeenReview"); true, false)
+                              PressedBorderColor: =RGBA(0, 112, 112, 1)
+                              PressedColor: =RGBA(0, 112, 112, 1)
+                              PressedFill: =RGBA(226, 243, 242, 1)
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Size: =15
+                              Text: ="Got it"
                   - conHomeTruck:
                       Control: GroupContainer@1.5.0
                       Variant: AutoLayout
@@ -370,7 +454,7 @@ Screens:
                         HoverColor: =RGBA(0, 112, 112, 1)
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
-                          =IfError(LoadData(colLocalRun, "fcRunHeader", true); LoadData(colRunStops, "fcRunStops", true); true, false);
+                          =IfError(LoadData(colLocalRun, "fcRunHeader", true); LoadData(colRunStops, "fcRunStops", true); LoadData(colInvoicePhotos, "fcRunPhotos", true); true, false);
                           If(!IsEmpty(colLocalRun),
                               Set(varRunSheet, First(colLocalRun)),
                               Clear(colRunStops);

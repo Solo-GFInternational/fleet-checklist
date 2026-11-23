@@ -160,7 +160,10 @@ Screens:
                         Height: =28
                         PaddingLeft: =0
                         Size: =14
-                        Text: ="What is this photo of?"
+                        Text: |-
+                          =If(IsBlank(varPhotoItem), "What is this photo of?", "Photo of: " & varPhotoItem)
+                        Wrap: =true
+                        AutoHeight: =true
                   - drpPhotoType:
                       Control: Classic/DropDown@2.3.1
                       Properties:
@@ -187,6 +190,7 @@ Screens:
                         SelectionColor: =RGBA(255, 255, 255, 1)
                         SelectionFill: =RGBA(8, 144, 144, 1)
                         Size: =15
+                        Visible: =IsBlank(varPhotoItem)
                   - txtPhotoItem:
                       Control: Classic/TextInput@2.3.2
                       Properties:
@@ -209,6 +213,7 @@ Screens:
                         RadiusTopLeft: =8
                         RadiusTopRight: =8
                         Size: =15
+                        Visible: =IsBlank(varPhotoItem)
                   - lblCameraHint:
                       Control: Label@2.5.1
                       Properties:
@@ -292,10 +297,16 @@ Screens:
                               Size: =15
                               Text: ="Take photo"
                               OnSelect: |-
-                                =Collect(colPhotos, {Img: camCheck.Stream, Type: drpPhotoType.Selected.Value, Item: txtPhotoItem.Text});
-                                Reset(txtPhotoItem);
-                                Notify("Photo added", NotificationType.Success);
-                                If(varPhotoType = "Accessory", Set(varPhotoType, Blank()); Set(varPhotoItem, Blank()); Back())
+                                =If(IsBlank(varPhotoItem),
+                                    Collect(colPhotos, {Img: camCheck.Stream, Type: drpPhotoType.Selected.Value, Item: txtPhotoItem.Text});
+                                    Reset(txtPhotoItem);
+                                    Notify("Photo added", NotificationType.Success),
+                                    RemoveIf(colPhotos, Type = varPhotoType && Item = varPhotoItem);
+                                    Collect(colPhotos, {Img: camCheck.Stream, Type: varPhotoType, Item: varPhotoItem});
+                                    Notify("Photo saved", NotificationType.Success);
+                                    Set(varPhotoType, Blank());
+                                    Set(varPhotoItem, Blank());
+                                    Back())
                         - btnSwitchCam:
                             Control: Classic/Button@2.2.0
                             Properties:

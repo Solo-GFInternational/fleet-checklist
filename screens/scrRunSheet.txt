@@ -4,7 +4,8 @@ Screens:
       Fill: =RGBA(243, 246, 246, 1)
       LoadingSpinnerColor: =RGBA(8, 144, 144, 1)
       OnVisible: |-
-        =If(IsBlank(varRunSheet),
+        =If(IsEmpty(colInvoicePhotos), IfError(LoadData(colInvoicePhotos, "fcRunPhotos", true); true, false));
+        If(IsBlank(varRunSheet),
             UpdateContext({ctxTab: "Trip"}),
             If(IsEmpty(colRunStops) && !IsBlank(varRunSheet.ID) && Connection.Connected,
                 ClearCollect(colRunStops,
@@ -16,6 +17,7 @@ Screens:
                         StopOrder: ThisRecord.StopOrder,
                         TimeOut: ThisRecord.TimeOut,
                         NoofCtns: ThisRecord.NoofCtns,
+                        NoofInvoices: ThisRecord.NoofInvoices,
                         ArriveTime: ThisRecord.ArriveTime,
                         TruckTemp: ThisRecord.TruckTemp,
                         StartOpTime: ThisRecord.StartOpTime,
@@ -24,24 +26,31 @@ Screens:
                         HSEQComments: ThisRecord.HSEQComments}));
                 IfError(SaveData(colRunStops, "fcRunStops"); true, false));
             UpdateContext({ctxTab: If(varRunSheet.PendingSubmit, "End", "Stops")}));
-        UpdateContext({ctxReturned: Coalesce(varRunSheet.TimeReturned, ""), ctxInvBalanced: If(varRunSheet.PendingSubmit, varRunSheet.InvoiceBalanced, Blank()), ctxSyncing: false, ctxSyncError: ""});
-        UpdateContext({ctxEdit: Blank(), ctxTimeOut: "", ctxArrive: "", ctxStartOp: "", ctxCompleteOp: ""});
+        UpdateContext({ctxReturned: Coalesce(varRunSheet.TimeReturned, ""), ctxDeparture: Coalesce(varRunSheet.ExpectedDeparture, ""), ctxTruckLocked: !IsBlank(varTruck), ctxInvBalanced: If(varRunSheet.PendingSubmit, varRunSheet.InvoiceBalanced, Blank()), ctxSyncing: false, ctxSyncError: ""});
+        UpdateContext({ctxEdit: Blank(), ctxTimeOut: "", ctxArrive: "", ctxStartOp: "", ctxCompleteOp: "", ctxCamSlot: 0, ctxCamShot: Blank()});
+        UpdateContext({ctxStopKey: With({o: First(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && !(StopKey in colRunStops.LocalKey)))}, Coalesce(o.StopKey, Text(GUID())))});
+        Reset(txtStopArriveHH);
+        Reset(txtStopArriveMM);
         Reset(txtStopDestination);
-        Reset(txtStopTimeOut);
         Reset(txtStopCartons);
-        Reset(txtStopArrive);
+        Reset(txtStopInvoices);
         Reset(txtStopTruckTemp);
-        Reset(txtStopStartOp);
-        Reset(txtStopCompleteOp);
+        Reset(txtStopStartOpHH);
+        Reset(txtStopStartOpMM);
+        Reset(txtStopCompleteOpHH);
+        Reset(txtStopCompleteOpMM);
         Reset(txtStopComments);
+        Reset(txtStopTimeOutHH);
+        Reset(txtStopTimeOutMM);
         Reset(txtRunTruck);
         Reset(txtRunPartner);
         Reset(txtRunArea);
         Reset(txtRunInvoices);
         Reset(txtRunStartMileage);
-        Reset(txtRunExpDeparture);
-        Reset(txtRunExpArrival);
-        Reset(txtEndReturned);
+        Reset(txtRunDepartureHH);
+        Reset(txtRunDepartureMM);
+        Reset(txtEndReturnedHH);
+        Reset(txtEndReturnedMM);
         Reset(txtEndMileage);
         Reset(txtEndBalanceInvoice);
         Reset(txtEndAnalogTemp);
@@ -320,7 +329,8 @@ Screens:
                         RadiusBottomRight: =12
                         RadiusTopLeft: =12
                         RadiusTopRight: =12
-                        Visible: =!IsBlank(varRunSheet) && varRunSheet.PendingSubmit
+                        Visible: |-
+                          =!IsBlank(varRunSheet) && (varRunSheet.PendingSubmit || !IsEmpty(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && !Uploaded && StopKey in colRunStops.LocalKey)))
                       Children:
                         - lblRunSyncStatus:
                             Control: Label@2.5.1
@@ -335,9 +345,10 @@ Screens:
                               PaddingLeft: =0
                               Size: =13
                               Text: |-
-                                =If(!Connection.Connected, "You're offline. Your run sheet is saved on this phone. Tap Upload now when you have signal.",
-                                    ctxSyncing, "Uploading…",
-                                    "Your run sheet hasn't been sent yet. Tap Upload now." & If(IsBlank(ctxSyncError), "", " " & ctxSyncError))
+                                =With({n: CountRows(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && !Uploaded && StopKey in colRunStops.LocalKey))},
+                                    If(!Connection.Connected, "You're offline. Your run sheet is saved on this phone. Tap Upload now when you have signal.",
+                                        ctxSyncing, "Uploading…",
+                                        Trim(If(varRunSheet.PendingSubmit, "Your run sheet hasn't been sent yet. Tap Upload now.", "") & If(n > 0, " " & n & If(n = 1, " invoice photo is", " invoice photos are") & " waiting to upload.", "") & If(IsBlank(ctxSyncError), "", " " & ctxSyncError))))
                               Wrap: =true
                         - btnRunSync:
                             Control: Classic/Button@2.2.0
@@ -358,63 +369,84 @@ Screens:
                               HoverColor: =RGBA(255, 255, 255, 1)
                               HoverFill: =RGBA(0, 112, 112, 1)
                               OnSelect: |-
-                                =If(Connection.Connected && !IsBlank(varRunSheet) && varRunSheet.PendingSubmit && !ctxSyncing,
+                                =If(Connection.Connected && !IsBlank(varRunSheet) && !ctxSyncing,
                                     UpdateContext({ctxSyncing: true, ctxSyncError: ""});
                                     Clear(colSyncErrors);
-                                    If(IsBlank(varRunSheet.ID),
-                                        IfError(
-                                            With({r: Patch('Run Sheets', Defaults('Run Sheets'), {
-                                                    Title: varRunSheet.Title,
-                                                    RunDate: varRunSheet.RunDate,
-                                                    DateofDrive: varRunSheet.DateofDrive,
-                                                    Driver: varRunSheet.DriverName,
-                                                    DriverName: varRunSheet.DriverName,
-                                                    Partner: varRunSheet.Partner,
-                                                    Area: varRunSheet.Area,
-                                                    NoofInvoices: varRunSheet.NoofInvoices,
-                                                    StartMileage: varRunSheet.StartMileage,
-                                                    ExpectedDeparture: varRunSheet.ExpectedDeparture,
-                                                    ExpectedArrival: varRunSheet.ExpectedArrival,
-                                                    TimeReturned: varRunSheet.TimeReturned,
-                                                    EndMileage: varRunSheet.EndMileage,
-                                                    BalanceInvoice: varRunSheet.BalanceInvoice,
-                                                    AnalogTemp_x002e_: varRunSheet.AnalogTemp,
-                                                    TemponPlugIn: varRunSheet.PlugInTemp,
-                                                    QtyonBalanceRecovery: varRunSheet.BalanceQty,
-                                                    InvoiceBalanced: varRunSheet.InvoiceBalanced,
-                                                    Status: {Value: "Open"},
-                                                    ActiveYes_x002f_No: true
-                                                })},
-                                                Set(varRunSheet, Patch(varRunSheet, {ID: r.ID, Synced: true})));
-                                            ClearCollect(colLocalRun, varRunSheet);
-                                            IfError(SaveData(colLocalRun, "fcRunHeader"); true, false);
-                                            true,
-                                            Collect(colSyncErrors, {Msg: "Trip: " & FirstError.Message});
-                                            false));
-                                    If(!IsBlank(varRunSheet.ID),
-                                        ClearCollect(colStopsToSync, Filter(colRunStops, IsBlank(ID)));
-                                        ForAll(colStopsToSync As s,
+                                    ClearCollect(colPhotosToSync, Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && !Uploaded && StopKey in colRunStops.LocalKey));
+                                    ForAll(colPhotosToSync As p,
+                                        With({s: LookUp(colRunStops, LocalKey = p.StopKey)},
                                             IfError(
-                                                With({r: Patch('Run Sheet Details', Defaults('Run Sheet Details'), {
-                                                        Title: s.Title,
-                                                        RunSheet: {Id: varRunSheet.ID, Value: Text(varRunSheet.ID)},
-                                                        RunSheetID: varRunSheet.ID,
-                                                        StopOrder: s.StopOrder,
-                                                        TimeOut: s.TimeOut,
-                                                        NoofCtns: s.NoofCtns,
-                                                        ArriveTime: s.ArriveTime,
-                                                        TruckTemp: s.TruckTemp,
-                                                        StartOpTime: s.StartOpTime,
-                                                        CompleteOpTime: s.CompleteOpTime,
-                                                        Duration: s.Duration,
-                                                        HSEQComments: s.HSEQComments,
-                                                        Active: true
+                                                'SaveFleetPhoto'.Run(
+                                                    varRunSheet.Title,
+                                                    "Invoice",
+                                                    "Stop " & s.StopOrder & " · Invoice " & p.Slot,
+                                                    Coalesce(s.ID, 0),
+                                                    "Run Sheet Details",
+                                                    {file: {name: "invoice.jpg", contentBytes: p.Img}},
+                                                    p.RunKey,
+                                                    p.StopKey);
+                                                Patch(colInvoicePhotos, LookUp(colInvoicePhotos, RunKey = p.RunKey && StopKey = p.StopKey && Slot = p.Slot && !Uploaded), {Img: Blank(), Uploaded: true}),
+                                                Collect(colSyncErrors, {Msg: "Invoice photo: " & FirstError.Message}))));
+                                    IfError(SaveData(colInvoicePhotos, "fcRunPhotos"); true, false);
+                                    If(varRunSheet.PendingSubmit,
+                                        If(IsBlank(varRunSheet.ID),
+                                            IfError(
+                                                With({r: Patch('Run Sheets', Defaults('Run Sheets'), {
+                                                        Title: varRunSheet.Title,
+                                                        RunDate: varRunSheet.RunDate,
+                                                        DateofDrive: varRunSheet.DateofDrive,
+                                                        Driver: varRunSheet.DriverName,
+                                                        DriverName: varRunSheet.DriverName,
+                                                        Partner: varRunSheet.Partner,
+                                                        Area: varRunSheet.Area,
+                                                        NoofInvoices: varRunSheet.NoofInvoices,
+                                                        StartMileage: varRunSheet.StartMileage,
+                                                        ExpectedDeparture: varRunSheet.ExpectedDeparture,
+                                                        TimeReturned: varRunSheet.TimeReturned,
+                                                        EndMileage: varRunSheet.EndMileage,
+                                                        BalanceInvoice: varRunSheet.BalanceInvoice,
+                                                        AnalogTemp_x002e_: varRunSheet.AnalogTemp,
+                                                        TemponPlugIn: varRunSheet.PlugInTemp,
+                                                        QtyonBalanceRecovery: varRunSheet.BalanceQty,
+                                                        InvoiceBalanced: varRunSheet.InvoiceBalanced,
+                                                        Status: {Value: "Open"},
+                                                        ActiveYes_x002f_No: true
                                                     })},
-                                                    Patch(colRunStops, LookUp(colRunStops, LocalKey = s.LocalKey), {ID: r.ID, Synced: true}));
+                                                    Set(varRunSheet, Patch(varRunSheet, {ID: r.ID, Synced: true})));
+                                                ClearCollect(colLocalRun, varRunSheet);
+                                                IfError(SaveData(colLocalRun, "fcRunHeader"); true, false);
                                                 true,
-                                                Collect(colSyncErrors, {Msg: "Stop " & s.StopOrder & ": " & FirstError.Message});
-                                                false)));
-                                    If(!IsBlank(varRunSheet.ID) && IsEmpty(Filter(colRunStops, IsBlank(ID))),
+                                                Collect(colSyncErrors, {Msg: "Trip: " & FirstError.Message});
+                                                false));
+                                        If(!IsBlank(varRunSheet.ID),
+                                            ClearCollect(colStopsToSync, Filter(colRunStops, IsBlank(ID)));
+                                            ForAll(colStopsToSync As s,
+                                                IfError(
+                                                    With({r: Patch('Run Sheet Details', Defaults('Run Sheet Details'), {
+                                                            Title: s.Title,
+                                                            RunSheet: {Id: varRunSheet.ID, Value: Text(varRunSheet.ID)},
+                                                            RunSheetID: varRunSheet.ID,
+                                                            StopOrder: s.StopOrder,
+                                                            TimeOut: s.TimeOut,
+                                                            NoofCtns: s.NoofCtns,
+                                                            NoofInvoices: s.NoofInvoices,
+                                                            ArriveTime: s.ArriveTime,
+                                                            TruckTemp: s.TruckTemp,
+                                                            StartOpTime: s.StartOpTime,
+                                                            CompleteOpTime: s.CompleteOpTime,
+                                                            Duration: s.Duration,
+                                                            HSEQComments: s.HSEQComments,
+                                                            Active: true
+                                                        })},
+                                                        Patch(colRunStops, LookUp(colRunStops, LocalKey = s.LocalKey), {ID: r.ID, Synced: true}));
+                                                    true,
+                                                    Collect(colSyncErrors, {Msg: "Stop " & s.StopOrder & ": " & FirstError.Message});
+                                                    false))));
+                                    If(varRunSheet.PendingSubmit && !IsBlank(varRunSheet.ID) && IsEmpty(Filter(colRunStops, IsBlank(ID))) && IsEmpty(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && !Uploaded && StopKey in colRunStops.LocalKey)),
+                                        IfError('RunSheetSubmitted'.Run(Text(varRunSheet.ID), varRunSheet.LocalKey); true,
+                                            Notify("Run sheet submitted, but the summary email didn't send. Your Team Leader can still see it.", NotificationType.Warning); false);
+                                        RemoveIf(colInvoicePhotos, RunKey = varRunSheet.LocalKey);
+                                        IfError(SaveData(colInvoicePhotos, "fcRunPhotos"); true, false);
                                         Set(varRunSheet, Blank());
                                         Clear(colRunStops);
                                         Clear(colLocalRun);
@@ -443,7 +475,7 @@ Screens:
                         DropShadow: =DropShadow.Light
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =0
-                        Height: =550 + (lblRunDriverInfo.Height - 22)
+                        Height: =550 + (lblRunDriverInfo.Height - 22) + If(lblRunTruckLocked.Visible, lblRunTruckLocked.Height + 8, 0)
                         LayoutAlignItems: =LayoutAlignItems.Stretch
                         LayoutDirection: =LayoutDirection.Vertical
                         LayoutGap: =8
@@ -502,6 +534,7 @@ Screens:
                               BorderThickness: =1
                               Color: =RGBA(31, 41, 51, 1)
                               Default: =Coalesce(varRunSheet.Title, varTruck, "")
+                              DisplayMode: =If(ctxTruckLocked, DisplayMode.View, DisplayMode.Edit)
                               Fill: =RGBA(255, 255, 255, 1)
                               FocusedBorderColor: =RGBA(8, 144, 144, 1)
                               FocusedBorderThickness: =2
@@ -516,6 +549,20 @@ Screens:
                               RadiusTopLeft: =8
                               RadiusTopRight: =8
                               Size: =15
+                        - lblRunTruckLocked:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =22
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: ="From the home screen. To change truck, go back to the home screen."
+                              Visible: =ctxTruckLocked
+                              Wrap: =true
                         - lblRunPartnerLabel:
                             Control: Label@2.5.1
                             Properties:
@@ -653,7 +700,7 @@ Screens:
                         DropShadow: =DropShadow.Light
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =0
-                        Height: =274 + (lblRunExpArrivalLabel.Height - 24) + (lblRunTimesHint.Height - 22)
+                        Height: =182 + (lblRunTimesHint.Height - 22)
                         LayoutAlignItems: =LayoutAlignItems.Stretch
                         LayoutDirection: =LayoutDirection.Vertical
                         LayoutGap: =8
@@ -679,8 +726,8 @@ Screens:
                               Height: =28
                               PaddingLeft: =0
                               Size: =16
-                              Text: ="Expected times (CD)"
-                        - lblRunExpDepartureLabel:
+                              Text: ="Actual times"
+                        - lblRunDepartureLabel:
                             Control: Label@2.5.1
                             Properties:
                               BorderStyle: =BorderStyle.None
@@ -690,62 +737,133 @@ Screens:
                               Height: =24
                               PaddingLeft: =0
                               Size: =14
-                              Text: ="Expected departure time"
-                        - txtRunExpDeparture:
-                            Control: Classic/TextInput@2.3.2
+                              Text: ="Actual departure time"
+                        - conRunDeparture:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
                             Properties:
-                              BorderColor: =RGBA(208, 216, 218, 1)
-                              BorderThickness: =1
-                              Color: =RGBA(31, 41, 51, 1)
-                              Default: =If(IsBlank(varRunSheet), "", varRunSheet.ExpectedDeparture)
-                              Fill: =RGBA(255, 255, 255, 1)
-                              FocusedBorderColor: =RGBA(8, 144, 144, 1)
-                              FocusedBorderThickness: =2
-                              Font: =Font.'Segoe UI'
+                              FillPortions: =0
                               Height: =52
-                              HintText: ="hh:mm, e.g. 07:30"
-                              HoverBorderColor: =RGBA(8, 144, 144, 1)
-                              PaddingLeft: =12
-                              PressedBorderColor: =RGBA(8, 144, 144, 1)
-                              RadiusBottomLeft: =8
-                              RadiusBottomRight: =8
-                              RadiusTopLeft: =8
-                              RadiusTopRight: =8
-                              Size: =15
-                        - lblRunExpArrivalLabel:
-                            Control: Label@2.5.1
-                            Properties:
-                              Wrap: =true
-                              AutoHeight: =true
-                              BorderStyle: =BorderStyle.None
-                              Color: =RGBA(31, 41, 51, 1)
-                              Font: =Font.'Segoe UI'
-                              FontWeight: =FontWeight.Semibold
-                              Height: =24
-                              PaddingLeft: =0
-                              Size: =14
-                              Text: ="Expected time of arrival back at CD"
-                        - txtRunExpArrival:
-                            Control: Classic/TextInput@2.3.2
-                            Properties:
-                              BorderColor: =RGBA(208, 216, 218, 1)
-                              BorderThickness: =1
-                              Color: =RGBA(31, 41, 51, 1)
-                              Default: =If(IsBlank(varRunSheet), "", varRunSheet.ExpectedArrival)
-                              Fill: =RGBA(255, 255, 255, 1)
-                              FocusedBorderColor: =RGBA(8, 144, 144, 1)
-                              FocusedBorderThickness: =2
-                              Font: =Font.'Segoe UI'
-                              Height: =52
-                              HintText: ="hh:mm, e.g. 16:00"
-                              HoverBorderColor: =RGBA(8, 144, 144, 1)
-                              PaddingLeft: =12
-                              PressedBorderColor: =RGBA(8, 144, 144, 1)
-                              RadiusBottomLeft: =8
-                              RadiusBottomRight: =8
-                              RadiusTopLeft: =8
-                              RadiusTopRight: =8
-                              Size: =15
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                            Children:
+                              - txtRunDepartureHH:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Actual departure time, hours"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxDeparture), "", First(Split(ctxDeparture, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="HH"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
+                              - lblRunDepartureColon:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =52
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    Size: =18
+                                    Text: =":"
+                                    Width: =12
+                              - txtRunDepartureMM:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Actual departure time, minutes"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxDeparture), "", Last(Split(ctxDeparture, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="MM"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
+                              - btnRunDepartureNow:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(8, 144, 144, 1)
+                                    BorderStyle: =BorderStyle.Solid
+                                    BorderThickness: =2
+                                    Color: =RGBA(0, 112, 112, 1)
+                                    DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                                    DisabledColor: =RGBA(255, 255, 255, 1)
+                                    DisabledFill: =RGBA(186, 198, 200, 1)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =52
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    HoverColor: =RGBA(0, 112, 112, 1)
+                                    HoverFill: =RGBA(226, 243, 242, 1)
+                                    OnSelect: |-
+                                      =UpdateContext({ctxDeparture: Text(Now(), "hh:mm")});
+                                      Reset(txtRunDepartureHH);
+                                      Reset(txtRunDepartureMM)
+                                    PressedBorderColor: =RGBA(0, 112, 112, 1)
+                                    PressedColor: =RGBA(0, 112, 112, 1)
+                                    PressedFill: =RGBA(226, 243, 242, 1)
+                                    RadiusBottomLeft: =10
+                                    RadiusBottomRight: =10
+                                    RadiusTopLeft: =10
+                                    RadiusTopRight: =10
+                                    Size: =15
+                                    Text: ="Now"
+                                    Width: =96
+                              - lblRunDepartureVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Height: =24
+                                    Text: |-
+                                      =With({h: Trim(txtRunDepartureHH.Text), m: Trim(txtRunDepartureMM.Text)},
+                                          If(IsBlank(h) && IsBlank(m), "",
+                                             IsMatch(h, "\d{1,2}") && IsMatch(m, "\d{1,2}") && Value(h) <= 23 && Value(m) <= 59,
+                                             Text(Value(h), "00") & ":" & Text(Value(m), "00"), "!"))
+                                    Visible: =false
+                                    Width: =60
                         - lblRunTimesHint:
                             Control: Label@2.5.1
                             Properties:
@@ -757,7 +875,8 @@ Screens:
                               Height: =22
                               PaddingLeft: =0
                               Size: =12
-                              Text: ="Use 24-hour time, e.g. 07:30 or 16:45."
+                              Text: |-
+                                ="Use 24-hour time: hours, then minutes, e.g. 07 : 30. Tap Now to fill in the time now."
                               Wrap: =true
                   - lblRunTimeError:
                       Control: Label@2.5.1
@@ -775,8 +894,9 @@ Screens:
                         PaddingLeft: =12
                         PaddingRight: =12
                         Size: =13
-                        Text: ="Times must be hh:mm in 24-hour time, e.g. 07:30."
-                        Visible: =ctxTab = "Trip" && !((IsBlank(Trim(txtRunExpDeparture.Text)) || IsMatch(Trim(txtRunExpDeparture.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtRunExpArrival.Text)) || IsMatch(Trim(txtRunExpArrival.Text), "([01]?\d|2[0-3]):[0-5]\d")))
+                        Text: |-
+                          ="Hours 0–23 and minutes 0–59, e.g. 07 : 30."
+                        Visible: =ctxTab = "Trip" && lblRunDepartureVal.Text = "!"
                         Wrap: =true
                   - conStopEntry:
                       Control: GroupContainer@1.5.0
@@ -785,7 +905,8 @@ Screens:
                         DropShadow: =DropShadow.Light
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =0
-                        Height: =880 + (lblStopDuration.Height - 24) + (lblStopCommentsLabel.Height - 24)
+                        Height: |-
+                          =1000 + If(galRunInvSlots.Visible, lblStopInvoicePhotosLabel.Height + galRunInvSlots.Height + 16, 0) + If(lblStopInvoiceMissing.Visible, lblStopInvoiceMissing.Height + 8, 0) + (lblStopDuration.Height - 24) + (lblStopCommentsLabel.Height - 24) + (lblStopTimeOutLabel.Height - 24)
                         LayoutAlignItems: =LayoutAlignItems.Stretch
                         LayoutDirection: =LayoutDirection.Vertical
                         LayoutGap: =8
@@ -812,6 +933,143 @@ Screens:
                               PaddingLeft: =0
                               Size: =16
                               Text: =If(IsBlank(ctxEdit), "Stop " & (Max(colRunStops, StopOrder) + 1), "Changing stop " & ctxEdit.StopOrder)
+                        - lblStopArriveLabel:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =24
+                              PaddingLeft: =0
+                              Size: =14
+                              Text: ="Arrive time *"
+                        - conStopArrive:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =52
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                            Children:
+                              - txtStopArriveHH:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Arrive time, hours"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxArrive), "", First(Split(ctxArrive, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="HH"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
+                              - lblStopArriveColon:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =52
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    Size: =18
+                                    Text: =":"
+                                    Width: =12
+                              - txtStopArriveMM:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Arrive time, minutes"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxArrive), "", Last(Split(ctxArrive, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="MM"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
+                              - btnStopArriveNow:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(8, 144, 144, 1)
+                                    BorderStyle: =BorderStyle.Solid
+                                    BorderThickness: =2
+                                    Color: =RGBA(0, 112, 112, 1)
+                                    DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                                    DisabledColor: =RGBA(255, 255, 255, 1)
+                                    DisabledFill: =RGBA(186, 198, 200, 1)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =52
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    HoverColor: =RGBA(0, 112, 112, 1)
+                                    HoverFill: =RGBA(226, 243, 242, 1)
+                                    OnSelect: |-
+                                      =UpdateContext({ctxArrive: Text(Now(), "hh:mm")});
+                                      Reset(txtStopArriveHH);
+                                      Reset(txtStopArriveMM)
+                                    PressedBorderColor: =RGBA(0, 112, 112, 1)
+                                    PressedColor: =RGBA(0, 112, 112, 1)
+                                    PressedFill: =RGBA(226, 243, 242, 1)
+                                    RadiusBottomLeft: =10
+                                    RadiusBottomRight: =10
+                                    RadiusTopLeft: =10
+                                    RadiusTopRight: =10
+                                    Size: =15
+                                    Text: ="Now"
+                                    Width: =96
+                              - lblStopArriveVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Height: =24
+                                    Text: |-
+                                      =With({h: Trim(txtStopArriveHH.Text), m: Trim(txtStopArriveMM.Text)},
+                                          If(IsBlank(h) && IsBlank(m), "",
+                                             IsMatch(h, "\d{1,2}") && IsMatch(m, "\d{1,2}") && Value(h) <= 23 && Value(m) <= 59,
+                                             Text(Value(h), "00") & ":" & Text(Value(m), "00"), "!"))
+                                    Visible: =false
+                                    Width: =60
                         - lblStopDestinationLabel:
                             Control: Label@2.5.1
                             Properties:
@@ -845,83 +1103,6 @@ Screens:
                               RadiusTopLeft: =8
                               RadiusTopRight: =8
                               Size: =15
-                        - lblStopTimeOutLabel:
-                            Control: Label@2.5.1
-                            Properties:
-                              BorderStyle: =BorderStyle.None
-                              Color: =RGBA(31, 41, 51, 1)
-                              Font: =Font.'Segoe UI'
-                              FontWeight: =FontWeight.Semibold
-                              Height: =24
-                              PaddingLeft: =0
-                              Size: =14
-                              Text: ="Time out"
-                        - conStopTimeOut:
-                            Control: GroupContainer@1.5.0
-                            Variant: AutoLayout
-                            Properties:
-                              FillPortions: =0
-                              Height: =52
-                              LayoutAlignItems: =LayoutAlignItems.Center
-                              LayoutDirection: =LayoutDirection.Horizontal
-                              LayoutGap: =8
-                              LayoutMinHeight: =16
-                              LayoutMinWidth: =16
-                            Children:
-                              - txtStopTimeOut:
-                                  Control: Classic/TextInput@2.3.2
-                                  Properties:
-                                    BorderColor: =RGBA(208, 216, 218, 1)
-                                    BorderThickness: =1
-                                    Color: =RGBA(31, 41, 51, 1)
-                                    Default: =ctxTimeOut
-                                    Fill: =RGBA(255, 255, 255, 1)
-                                    FillPortions: =1
-                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
-                                    FocusedBorderThickness: =2
-                                    Font: =Font.'Segoe UI'
-                                    Height: =52
-                                    HintText: ="hh:mm, e.g. 08:30"
-                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
-                                    LayoutMinWidth: =120
-                                    PaddingLeft: =12
-                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
-                                    RadiusBottomLeft: =8
-                                    RadiusBottomRight: =8
-                                    RadiusTopLeft: =8
-                                    RadiusTopRight: =8
-                                    Size: =15
-                              - btnStopTimeOutNow:
-                                  Control: Classic/Button@2.2.0
-                                  Properties:
-                                    BorderColor: =RGBA(8, 144, 144, 1)
-                                    BorderStyle: =BorderStyle.Solid
-                                    BorderThickness: =2
-                                    Color: =RGBA(0, 112, 112, 1)
-                                    DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                                    DisabledColor: =RGBA(255, 255, 255, 1)
-                                    DisabledFill: =RGBA(186, 198, 200, 1)
-                                    Fill: =RGBA(255, 255, 255, 1)
-                                    FillPortions: =0
-                                    Font: =Font.'Segoe UI'
-                                    FontWeight: =FontWeight.Semibold
-                                    Height: =52
-                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
-                                    HoverColor: =RGBA(0, 112, 112, 1)
-                                    HoverFill: =RGBA(226, 243, 242, 1)
-                                    OnSelect: |-
-                                      =UpdateContext({ctxTimeOut: Text(Now(), "hh:mm")});
-                                      Reset(txtStopTimeOut)
-                                    PressedBorderColor: =RGBA(0, 112, 112, 1)
-                                    PressedColor: =RGBA(0, 112, 112, 1)
-                                    PressedFill: =RGBA(226, 243, 242, 1)
-                                    RadiusBottomLeft: =10
-                                    RadiusBottomRight: =10
-                                    RadiusTopLeft: =10
-                                    RadiusTopRight: =10
-                                    Size: =15
-                                    Text: ="Now"
-                                    Width: =96
                         - lblStopCartonsLabel:
                             Control: Label@2.5.1
                             Properties:
@@ -955,7 +1136,7 @@ Screens:
                               RadiusTopLeft: =8
                               RadiusTopRight: =8
                               Size: =15
-                        - lblStopArriveLabel:
+                        - lblStopInvoicesLabel:
                             Control: Label@2.5.1
                             Properties:
                               BorderStyle: =BorderStyle.None
@@ -965,63 +1146,107 @@ Screens:
                               Height: =24
                               PaddingLeft: =0
                               Size: =14
-                              Text: ="Arrive time *"
-                        - conStopArrive:
-                            Control: GroupContainer@1.5.0
-                            Variant: AutoLayout
+                              Text: ="No. of invoices *"
+                        - txtStopInvoices:
+                            Control: Classic/TextInput@2.3.2
                             Properties:
-                              FillPortions: =0
+                              BorderColor: =RGBA(208, 216, 218, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(31, 41, 51, 1)
+                              Default: =If(IsBlank(ctxEdit) || IsBlank(ctxEdit.NoofInvoices), "", Text(ctxEdit.NoofInvoices))
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              Format: =TextFormat.Number
                               Height: =52
-                              LayoutAlignItems: =LayoutAlignItems.Center
-                              LayoutDirection: =LayoutDirection.Horizontal
-                              LayoutGap: =8
-                              LayoutMinHeight: =16
-                              LayoutMinWidth: =16
+                              HintText: ="Invoices at this stop (0–20)"
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              MaxLength: =2
+                              PaddingLeft: =12
+                              PressedBorderColor: =RGBA(8, 144, 144, 1)
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Size: =15
+                        - lblStopInvoicePhotosLabel:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =24
+                              PaddingLeft: =0
+                              Size: =14
+                              Text: ="Invoice photos * (one per invoice)"
+                              Visible: =galRunInvSlots.Visible
+                              Wrap: =true
+                        - galRunInvSlots:
+                            Control: Gallery@2.15.0
+                            Variant: BrowseLayout_Vertical_TwoTextVariant_ver5.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FillPortions: =0
+                              Height: =Min(20, Max(0, RoundDown(Coalesce(Value(txtStopInvoices.Text), 0), 0))) * 64
+                              Items: =Sequence(Min(20, Max(0, RoundDown(Coalesce(Value(txtStopInvoices.Text), 0), 0))))
+                              ShowScrollbar: =false
+                              TemplatePadding: =0
+                              TemplateSize: =64
+                              Visible: =Min(20, Max(0, RoundDown(Coalesce(Value(txtStopInvoices.Text), 0), 0))) > 0
                             Children:
-                              - txtStopArrive:
-                                  Control: Classic/TextInput@2.3.2
+                              - imgRunInvThumb:
+                                  Control: Image@2.2.3
                                   Properties:
+                                    AccessibleLabel: ="Invoice " & ThisItem.Value & " photo"
                                     BorderColor: =RGBA(208, 216, 218, 1)
                                     BorderThickness: =1
+                                    Fill: =RGBA(243, 246, 246, 1)
+                                    Height: =48
+                                    Image: =LookUp(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot = ThisItem.Value).Img
+                                    ImagePosition: =ImagePosition.Fill
+                                    Width: =48
+                                    X: =0
+                                    Y: =8
+                              - lblRunInvSlot:
+                                  Control: Label@2.5.1
+                                  Properties:
                                     Color: =RGBA(31, 41, 51, 1)
-                                    Default: =ctxArrive
-                                    Fill: =RGBA(255, 255, 255, 1)
-                                    FillPortions: =1
-                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
-                                    FocusedBorderThickness: =2
                                     Font: =Font.'Segoe UI'
-                                    Height: =52
-                                    HintText: ="hh:mm, e.g. 08:30"
-                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
-                                    LayoutMinWidth: =120
-                                    PaddingLeft: =12
-                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
-                                    RadiusBottomLeft: =8
-                                    RadiusBottomRight: =8
-                                    RadiusTopLeft: =8
-                                    RadiusTopRight: =8
-                                    Size: =15
-                              - btnStopArriveNow:
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =56
+                                    PaddingLeft: =0
+                                    Size: =13
+                                    Text: |-
+                                      =With({ph: LookUp(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot = ThisItem.Value)},
+                                          "Invoice " & ThisItem.Value & Char(10) & If(IsBlank(ph), "Not taken", ph.Uploaded, "Uploaded", "Photo taken"))
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Width: =Parent.TemplateWidth - 60 - 128
+                                    Wrap: =true
+                                    X: =60
+                                    Y: =4
+                              - btnRunInvTake:
                                   Control: Classic/Button@2.2.0
                                   Properties:
                                     BorderColor: =RGBA(8, 144, 144, 1)
                                     BorderStyle: =BorderStyle.Solid
                                     BorderThickness: =2
-                                    Color: =RGBA(0, 112, 112, 1)
+                                    Color: =If(IsBlank(LookUp(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot = ThisItem.Value)), RGBA(255, 255, 255, 1), RGBA(0, 112, 112, 1))
                                     DisabledBorderColor: =RGBA(0, 0, 0, 0)
                                     DisabledColor: =RGBA(255, 255, 255, 1)
                                     DisabledFill: =RGBA(186, 198, 200, 1)
-                                    Fill: =RGBA(255, 255, 255, 1)
-                                    FillPortions: =0
+                                    Fill: =If(IsBlank(LookUp(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot = ThisItem.Value)), RGBA(8, 144, 144, 1), RGBA(255, 255, 255, 1))
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Semibold
-                                    Height: =52
+                                    Height: =48
                                     HoverBorderColor: =RGBA(8, 144, 144, 1)
                                     HoverColor: =RGBA(0, 112, 112, 1)
                                     HoverFill: =RGBA(226, 243, 242, 1)
                                     OnSelect: |-
-                                      =UpdateContext({ctxArrive: Text(Now(), "hh:mm")});
-                                      Reset(txtStopArrive)
+                                      =UpdateContext({ctxCamSlot: ThisItem.Value, ctxCamShot: Blank()})
                                     PressedBorderColor: =RGBA(0, 112, 112, 1)
                                     PressedColor: =RGBA(0, 112, 112, 1)
                                     PressedFill: =RGBA(226, 243, 242, 1)
@@ -1029,9 +1254,26 @@ Screens:
                                     RadiusBottomRight: =10
                                     RadiusTopLeft: =10
                                     RadiusTopRight: =10
-                                    Size: =15
-                                    Text: ="Now"
-                                    Width: =96
+                                    Size: =14
+                                    Text: =If(IsBlank(LookUp(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot = ThisItem.Value)), "Take photo", "Retake")
+                                    Width: =120
+                                    X: =Parent.TemplateWidth - 120
+                                    Y: =8
+                        - lblStopInvoiceMissing:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(196, 49, 75, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              PaddingLeft: =0
+                              Size: =13
+                              Text: ="Take a photo of every invoice before saving the stop."
+                              Visible: |-
+                                =With({n: Min(20, Max(0, RoundDown(Coalesce(Value(txtStopInvoices.Text), 0), 0)))}, n > 0 && CountRows(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot <= n)) < n)
+                              Wrap: =true
                         - lblStopTruckTempLabel:
                             Control: Label@2.5.1
                             Properties:
@@ -1087,29 +1329,77 @@ Screens:
                               LayoutMinHeight: =16
                               LayoutMinWidth: =16
                             Children:
-                              - txtStopStartOp:
+                              - txtStopStartOpHH:
                                   Control: Classic/TextInput@2.3.2
                                   Properties:
+                                    AccessibleLabel: ="Start op time, hours"
+                                    Align: =Align.Center
                                     BorderColor: =RGBA(208, 216, 218, 1)
                                     BorderThickness: =1
                                     Color: =RGBA(31, 41, 51, 1)
-                                    Default: =ctxStartOp
+                                    Default: =If(IsBlank(ctxStartOp), "", First(Split(ctxStartOp, ":")).Value)
                                     Fill: =RGBA(255, 255, 255, 1)
-                                    FillPortions: =1
+                                    FillPortions: =0
                                     FocusedBorderColor: =RGBA(8, 144, 144, 1)
                                     FocusedBorderThickness: =2
                                     Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
                                     Height: =52
-                                    HintText: ="hh:mm, e.g. 08:30"
+                                    HintText: ="HH"
                                     HoverBorderColor: =RGBA(8, 144, 144, 1)
-                                    LayoutMinWidth: =120
-                                    PaddingLeft: =12
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
                                     PressedBorderColor: =RGBA(8, 144, 144, 1)
                                     RadiusBottomLeft: =8
                                     RadiusBottomRight: =8
                                     RadiusTopLeft: =8
                                     RadiusTopRight: =8
-                                    Size: =15
+                                    Size: =17
+                                    Width: =64
+                              - lblStopStartOpColon:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =52
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    Size: =18
+                                    Text: =":"
+                                    Width: =12
+                              - txtStopStartOpMM:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Start op time, minutes"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxStartOp), "", Last(Split(ctxStartOp, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="MM"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
                               - btnStopStartOpNow:
                                   Control: Classic/Button@2.2.0
                                   Properties:
@@ -1130,7 +1420,8 @@ Screens:
                                     HoverFill: =RGBA(226, 243, 242, 1)
                                     OnSelect: |-
                                       =UpdateContext({ctxStartOp: Text(Now(), "hh:mm")});
-                                      Reset(txtStopStartOp)
+                                      Reset(txtStopStartOpHH);
+                                      Reset(txtStopStartOpMM)
                                     PressedBorderColor: =RGBA(0, 112, 112, 1)
                                     PressedColor: =RGBA(0, 112, 112, 1)
                                     PressedFill: =RGBA(226, 243, 242, 1)
@@ -1141,6 +1432,17 @@ Screens:
                                     Size: =15
                                     Text: ="Now"
                                     Width: =96
+                              - lblStopStartOpVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Height: =24
+                                    Text: |-
+                                      =With({h: Trim(txtStopStartOpHH.Text), m: Trim(txtStopStartOpMM.Text)},
+                                          If(IsBlank(h) && IsBlank(m), "",
+                                             IsMatch(h, "\d{1,2}") && IsMatch(m, "\d{1,2}") && Value(h) <= 23 && Value(m) <= 59,
+                                             Text(Value(h), "00") & ":" & Text(Value(m), "00"), "!"))
+                                    Visible: =false
+                                    Width: =60
                         - lblStopCompleteOpLabel:
                             Control: Label@2.5.1
                             Properties:
@@ -1164,29 +1466,77 @@ Screens:
                               LayoutMinHeight: =16
                               LayoutMinWidth: =16
                             Children:
-                              - txtStopCompleteOp:
+                              - txtStopCompleteOpHH:
                                   Control: Classic/TextInput@2.3.2
                                   Properties:
+                                    AccessibleLabel: ="Complete op time, hours"
+                                    Align: =Align.Center
                                     BorderColor: =RGBA(208, 216, 218, 1)
                                     BorderThickness: =1
                                     Color: =RGBA(31, 41, 51, 1)
-                                    Default: =ctxCompleteOp
+                                    Default: =If(IsBlank(ctxCompleteOp), "", First(Split(ctxCompleteOp, ":")).Value)
                                     Fill: =RGBA(255, 255, 255, 1)
-                                    FillPortions: =1
+                                    FillPortions: =0
                                     FocusedBorderColor: =RGBA(8, 144, 144, 1)
                                     FocusedBorderThickness: =2
                                     Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
                                     Height: =52
-                                    HintText: ="hh:mm, e.g. 08:30"
+                                    HintText: ="HH"
                                     HoverBorderColor: =RGBA(8, 144, 144, 1)
-                                    LayoutMinWidth: =120
-                                    PaddingLeft: =12
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
                                     PressedBorderColor: =RGBA(8, 144, 144, 1)
                                     RadiusBottomLeft: =8
                                     RadiusBottomRight: =8
                                     RadiusTopLeft: =8
                                     RadiusTopRight: =8
-                                    Size: =15
+                                    Size: =17
+                                    Width: =64
+                              - lblStopCompleteOpColon:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =52
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    Size: =18
+                                    Text: =":"
+                                    Width: =12
+                              - txtStopCompleteOpMM:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Complete op time, minutes"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxCompleteOp), "", Last(Split(ctxCompleteOp, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="MM"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
                               - btnStopCompleteOpNow:
                                   Control: Classic/Button@2.2.0
                                   Properties:
@@ -1207,7 +1557,8 @@ Screens:
                                     HoverFill: =RGBA(226, 243, 242, 1)
                                     OnSelect: |-
                                       =UpdateContext({ctxCompleteOp: Text(Now(), "hh:mm")});
-                                      Reset(txtStopCompleteOp)
+                                      Reset(txtStopCompleteOpHH);
+                                      Reset(txtStopCompleteOpMM)
                                     PressedBorderColor: =RGBA(0, 112, 112, 1)
                                     PressedColor: =RGBA(0, 112, 112, 1)
                                     PressedFill: =RGBA(226, 243, 242, 1)
@@ -1218,6 +1569,17 @@ Screens:
                                     Size: =15
                                     Text: ="Now"
                                     Width: =96
+                              - lblStopCompleteOpVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Height: =24
+                                    Text: |-
+                                      =With({h: Trim(txtStopCompleteOpHH.Text), m: Trim(txtStopCompleteOpMM.Text)},
+                                          If(IsBlank(h) && IsBlank(m), "",
+                                             IsMatch(h, "\d{1,2}") && IsMatch(m, "\d{1,2}") && Value(h) <= 23 && Value(m) <= 59,
+                                             Text(Value(h), "00") & ":" & Text(Value(m), "00"), "!"))
+                                    Visible: =false
+                                    Width: =60
                         - lblStopDuration:
                             Control: Label@2.5.1
                             Properties:
@@ -1230,7 +1592,7 @@ Screens:
                               PaddingLeft: =0
                               Size: =12
                               Text: |-
-                                =With({m: If(IsMatch(Trim(txtStopStartOp.Text), "([01]?\d|2[0-3]):[0-5]\d") && IsMatch(Trim(txtStopCompleteOp.Text), "([01]?\d|2[0-3]):[0-5]\d"), Mod(With({tp: Split(Trim(txtStopCompleteOp.Text), ":")}, Value(First(tp).Value) * 60 + Value(Last(tp).Value)) - With({tp: Split(Trim(txtStopStartOp.Text), ":")}, Value(First(tp).Value) * 60 + Value(Last(tp).Value)) + 1440, 1440))}, If(IsBlank(m), "Duration fills in from the op times.", "Duration: " & m & " minutes"))
+                                =With({m: If(!IsBlank(lblStopStartOpVal.Text) && lblStopStartOpVal.Text <> "!" && !IsBlank(lblStopCompleteOpVal.Text) && lblStopCompleteOpVal.Text <> "!", Mod((Value(Left(lblStopCompleteOpVal.Text, 2)) * 60 + Value(Right(lblStopCompleteOpVal.Text, 2))) - (Value(Left(lblStopStartOpVal.Text, 2)) * 60 + Value(Right(lblStopStartOpVal.Text, 2))) + 1440, 1440))}, If(IsBlank(m), "Duration fills in from the op times.", "Duration: " & m & " minutes"))
                               Wrap: =true
                         - lblStopCommentsLabel:
                             Control: Label@2.5.1
@@ -1267,6 +1629,145 @@ Screens:
                               RadiusTopLeft: =8
                               RadiusTopRight: =8
                               Size: =15
+                        - lblStopTimeOutLabel:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =24
+                              PaddingLeft: =0
+                              Size: =14
+                              Text: ="Time left the premises"
+                              Wrap: =true
+                        - conStopTimeOut:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =52
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                            Children:
+                              - txtStopTimeOutHH:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Time left the premises, hours"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxTimeOut), "", First(Split(ctxTimeOut, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="HH"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
+                              - lblStopTimeOutColon:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =52
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    Size: =18
+                                    Text: =":"
+                                    Width: =12
+                              - txtStopTimeOutMM:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Time left the premises, minutes"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxTimeOut), "", Last(Split(ctxTimeOut, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="MM"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
+                              - btnStopTimeOutNow:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(8, 144, 144, 1)
+                                    BorderStyle: =BorderStyle.Solid
+                                    BorderThickness: =2
+                                    Color: =RGBA(0, 112, 112, 1)
+                                    DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                                    DisabledColor: =RGBA(255, 255, 255, 1)
+                                    DisabledFill: =RGBA(186, 198, 200, 1)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =52
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    HoverColor: =RGBA(0, 112, 112, 1)
+                                    HoverFill: =RGBA(226, 243, 242, 1)
+                                    OnSelect: |-
+                                      =UpdateContext({ctxTimeOut: Text(Now(), "hh:mm")});
+                                      Reset(txtStopTimeOutHH);
+                                      Reset(txtStopTimeOutMM)
+                                    PressedBorderColor: =RGBA(0, 112, 112, 1)
+                                    PressedColor: =RGBA(0, 112, 112, 1)
+                                    PressedFill: =RGBA(226, 243, 242, 1)
+                                    RadiusBottomLeft: =10
+                                    RadiusBottomRight: =10
+                                    RadiusTopLeft: =10
+                                    RadiusTopRight: =10
+                                    Size: =15
+                                    Text: ="Now"
+                                    Width: =96
+                              - lblStopTimeOutVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Height: =24
+                                    Text: |-
+                                      =With({h: Trim(txtStopTimeOutHH.Text), m: Trim(txtStopTimeOutMM.Text)},
+                                          If(IsBlank(h) && IsBlank(m), "",
+                                             IsMatch(h, "\d{1,2}") && IsMatch(m, "\d{1,2}") && Value(h) <= 23 && Value(m) <= 59,
+                                             Text(Value(h), "00") & ":" & Text(Value(m), "00"), "!"))
+                                    Visible: =false
+                                    Width: =60
                   - lblStopTempWarning:
                       Control: Label@2.5.1
                       Properties:
@@ -1304,7 +1805,7 @@ Screens:
                         Size: =13
                         Text: ="Unloading took more than 15 minutes. Let your Team Leader know."
                         Visible: |-
-                          =ctxTab = "Stops" && With({m: If(IsMatch(Trim(txtStopStartOp.Text), "([01]?\d|2[0-3]):[0-5]\d") && IsMatch(Trim(txtStopCompleteOp.Text), "([01]?\d|2[0-3]):[0-5]\d"), Mod(With({tp: Split(Trim(txtStopCompleteOp.Text), ":")}, Value(First(tp).Value) * 60 + Value(Last(tp).Value)) - With({tp: Split(Trim(txtStopStartOp.Text), ":")}, Value(First(tp).Value) * 60 + Value(Last(tp).Value)) + 1440, 1440))}, !IsBlank(m) && m > 15)
+                          =ctxTab = "Stops" && With({m: If(!IsBlank(lblStopStartOpVal.Text) && lblStopStartOpVal.Text <> "!" && !IsBlank(lblStopCompleteOpVal.Text) && lblStopCompleteOpVal.Text <> "!", Mod((Value(Left(lblStopCompleteOpVal.Text, 2)) * 60 + Value(Right(lblStopCompleteOpVal.Text, 2))) - (Value(Left(lblStopStartOpVal.Text, 2)) * 60 + Value(Right(lblStopStartOpVal.Text, 2))) + 1440, 1440))}, !IsBlank(m) && m > 15)
                         Wrap: =true
                   - lblStopTimeError:
                       Control: Label@2.5.1
@@ -1322,8 +1823,9 @@ Screens:
                         PaddingLeft: =12
                         PaddingRight: =12
                         Size: =13
-                        Text: ="Times must be hh:mm in 24-hour time, e.g. 08:30."
-                        Visible: =ctxTab = "Stops" && !((IsBlank(Trim(txtStopArrive.Text)) || IsMatch(Trim(txtStopArrive.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtStopTimeOut.Text)) || IsMatch(Trim(txtStopTimeOut.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtStopStartOp.Text)) || IsMatch(Trim(txtStopStartOp.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtStopCompleteOp.Text)) || IsMatch(Trim(txtStopCompleteOp.Text), "([01]?\d|2[0-3]):[0-5]\d")))
+                        Text: |-
+                          ="Hours 0–23 and minutes 0–59, e.g. 07 : 30."
+                        Visible: =ctxTab = "Stops" && (lblStopArriveVal.Text = "!" || lblStopStartOpVal.Text = "!" || lblStopCompleteOpVal.Text = "!" || lblStopTimeOutVal.Text = "!")
                         Wrap: =true
                   - lblStopsSaved:
                       Control: Label@2.5.1
@@ -1351,20 +1853,26 @@ Screens:
                         OnSelect: |-
                           =If(!IsBlank(ThisItem.ID),
                               Notify("This stop has already been sent and can't be changed. Tell your Team Leader if it's wrong.", NotificationType.Warning),
-                          UpdateContext({
-                              ctxEdit: ThisItem,
-                              ctxTimeOut: ThisItem.TimeOut,
-                              ctxArrive: ThisItem.ArriveTime,
-                              ctxStartOp: ThisItem.StartOpTime,
-                              ctxCompleteOp: ThisItem.CompleteOpTime});
-                          Reset(txtStopDestination);
-                          Reset(txtStopTimeOut);
-                          Reset(txtStopCartons);
-                          Reset(txtStopArrive);
-                          Reset(txtStopTruckTemp);
-                          Reset(txtStopStartOp);
-                          Reset(txtStopCompleteOp);
-                          Reset(txtStopComments))
+                              UpdateContext({
+                                  ctxEdit: ThisItem,
+                                  ctxStopKey: ThisItem.LocalKey,
+                                  ctxTimeOut: ThisItem.TimeOut,
+                                  ctxArrive: ThisItem.ArriveTime,
+                                  ctxStartOp: ThisItem.StartOpTime,
+                                  ctxCompleteOp: ThisItem.CompleteOpTime});
+                              Reset(txtStopArriveHH);
+                              Reset(txtStopArriveMM);
+                              Reset(txtStopDestination);
+                              Reset(txtStopCartons);
+                              Reset(txtStopInvoices);
+                              Reset(txtStopTruckTemp);
+                              Reset(txtStopStartOpHH);
+                              Reset(txtStopStartOpMM);
+                              Reset(txtStopCompleteOpHH);
+                              Reset(txtStopCompleteOpMM);
+                              Reset(txtStopComments);
+                              Reset(txtStopTimeOutHH);
+                              Reset(txtStopTimeOutMM))
                         ShowScrollbar: =false
                         TemplateFill: =If(!IsBlank(ctxEdit) && ThisItem.LocalKey = ctxEdit.LocalKey, RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         TemplatePadding: =0
@@ -1398,7 +1906,7 @@ Screens:
                               OnSelect: =Select(Parent)
                               PaddingLeft: =0
                               Size: =12
-                              Text: ="Arrived " & Coalesce(ThisItem.ArriveTime, "–") & "  ·  " & Coalesce(Text(ThisItem.NoofCtns), "0") & " ctns  ·  " & ThisItem.TruckTemp & " °C" & If(IsBlank(ThisItem.Duration), "", "  ·  " & ThisItem.Duration & " min") & If(IsBlank(ThisItem.ID), "", "  ·  sent")
+                              Text: ="Arrived " & Coalesce(ThisItem.ArriveTime, "–") & "  ·  " & Coalesce(Text(ThisItem.NoofCtns), "0") & " ctns  ·  " & If(IsBlank(ThisItem.NoofInvoices), "", "  ·  " & ThisItem.NoofInvoices & " inv") & "  ·  " & ThisItem.TruckTemp & " °C" & If(IsBlank(ThisItem.Duration), "", "  ·  " & ThisItem.Duration & " min") & If(IsBlank(ThisItem.ID), "", "  ·  sent")
                               Width: =Parent.TemplateWidth - 80
                               X: =16
                               Y: =56
@@ -1531,29 +2039,77 @@ Screens:
                               LayoutMinHeight: =16
                               LayoutMinWidth: =16
                             Children:
-                              - txtEndReturned:
+                              - txtEndReturnedHH:
                                   Control: Classic/TextInput@2.3.2
                                   Properties:
+                                    AccessibleLabel: ="Time truck returned, hours"
+                                    Align: =Align.Center
                                     BorderColor: =RGBA(208, 216, 218, 1)
                                     BorderThickness: =1
                                     Color: =RGBA(31, 41, 51, 1)
-                                    Default: =ctxReturned
+                                    Default: =If(IsBlank(ctxReturned), "", First(Split(ctxReturned, ":")).Value)
                                     Fill: =RGBA(255, 255, 255, 1)
-                                    FillPortions: =1
+                                    FillPortions: =0
                                     FocusedBorderColor: =RGBA(8, 144, 144, 1)
                                     FocusedBorderThickness: =2
                                     Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
                                     Height: =52
-                                    HintText: ="hh:mm, e.g. 08:30"
+                                    HintText: ="HH"
                                     HoverBorderColor: =RGBA(8, 144, 144, 1)
-                                    LayoutMinWidth: =120
-                                    PaddingLeft: =12
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
                                     PressedBorderColor: =RGBA(8, 144, 144, 1)
                                     RadiusBottomLeft: =8
                                     RadiusBottomRight: =8
                                     RadiusTopLeft: =8
                                     RadiusTopRight: =8
-                                    Size: =15
+                                    Size: =17
+                                    Width: =64
+                              - lblEndReturnedColon:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    FillPortions: =0
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =52
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    Size: =18
+                                    Text: =":"
+                                    Width: =12
+                              - txtEndReturnedMM:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    AccessibleLabel: ="Time truck returned, minutes"
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =If(IsBlank(ctxReturned), "", Last(Split(ctxReturned, ":")).Value)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =0
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Format: =TextFormat.Number
+                                    Height: =52
+                                    HintText: ="MM"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    MaxLength: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =17
+                                    Width: =64
                               - btnEndReturnedNow:
                                   Control: Classic/Button@2.2.0
                                   Properties:
@@ -1574,7 +2130,8 @@ Screens:
                                     HoverFill: =RGBA(226, 243, 242, 1)
                                     OnSelect: |-
                                       =UpdateContext({ctxReturned: Text(Now(), "hh:mm")});
-                                      Reset(txtEndReturned)
+                                      Reset(txtEndReturnedHH);
+                                      Reset(txtEndReturnedMM)
                                     PressedBorderColor: =RGBA(0, 112, 112, 1)
                                     PressedColor: =RGBA(0, 112, 112, 1)
                                     PressedFill: =RGBA(226, 243, 242, 1)
@@ -1585,6 +2142,17 @@ Screens:
                                     Size: =15
                                     Text: ="Now"
                                     Width: =96
+                              - lblEndReturnedVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Height: =24
+                                    Text: |-
+                                      =With({h: Trim(txtEndReturnedHH.Text), m: Trim(txtEndReturnedMM.Text)},
+                                          If(IsBlank(h) && IsBlank(m), "",
+                                             IsMatch(h, "\d{1,2}") && IsMatch(m, "\d{1,2}") && Value(h) <= 23 && Value(m) <= 59,
+                                             Text(Value(h), "00") & ":" & Text(Value(m), "00"), "!"))
+                                    Visible: =false
+                                    Width: =60
                         - lblEndMileageLabel:
                             Control: Label@2.5.1
                             Properties:
@@ -1939,8 +2507,7 @@ Screens:
                           !IsBlank(Trim(txtRunArea.Text)) &&
                           IsMatch(Trim(txtRunInvoices.Text), "\d+") &&
                           IsMatch(Trim(txtRunStartMileage.Text), "\d+(\.\d+)?") &&
-                          (IsBlank(Trim(txtRunExpDeparture.Text)) || IsMatch(Trim(txtRunExpDeparture.Text), "([01]?\d|2[0-3]):[0-5]\d")) &&
-                          (IsBlank(Trim(txtRunExpArrival.Text)) || IsMatch(Trim(txtRunExpArrival.Text), "([01]?\d|2[0-3]):[0-5]\d")), DisplayMode.Edit, DisplayMode.Disabled)
+                          lblRunDepartureVal.Text <> "!", DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
                         Font: =Font.'Segoe UI'
@@ -1966,8 +2533,8 @@ Screens:
                                       Area: Trim(txtRunArea.Text),
                                       NoofInvoices: Value(txtRunInvoices.Text),
                                       StartMileage: Value(txtRunStartMileage.Text),
-                                      ExpectedDeparture: Trim(txtRunExpDeparture.Text),
-                                      ExpectedArrival: Trim(txtRunExpArrival.Text),
+                                      ExpectedDeparture: lblRunDepartureVal.Text,
+                                      ExpectedArrival: "",
                                       TimeReturned: "",
                                       EndMileage: Value(""),
                                       BalanceInvoice: "",
@@ -1983,8 +2550,7 @@ Screens:
                                       Area: Trim(txtRunArea.Text),
                                       NoofInvoices: Value(txtRunInvoices.Text),
                                       StartMileage: Value(txtRunStartMileage.Text),
-                                      ExpectedDeparture: Trim(txtRunExpDeparture.Text),
-                                      ExpectedArrival: Trim(txtRunExpArrival.Text)
+                                      ExpectedDeparture: lblRunDepartureVal.Text
                                   })));
                           Set(varTruck, varRunSheet.Title);
                           ClearCollect(colLocalRun, varRunSheet);
@@ -2000,7 +2566,8 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =15
-                        Text: =If(!IsBlank(Trim(txtRunTruck.Text)) && !IsBlank(Trim(txtRunArea.Text)) && IsMatch(Trim(txtRunInvoices.Text), "\d+") && IsMatch(Trim(txtRunStartMileage.Text), "\d+(\.\d+)?") && (IsBlank(Trim(txtRunExpDeparture.Text)) || IsMatch(Trim(txtRunExpDeparture.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtRunExpArrival.Text)) || IsMatch(Trim(txtRunExpArrival.Text), "([01]?\d|2[0-3]):[0-5]\d")), If(IsBlank(varRunSheet), "Start run", "Save trip details"), "Fill in the fields marked *")
+                        Text: |-
+                          =If(!IsBlank(Trim(txtRunTruck.Text)) && !IsBlank(Trim(txtRunArea.Text)) && IsMatch(Trim(txtRunInvoices.Text), "\d+") && IsMatch(Trim(txtRunStartMileage.Text), "\d+(\.\d+)?") && lblRunDepartureVal.Text <> "!", If(IsBlank(varRunSheet), "Start run", "Save trip details"), "Fill in the fields marked *")
                         Visible: =ctxTab = "Trip"
                   - btnCancelStopChange:
                       Control: Classic/Button@2.2.0
@@ -2022,14 +2589,20 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
                           =UpdateContext({ctxEdit: Blank(), ctxTimeOut: "", ctxArrive: "", ctxStartOp: "", ctxCompleteOp: ""});
+                          UpdateContext({ctxStopKey: With({o: First(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && !(StopKey in colRunStops.LocalKey)))}, Coalesce(o.StopKey, Text(GUID())))});
+                          Reset(txtStopArriveHH);
+                          Reset(txtStopArriveMM);
                           Reset(txtStopDestination);
-                          Reset(txtStopTimeOut);
                           Reset(txtStopCartons);
-                          Reset(txtStopArrive);
+                          Reset(txtStopInvoices);
                           Reset(txtStopTruckTemp);
-                          Reset(txtStopStartOp);
-                          Reset(txtStopCompleteOp);
-                          Reset(txtStopComments)
+                          Reset(txtStopStartOpHH);
+                          Reset(txtStopStartOpMM);
+                          Reset(txtStopCompleteOpHH);
+                          Reset(txtStopCompleteOpMM);
+                          Reset(txtStopComments);
+                          Reset(txtStopTimeOutHH);
+                          Reset(txtStopTimeOutMM)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2052,10 +2625,12 @@ Screens:
                         DisplayMode: |-
                           =If(!IsBlank(varRunSheet) &&
                           !IsBlank(Trim(txtStopDestination.Text)) &&
-                          IsMatch(Trim(txtStopArrive.Text), "([01]?\d|2[0-3]):[0-5]\d") &&
+                          !IsBlank(lblStopArriveVal.Text) && lblStopArriveVal.Text <> "!" &&
                           IsMatch(Trim(txtStopTruckTemp.Text), "-?\d+(\.\d+)?") &&
                           (IsBlank(Trim(txtStopCartons.Text)) || IsMatch(Trim(txtStopCartons.Text), "\d+")) &&
-                          (IsBlank(Trim(txtStopTimeOut.Text)) || IsMatch(Trim(txtStopTimeOut.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtStopStartOp.Text)) || IsMatch(Trim(txtStopStartOp.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtStopCompleteOp.Text)) || IsMatch(Trim(txtStopCompleteOp.Text), "([01]?\d|2[0-3]):[0-5]\d")), DisplayMode.Edit, DisplayMode.Disabled)
+                          IsMatch(Trim(txtStopInvoices.Text), "\d{1,2}") && Value(txtStopInvoices.Text) <= 20 &&
+                          lblStopStartOpVal.Text <> "!" && lblStopCompleteOpVal.Text <> "!" && lblStopTimeOutVal.Text <> "!" &&
+                          CountRows(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot <= Value(txtStopInvoices.Text))) = Value(txtStopInvoices.Text), DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
                         Font: =Font.'Segoe UI'
@@ -2066,33 +2641,42 @@ Screens:
                         HoverFill: =RGBA(0, 112, 112, 1)
                         OnSelect: |-
                           =With({rec: {
-                                  LocalKey: If(IsBlank(ctxEdit), Text(GUID()), ctxEdit.LocalKey),
+                                  LocalKey: ctxStopKey,
                                   ID: If(IsBlank(ctxEdit), Value(""), ctxEdit.ID),
                                   Synced: false,
                                   Title: Trim(txtStopDestination.Text),
                                   StopOrder: If(IsBlank(ctxEdit), Max(colRunStops, StopOrder) + 1, ctxEdit.StopOrder),
-                                  TimeOut: Trim(txtStopTimeOut.Text),
+                                  TimeOut: lblStopTimeOutVal.Text,
                                   NoofCtns: Value(txtStopCartons.Text),
-                                  ArriveTime: Trim(txtStopArrive.Text),
+                                  NoofInvoices: Value(txtStopInvoices.Text),
+                                  ArriveTime: lblStopArriveVal.Text,
                                   TruckTemp: Value(txtStopTruckTemp.Text),
-                                  StartOpTime: Trim(txtStopStartOp.Text),
-                                  CompleteOpTime: Trim(txtStopCompleteOp.Text),
-                                  Duration: If(IsMatch(Trim(txtStopStartOp.Text), "([01]?\d|2[0-3]):[0-5]\d") && IsMatch(Trim(txtStopCompleteOp.Text), "([01]?\d|2[0-3]):[0-5]\d"), Mod(With({tp: Split(Trim(txtStopCompleteOp.Text), ":")}, Value(First(tp).Value) * 60 + Value(Last(tp).Value)) - With({tp: Split(Trim(txtStopStartOp.Text), ":")}, Value(First(tp).Value) * 60 + Value(Last(tp).Value)) + 1440, 1440)),
+                                  StartOpTime: lblStopStartOpVal.Text,
+                                  CompleteOpTime: lblStopCompleteOpVal.Text,
+                                  Duration: If(!IsBlank(lblStopStartOpVal.Text) && lblStopStartOpVal.Text <> "!" && !IsBlank(lblStopCompleteOpVal.Text) && lblStopCompleteOpVal.Text <> "!", Mod((Value(Left(lblStopCompleteOpVal.Text, 2)) * 60 + Value(Right(lblStopCompleteOpVal.Text, 2))) - (Value(Left(lblStopStartOpVal.Text, 2)) * 60 + Value(Right(lblStopStartOpVal.Text, 2))) + 1440, 1440)),
                                   HSEQComments: txtStopComments.Text}},
                               If(IsBlank(ctxEdit),
                                   Collect(colRunStops, rec),
                                   Patch(colRunStops, LookUp(colRunStops, LocalKey = rec.LocalKey), rec));
+                              RemoveIf(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = rec.LocalKey && Slot > rec.NoofInvoices);
                               IfError(SaveData(colRunStops, "fcRunStops"); true, false);
+                              IfError(SaveData(colInvoicePhotos, "fcRunPhotos"); true, false);
                               Notify("Stop " & rec.StopOrder & If(Connection.Connected, " saved", " saved on this phone"), NotificationType.Success));
                           UpdateContext({ctxEdit: Blank(), ctxTimeOut: "", ctxArrive: "", ctxStartOp: "", ctxCompleteOp: ""});
+                          UpdateContext({ctxStopKey: With({o: First(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && !(StopKey in colRunStops.LocalKey)))}, Coalesce(o.StopKey, Text(GUID())))});
+                          Reset(txtStopArriveHH);
+                          Reset(txtStopArriveMM);
                           Reset(txtStopDestination);
-                          Reset(txtStopTimeOut);
                           Reset(txtStopCartons);
-                          Reset(txtStopArrive);
+                          Reset(txtStopInvoices);
                           Reset(txtStopTruckTemp);
-                          Reset(txtStopStartOp);
-                          Reset(txtStopCompleteOp);
+                          Reset(txtStopStartOpHH);
+                          Reset(txtStopStartOpMM);
+                          Reset(txtStopCompleteOpHH);
+                          Reset(txtStopCompleteOpMM);
                           Reset(txtStopComments);
+                          Reset(txtStopTimeOutHH);
+                          Reset(txtStopTimeOutMM);
                           Select(btnRunSync)
                         PressedBorderColor: =RGBA(0, 0, 0, 0)
                         PressedColor: =RGBA(255, 255, 255, 1)
@@ -2102,7 +2686,10 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =15
-                        Text: =If(!IsBlank(varRunSheet) && !IsBlank(Trim(txtStopDestination.Text)) && IsMatch(Trim(txtStopArrive.Text), "([01]?\d|2[0-3]):[0-5]\d") && IsMatch(Trim(txtStopTruckTemp.Text), "-?\d+(\.\d+)?") && (IsBlank(Trim(txtStopCartons.Text)) || IsMatch(Trim(txtStopCartons.Text), "\d+")) && (IsBlank(Trim(txtStopTimeOut.Text)) || IsMatch(Trim(txtStopTimeOut.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtStopStartOp.Text)) || IsMatch(Trim(txtStopStartOp.Text), "([01]?\d|2[0-3]):[0-5]\d")) && (IsBlank(Trim(txtStopCompleteOp.Text)) || IsMatch(Trim(txtStopCompleteOp.Text), "([01]?\d|2[0-3]):[0-5]\d")), If(IsBlank(ctxEdit), "Save stop", "Save change"), "Fill in the fields marked *")
+                        Text: |-
+                          =If(!(!IsBlank(varRunSheet) && !IsBlank(Trim(txtStopDestination.Text)) && !IsBlank(lblStopArriveVal.Text) && lblStopArriveVal.Text <> "!" && IsMatch(Trim(txtStopTruckTemp.Text), "-?\d+(\.\d+)?") && (IsBlank(Trim(txtStopCartons.Text)) || IsMatch(Trim(txtStopCartons.Text), "\d+")) && IsMatch(Trim(txtStopInvoices.Text), "\d{1,2}") && Value(txtStopInvoices.Text) <= 20 && lblStopStartOpVal.Text <> "!" && lblStopCompleteOpVal.Text <> "!" && lblStopTimeOutVal.Text <> "!"), "Fill in the fields marked *",
+                              !(CountRows(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot <= Value(txtStopInvoices.Text))) = Value(txtStopInvoices.Text)), "Take every invoice photo",
+                              If(IsBlank(ctxEdit), "Save stop", "Save change"))
                         Visible: =ctxTab = "Stops"
                   - btnSubmitRunSheet:
                       Control: Classic/Button@2.2.0
@@ -2116,7 +2703,7 @@ Screens:
                         DisplayMode: |-
                           =If(!IsBlank(varRunSheet) &&
                           CountRows(colRunStops) > 0 &&
-                          IsMatch(Trim(txtEndReturned.Text), "([01]?\d|2[0-3]):[0-5]\d") &&
+                          !IsBlank(lblEndReturnedVal.Text) && lblEndReturnedVal.Text <> "!" &&
                           IsMatch(Trim(txtEndMileage.Text), "\d+(\.\d+)?") &&
                           Value(txtEndMileage.Text) >= varRunSheet.StartMileage &&
                           IsMatch(Trim(txtEndAnalogTemp.Text), "-?\d+(\.\d+)?") &&
@@ -2133,7 +2720,7 @@ Screens:
                         HoverFill: =RGBA(0, 112, 112, 1)
                         OnSelect: |-
                           =Set(varRunSheet, Patch(varRunSheet, {
-                              TimeReturned: Trim(txtEndReturned.Text),
+                              TimeReturned: lblEndReturnedVal.Text,
                               EndMileage: Value(txtEndMileage.Text),
                               BalanceInvoice: Trim(txtEndBalanceInvoice.Text),
                               AnalogTemp: Value(txtEndAnalogTemp.Text),
@@ -2154,5 +2741,255 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =15
-                        Text: =If(!IsBlank(varRunSheet) && CountRows(colRunStops) > 0 && IsMatch(Trim(txtEndReturned.Text), "([01]?\d|2[0-3]):[0-5]\d") && IsMatch(Trim(txtEndMileage.Text), "\d+(\.\d+)?") && Value(txtEndMileage.Text) >= varRunSheet.StartMileage && IsMatch(Trim(txtEndAnalogTemp.Text), "-?\d+(\.\d+)?") && IsMatch(Trim(txtEndPlugInTemp.Text), "-?\d+(\.\d+)?") && IsMatch(Trim(txtEndBalanceQty.Text), "\d+") && !IsBlank(ctxInvBalanced), "Submit run sheet", "Fill in the fields marked *")
+                        Text: =If(!IsBlank(varRunSheet) && CountRows(colRunStops) > 0 && !IsBlank(lblEndReturnedVal.Text) && lblEndReturnedVal.Text <> "!" && IsMatch(Trim(txtEndMileage.Text), "\d+(\.\d+)?") && Value(txtEndMileage.Text) >= varRunSheet.StartMileage && IsMatch(Trim(txtEndAnalogTemp.Text), "-?\d+(\.\d+)?") && IsMatch(Trim(txtEndPlugInTemp.Text), "-?\d+(\.\d+)?") && IsMatch(Trim(txtEndBalanceQty.Text), "\d+") && !IsBlank(ctxInvBalanced), "Submit run sheet", "Fill in the fields marked *")
                         Visible: =ctxTab = "End"
+      - conRunInvCamera:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            Fill: =RGBA(31, 41, 51, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =12
+            LayoutMinHeight: =16
+            LayoutMinWidth: =16
+            PaddingBottom: =16
+            PaddingLeft: =16
+            PaddingRight: =16
+            PaddingTop: =16
+            Visible: =ctxCamSlot > 0
+            Width: =Parent.Width
+            X: =0
+            Y: =0
+          Children:
+            - lblRunInvCamTitle:
+                Control: Label@2.5.1
+                Properties:
+                  BorderStyle: =BorderStyle.None
+                  Color: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Bold
+                  Height: =32
+                  PaddingLeft: =0
+                  Size: =18
+                  Text: ="Stop " & If(IsBlank(ctxEdit), Max(colRunStops, StopOrder) + 1, ctxEdit.StopOrder) & "  ·  Invoice " & ctxCamSlot
+            - lblRunInvCamHint:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderStyle: =BorderStyle.None
+                  Color: =RGBA(208, 216, 218, 1)
+                  FillPortions: =0
+                  Font: =Font.'Segoe UI'
+                  Height: =22
+                  PaddingLeft: =0
+                  Size: =13
+                  Text: =If(IsBlank(ctxCamShot), "Fill the frame with the invoice, flat, in good light.", "Check the invoice is sharp and readable. If not, tap Retake.")
+                  Wrap: =true
+            - camRunInv:
+                Control: Camera@2.4.0
+                Properties:
+                  BorderColor: =RGBA(31, 41, 51, 1)
+                  Camera: =varCam
+                  FillPortions: =1
+                  OnSelect: |-
+                    =UpdateContext({ctxCamShot: camRunInv.Stream})
+                  StreamRate: =100
+                  Visible: =IsBlank(ctxCamShot)
+            - imgRunInvPreview:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: ="Invoice photo preview"
+                  FillPortions: =1
+                  Image: =ctxCamShot
+                  ImagePosition: =ImagePosition.Fit
+                  Visible: =!IsBlank(ctxCamShot)
+            - conRunInvCamButtons:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =124
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =12
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                Children:
+                  - conRunInvCamPrimary:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =56
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =12
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                      Children:
+                        - btnRunInvShoot:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(255, 255, 255, 1)
+                              Fill: =RGBA(8, 144, 144, 1)
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =RGBA(0, 112, 112, 1)
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(255, 255, 255, 1)
+                              PressedFill: =RGBA(0, 112, 112, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(255, 255, 255, 1)
+                              DisabledFill: =RGBA(186, 198, 200, 1)
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =56
+                              OnSelect: |-
+                                =UpdateContext({ctxCamShot: camRunInv.Stream})
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Size: =15
+                              Text: ="Take photo"
+                              Visible: =IsBlank(ctxCamShot)
+                        - btnRunInvUse:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(255, 255, 255, 1)
+                              Fill: =RGBA(8, 144, 144, 1)
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =RGBA(0, 112, 112, 1)
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(255, 255, 255, 1)
+                              PressedFill: =RGBA(0, 112, 112, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(255, 255, 255, 1)
+                              DisabledFill: =RGBA(186, 198, 200, 1)
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =56
+                              OnSelect: |-
+                                =RemoveIf(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot = ctxCamSlot);
+                                Collect(colInvoicePhotos, {RunKey: varRunSheet.LocalKey, StopKey: ctxStopKey, Slot: ctxCamSlot, Img: ctxCamShot, Uploaded: false});
+                                IfError(SaveData(colInvoicePhotos, "fcRunPhotos"); true, Notify("Photo kept, but this phone is running out of space to save it. Keep the app open until it uploads.", NotificationType.Warning));
+                                UpdateContext({ctxCamSlot: 0, ctxCamShot: Blank()})
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Size: =15
+                              Text: ="Use photo"
+                              Visible: =!IsBlank(ctxCamShot)
+                  - conRunInvCamSecondary:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =56
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =12
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                      Children:
+                        - btnRunInvSwitch:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(8, 144, 144, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =2
+                              Color: =RGBA(0, 112, 112, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              HoverColor: =RGBA(0, 112, 112, 1)
+                              HoverFill: =RGBA(226, 243, 242, 1)
+                              PressedBorderColor: =RGBA(0, 112, 112, 1)
+                              PressedColor: =RGBA(0, 112, 112, 1)
+                              PressedFill: =RGBA(226, 243, 242, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(255, 255, 255, 1)
+                              DisabledFill: =RGBA(186, 198, 200, 1)
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =56
+                              OnSelect: |-
+                                =Set(varCam, If(varCam = 1, 0, 1))
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Size: =15
+                              Text: ="Switch camera"
+                              Visible: =IsBlank(ctxCamShot)
+                        - btnRunInvRetake:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(8, 144, 144, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =2
+                              Color: =RGBA(0, 112, 112, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              HoverColor: =RGBA(0, 112, 112, 1)
+                              HoverFill: =RGBA(226, 243, 242, 1)
+                              PressedBorderColor: =RGBA(0, 112, 112, 1)
+                              PressedColor: =RGBA(0, 112, 112, 1)
+                              PressedFill: =RGBA(226, 243, 242, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(255, 255, 255, 1)
+                              DisabledFill: =RGBA(186, 198, 200, 1)
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =56
+                              OnSelect: |-
+                                =UpdateContext({ctxCamShot: Blank()})
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Size: =15
+                              Text: ="Retake"
+                              Visible: =!IsBlank(ctxCamShot)
+                        - btnRunInvCancel:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(8, 144, 144, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =2
+                              Color: =RGBA(0, 112, 112, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              HoverBorderColor: =RGBA(8, 144, 144, 1)
+                              HoverColor: =RGBA(0, 112, 112, 1)
+                              HoverFill: =RGBA(226, 243, 242, 1)
+                              PressedBorderColor: =RGBA(0, 112, 112, 1)
+                              PressedColor: =RGBA(0, 112, 112, 1)
+                              PressedFill: =RGBA(226, 243, 242, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(255, 255, 255, 1)
+                              DisabledFill: =RGBA(186, 198, 200, 1)
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =56
+                              OnSelect: |-
+                                =UpdateContext({ctxCamSlot: 0, ctxCamShot: Blank()})
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Size: =15
+                              Text: ="Cancel"
+                              Visible: =true

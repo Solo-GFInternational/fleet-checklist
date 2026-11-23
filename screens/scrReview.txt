@@ -4,7 +4,7 @@ Screens:
       Fill: =RGBA(243, 246, 246, 1)
       LoadingSpinnerColor: =RGBA(8, 144, 144, 1)
       OnVisible: |-
-        =UpdateContext({ctxRun: Blank(), ctxDecl: Blank()});
+        =UpdateContext({ctxRun: Blank(), ctxDecl: Blank(), ctxDaily: Blank(), ctxStars: 0});
         If(IsBlank(ctxTab), UpdateContext({ctxTab: "Checks", ctxWaitingOnly: true}))
     Children:
       - conReview:
@@ -92,7 +92,7 @@ Screens:
                               Height: =22
                               PaddingLeft: =0
                               Size: =12
-                              Text: =Switch(ctxTab, "Runs", "Run sheets for Team Leader verification", "Decls", "Driver declarations for Supervisor sign-off", "Fleet checklists for approval")
+                              Text: =Switch(ctxTab, "Runs", "Run sheets for Team Leader verification", "Decls", "Driver declarations for Supervisor sign-off", "Daily", "Daily star score for each driver", "Fleet checklists for approval")
             - conReviewStripe:
                 Control: GroupContainer@1.5.0
                 Variant: AutoLayout
@@ -143,12 +143,12 @@ Screens:
                   Height: =64
                   LayoutAlignItems: =LayoutAlignItems.Center
                   LayoutDirection: =LayoutDirection.Horizontal
-                  LayoutGap: =8
+                  LayoutGap: =4
                   LayoutMinHeight: =16
                   LayoutMinWidth: =16
                   PaddingBottom: =8
-                  PaddingLeft: =12
-                  PaddingRight: =12
+                  PaddingLeft: =8
+                  PaddingRight: =8
                   PaddingTop: =8
                 Children:
                   - btnTabChecks:
@@ -170,15 +170,17 @@ Screens:
                         HoverColor: =RGBA(0, 112, 112, 1)
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
-                          =UpdateContext({ctxTab: "Checks", ctxRun: Blank(), ctxDecl: Blank()})
+                          =UpdateContext({ctxTab: "Checks", ctxRun: Blank(), ctxDecl: Blank(), ctxDaily: Blank()})
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
                         RadiusBottomLeft: =8
                         RadiusBottomRight: =8
                         RadiusTopLeft: =8
+                        PaddingLeft: =2
+                        PaddingRight: =2
                         RadiusTopRight: =8
-                        Size: =14
+                        Size: =11
                         Text: ="Checklists"
                   - btnTabRuns:
                       Control: Classic/Button@2.2.0
@@ -199,15 +201,17 @@ Screens:
                         HoverColor: =RGBA(0, 112, 112, 1)
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
-                          =UpdateContext({ctxTab: "Runs", ctxRun: Blank(), ctxDecl: Blank()})
+                          =UpdateContext({ctxTab: "Runs", ctxRun: Blank(), ctxDecl: Blank(), ctxDaily: Blank()})
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
                         RadiusBottomLeft: =8
                         RadiusBottomRight: =8
                         RadiusTopLeft: =8
+                        PaddingLeft: =2
+                        PaddingRight: =2
                         RadiusTopRight: =8
-                        Size: =14
+                        Size: =11
                         Text: ="Run sheets"
                   - btnTabDecls:
                       Control: Classic/Button@2.2.0
@@ -228,16 +232,49 @@ Screens:
                         HoverColor: =RGBA(0, 112, 112, 1)
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
-                          =UpdateContext({ctxTab: "Decls", ctxRun: Blank(), ctxDecl: Blank()})
+                          =UpdateContext({ctxTab: "Decls", ctxRun: Blank(), ctxDecl: Blank(), ctxDaily: Blank()})
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
                         RadiusBottomLeft: =8
                         RadiusBottomRight: =8
                         RadiusTopLeft: =8
+                        PaddingLeft: =2
+                        PaddingRight: =2
                         RadiusTopRight: =8
-                        Size: =14
+                        Size: =11
                         Text: ="Declarations"
+                  - btnTabDaily:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.None
+                        BorderThickness: =0
+                        Color: =If(ctxTab = "Daily", RGBA(0, 112, 112, 1), RGBA(96, 108, 118, 1))
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =If(ctxTab = "Daily", RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =If(ctxTab = "Daily", FontWeight.Bold, FontWeight.Semibold)
+                        Height: =48
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        OnSelect: |-
+                          =UpdateContext({ctxTab: "Daily", ctxRun: Blank(), ctxDecl: Blank(), ctxDaily: Blank()})
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        PaddingLeft: =2
+                        PaddingRight: =2
+                        RadiusTopRight: =8
+                        Size: =11
+                        Text: ="Daily review"
             - conReviewBody:
                 Control: GroupContainer@1.5.0
                 Variant: AutoLayout
@@ -265,7 +302,7 @@ Screens:
                         PaddingLeft: =16
                         PaddingRight: =16
                         PaddingTop: =16
-                        Visible: =IsBlank(ctxRun) && IsBlank(ctxDecl)
+                        Visible: =ctxTab <> "Daily" && IsBlank(ctxRun) && IsBlank(ctxDecl)
                       Children:
                         - conReviewFilter:
                             Control: GroupContainer@1.5.0
@@ -369,7 +406,7 @@ Screens:
                                 EditForm(frmPreTrip);
                                 Navigate(scrPreTrip)
                               TemplatePadding: =0
-                              TemplateSize: =76
+                              TemplateSize: =120
                               Visible: =ctxTab = "Checks"
                             Children:
                               - lblRevChecksTitle:
@@ -378,10 +415,12 @@ Screens:
                                     Color: =RGBA(31, 41, 51, 1)
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Semibold
-                                    Height: =26
+                                    Height: =44
                                     OnSelect: =Select(Parent)
                                     PaddingLeft: =0
                                     Size: =15
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
                                     Text: =Coalesce(ThisItem.field_1, "No truck") & "  ·  " & ThisItem.field_2
                                     Width: =Parent.TemplateWidth - 76
                                     X: =16
@@ -391,14 +430,16 @@ Screens:
                                   Properties:
                                     Color: =If(IsBlank(ThisItem.field_52.Value), RGBA(0, 112, 112, 1), RGBA(96, 108, 118, 1))
                                     Font: =Font.'Segoe UI'
-                                    Height: =24
+                                    Height: =52
                                     OnSelect: =Select(Parent)
                                     PaddingLeft: =0
                                     Size: =12
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
                                     Text: =Text(ThisItem.Created, "dd mmm yyyy, hh:mm") & "  ·  " & Coalesce(ThisItem.field_52.Value, "Waiting for sign-off")
                                     Width: =Parent.TemplateWidth - 76
                                     X: =16
-                                    Y: =40
+                                    Y: =58
                               - icoRevChecksOpen:
                                   Control: Classic/Icon@2.5.0
                                   Properties:
@@ -413,7 +454,7 @@ Screens:
                                     PaddingTop: =12
                                     Width: =48
                                     X: =Parent.TemplateWidth - 60
-                                    Y: =(76 - 48) / 2
+                                    Y: =(Parent.TemplateHeight - 48) / 2
                               - recRevChecksSeparator:
                                   Control: Rectangle@2.3.0
                                   Properties:
@@ -439,7 +480,7 @@ Screens:
                                 =UpdateContext({ctxRun: ThisItem});
                                 ClearCollect(colReviewStops, Sort(Sort(Filter('Run Sheet Details', RunSheetID = ThisItem.ID), ID), StopOrder))
                               TemplatePadding: =0
-                              TemplateSize: =76
+                              TemplateSize: =120
                               Visible: =ctxTab = "Runs"
                             Children:
                               - lblRevRunsTitle:
@@ -448,10 +489,12 @@ Screens:
                                     Color: =RGBA(31, 41, 51, 1)
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Semibold
-                                    Height: =26
+                                    Height: =44
                                     OnSelect: =Select(Parent)
                                     PaddingLeft: =0
                                     Size: =15
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
                                     Text: =Coalesce(ThisItem.Title, "No truck") & "  ·  " & Coalesce(ThisItem.DriverName, ThisItem.Driver)
                                     Width: =Parent.TemplateWidth - 76
                                     X: =16
@@ -461,14 +504,16 @@ Screens:
                                   Properties:
                                     Color: =If(ThisItem.Status.Value = "Open", RGBA(0, 112, 112, 1), RGBA(96, 108, 118, 1))
                                     Font: =Font.'Segoe UI'
-                                    Height: =24
+                                    Height: =52
                                     OnSelect: =Select(Parent)
                                     PaddingLeft: =0
                                     Size: =12
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
                                     Text: =Text(ThisItem.RunDate, "dd mmm yyyy") & "  ·  " & ThisItem.Area & "  ·  " & Switch(ThisItem.Status.Value, "Open", "Waiting for Team Leader", "Closed", "Verified by " & ThisItem.TeamLeader, "In Progress", "Driver still out", ThisItem.Status.Value)
                                     Width: =Parent.TemplateWidth - 76
                                     X: =16
-                                    Y: =40
+                                    Y: =58
                               - icoRevRunsOpen:
                                   Control: Classic/Icon@2.5.0
                                   Properties:
@@ -483,7 +528,7 @@ Screens:
                                     PaddingTop: =12
                                     Width: =48
                                     X: =Parent.TemplateWidth - 60
-                                    Y: =(76 - 48) / 2
+                                    Y: =(Parent.TemplateHeight - 48) / 2
                               - recRevRunsSeparator:
                                   Control: Rectangle@2.3.0
                                   Properties:
@@ -507,7 +552,7 @@ Screens:
                               OnSelect: |-
                                 =UpdateContext({ctxDecl: ThisItem})
                               TemplatePadding: =0
-                              TemplateSize: =76
+                              TemplateSize: =120
                               Visible: =ctxTab = "Decls"
                             Children:
                               - lblRevDeclsTitle:
@@ -516,10 +561,12 @@ Screens:
                                     Color: =RGBA(31, 41, 51, 1)
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Semibold
-                                    Height: =26
+                                    Height: =44
                                     OnSelect: =Select(Parent)
                                     PaddingLeft: =0
                                     Size: =15
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
                                     Text: =ThisItem.Title & "  ·  " & ThisItem.field_2
                                     Width: =Parent.TemplateWidth - 76
                                     X: =16
@@ -529,15 +576,17 @@ Screens:
                                   Properties:
                                     Color: =If(CountIf([ThisItem.field_3, ThisItem.field_4, ThisItem.field_5, ThisItem.field_6, ThisItem.field_7, ThisItem.field_8, ThisItem.field_9, ThisItem.field_10, ThisItem.field_11, ThisItem.field_12, ThisItem.field_13, ThisItem.field_14, ThisItem.field_15, ThisItem.field_16], Value = "No") > 0, RGBA(196, 49, 75, 1), RGBA(96, 108, 118, 1))
                                     Font: =Font.'Segoe UI'
-                                    Height: =24
+                                    Height: =52
                                     OnSelect: =Select(Parent)
                                     PaddingLeft: =0
                                     Size: =12
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
                                     Text: |-
                                       =With({n: CountIf([ThisItem.field_3, ThisItem.field_4, ThisItem.field_5, ThisItem.field_6, ThisItem.field_7, ThisItem.field_8, ThisItem.field_9, ThisItem.field_10, ThisItem.field_11, ThisItem.field_12, ThisItem.field_13, ThisItem.field_14, ThisItem.field_15, ThisItem.field_16], Value = "No")}, Text(ThisItem.field_0, "dd mmm yyyy, hh:mm") & "  ·  " & If(n > 0, n & " answered No", "All Yes") & "  ·  " & If(IsBlank(ThisItem.field_19), "Waiting for Supervisor", "Signed off by " & ThisItem.field_19))
                                     Width: =Parent.TemplateWidth - 76
                                     X: =16
-                                    Y: =40
+                                    Y: =58
                               - icoRevDeclsOpen:
                                   Control: Classic/Icon@2.5.0
                                   Properties:
@@ -552,7 +601,7 @@ Screens:
                                     PaddingTop: =12
                                     Width: =48
                                     X: =Parent.TemplateWidth - 60
-                                    Y: =(76 - 48) / 2
+                                    Y: =(Parent.TemplateHeight - 48) / 2
                               - recRevDeclsSeparator:
                                   Control: Rectangle@2.3.0
                                   Properties:
@@ -562,6 +611,393 @@ Screens:
                                     OnSelect: =Select(Parent)
                                     Width: =Parent.TemplateWidth
                                     Y: =Parent.TemplateHeight - 1
+                  - conReviewDaily:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(243, 246, 246, 1)
+                        FillPortions: =1
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =12
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        Visible: =ctxTab = "Daily" && IsBlank(ctxDaily)
+                      Children:
+                        - conDailyDateRow:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =52
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =12
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                            Children:
+                              - lblDailyDateLabel:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =48
+                                    PaddingLeft: =0
+                                    Size: =14
+                                    Text: ="Date"
+                                    Width: =52
+                              - dteDailyDate:
+                                  Control: Classic/DatePicker@2.6.0
+                                  Properties:
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    DefaultDate: =Today()
+                                    EndYear: =Year(Today()) + 1
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Segoe UI'
+                                    Height: =48
+                                    IconBackground: =RGBA(8, 144, 144, 1)
+                                    IconFill: =RGBA(255, 255, 255, 1)
+                                    IsEditable: =false
+                                    PaddingLeft: =8
+                                    Size: =14
+                                    StartYear: =Year(Today()) - 1
+                                    Tooltip: ="Review date"
+                        - lblDailyHint:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =24
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: =If(CountRows(galDailyDrivers.AllItems) = 0, "Nobody submitted anything on this date.", CountRows(galDailyDrivers.AllItems) & " driver(s) submitted something on this date. Tap a driver to score their day.")
+                              Wrap: =true
+                        - galDailyDrivers:
+                            Control: Gallery@2.15.0
+                            Variant: BrowseLayout_Vertical_TwoTextVariant_ver5.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FillPortions: =1
+                              Items: |-
+                                =With({d: Coalesce(dteDailyDate.SelectedDate, Today())},
+                                    With({d1: DateAdd(d, 1, TimeUnit.Days)},
+                                        With({
+                                            rev: Filter('GF Fleet Daily Reviews', ReviewDate = d && ActiveYN = true),
+                                            all: Ungroup(Table(
+                                                {t: ForAll(Filter('Fleet Checklist', Created >= d && Created < d1), {Name: field_2, Email: Lower('Created By'.Email), Kind: "Checklist"})},
+                                                {t: ForAll(Filter('Run Sheets', RunDate >= d && RunDate < d1), {Name: Coalesce(DriverName, Driver), Email: Lower('Created By'.Email), Kind: "Run sheet"})},
+                                                {t: ForAll(Filter('Driver Declarations', field_0 >= d && field_0 < d1), {Name: Title, Email: Lower('Created By'.Email), Kind: "Declaration"})}),
+                                                t)},
+                                            Sort(
+                                                ForAll(GroupBy(AddColumns(all, Key, Coalesce(Email, Lower(Trim(Name)))), Key, Rows),
+                                                    With({f: First(Rows), k: Key},
+                                                        {Key: k,
+                                                         Name: Coalesce(f.Name, f.Email),
+                                                         Email: f.Email,
+                                                         Kinds: Concat(Distinct(Rows, Kind), Value, " · "),
+                                                         Review: LookUp(rev, DriverEmail = k || Lower(Title) = k)})),
+                                                Name))))
+                              LayoutMinHeight: =100
+                              OnSelect: |-
+                                =UpdateContext({ctxDaily: ThisItem, ctxStars: Coalesce(ThisItem.Review.Stars, 0)});
+                                Reset(txtDailyComment)
+                              TemplatePadding: =0
+                              TemplateSize: =120
+                            Children:
+                              - lblDailyDriverTitle:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =44
+                                    OnSelect: =Select(Parent)
+                                    PaddingLeft: =0
+                                    Size: =15
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
+                                    Text: =ThisItem.Name
+                                    Width: =Parent.TemplateWidth - 76
+                                    X: =16
+                                    Y: =12
+                              - lblDailyDriverDetail:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =If(IsBlank(ThisItem.Review), RGBA(0, 112, 112, 1), RGBA(96, 108, 118, 1))
+                                    Font: =Font.'Segoe UI'
+                                    Height: =52
+                                    OnSelect: =Select(Parent)
+                                    PaddingLeft: =0
+                                    Size: =12
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
+                                    Text: =ThisItem.Kinds & "  ·  " & If(IsBlank(ThisItem.Review), "Not scored yet", Left("★★★★★", ThisItem.Review.Stars) & Left("☆☆☆☆☆", 5 - ThisItem.Review.Stars) & " by " & ThisItem.Review.ReviewerName)
+                                    Width: =Parent.TemplateWidth - 76
+                                    X: =16
+                                    Y: =58
+                              - icoDailyDriverOpen:
+                                  Control: Classic/Icon@2.5.0
+                                  Properties:
+                                    AccessibleLabel: ="Open"
+                                    Color: =RGBA(8, 144, 144, 1)
+                                    Height: =48
+                                    Icon: =Icon.ChevronRight
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =12
+                                    PaddingLeft: =12
+                                    PaddingRight: =12
+                                    PaddingTop: =12
+                                    Width: =48
+                                    X: =Parent.TemplateWidth - 60
+                                    Y: =(Parent.TemplateHeight - 48) / 2
+                              - recDailyDriverSeparator:
+                                  Control: Rectangle@2.3.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    Fill: =RGBA(208, 216, 218, 1)
+                                    Height: =1
+                                    OnSelect: =Select(Parent)
+                                    Width: =Parent.TemplateWidth
+                                    Y: =Parent.TemplateHeight - 1
+                  - conReviewDailyPanel:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(243, 246, 246, 1)
+                        FillPortions: =1
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =12
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        LayoutOverflowY: =LayoutOverflow.Scroll
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        Visible: =ctxTab = "Daily" && !IsBlank(ctxDaily)
+                      Children:
+                        - conDailySummary:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.Light
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FillPortions: =0
+                              Height: =100 + (lblDailyName.Height - 28) + (lblDailyInfo.Height - 32)
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =8
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              PaddingBottom: =16
+                              PaddingLeft: =16
+                              PaddingRight: =16
+                              PaddingTop: =16
+                              RadiusBottomLeft: =12
+                              RadiusBottomRight: =12
+                              RadiusTopLeft: =12
+                              RadiusTopRight: =12
+                            Children:
+                              - lblDailyName:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(0, 112, 112, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =28
+                                    PaddingLeft: =0
+                                    Size: =16
+                                    Text: =ctxDaily.Name
+                                    Wrap: =true
+                              - lblDailyInfo:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(96, 108, 118, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Normal
+                                    Height: =32
+                                    PaddingLeft: =0
+                                    Size: =12
+                                    Text: |-
+                                      =Text(Coalesce(dteDailyDate.SelectedDate, Today()), "ddd dd mmm yyyy") & "  ·  " & ctxDaily.Kinds & If(IsBlank(ctxDaily.Review), "", Char(10) & "Scored " & ctxDaily.Review.Stars & " of 5 by " & ctxDaily.Review.ReviewerName & ". Saving again replaces it.")
+                                    Wrap: =true
+                        - conDailyScoreCard:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.Light
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FillPortions: =0
+                              Height: =310
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =8
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              PaddingBottom: =16
+                              PaddingLeft: =16
+                              PaddingRight: =16
+                              PaddingTop: =16
+                              RadiusBottomLeft: =12
+                              RadiusBottomRight: =12
+                              RadiusTopLeft: =12
+                              RadiusTopRight: =12
+                            Children:
+                              - lblDailyScoreHeading:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(0, 112, 112, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =28
+                                    PaddingLeft: =0
+                                    Size: =16
+                                    Text: ="Score for the day"
+                              - conDailyStars:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =52
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =4
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                                  Children:
+                                    - icoDailyStar1:
+                                        Control: Classic/Icon@2.5.0
+                                        Properties:
+                                          AccessibleLabel: ="1 star"
+                                          Color: =If(ctxStars >= 1, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
+                                          Height: =48
+                                          Icon: =Icon.Star
+                                          OnSelect: |-
+                                            =UpdateContext({ctxStars: 1})
+                                          PaddingBottom: =6
+                                          PaddingLeft: =6
+                                          PaddingRight: =6
+                                          PaddingTop: =6
+                                          Width: =48
+                                    - icoDailyStar2:
+                                        Control: Classic/Icon@2.5.0
+                                        Properties:
+                                          AccessibleLabel: ="2 stars"
+                                          Color: =If(ctxStars >= 2, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
+                                          Height: =48
+                                          Icon: =Icon.Star
+                                          OnSelect: |-
+                                            =UpdateContext({ctxStars: 2})
+                                          PaddingBottom: =6
+                                          PaddingLeft: =6
+                                          PaddingRight: =6
+                                          PaddingTop: =6
+                                          Width: =48
+                                    - icoDailyStar3:
+                                        Control: Classic/Icon@2.5.0
+                                        Properties:
+                                          AccessibleLabel: ="3 stars"
+                                          Color: =If(ctxStars >= 3, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
+                                          Height: =48
+                                          Icon: =Icon.Star
+                                          OnSelect: |-
+                                            =UpdateContext({ctxStars: 3})
+                                          PaddingBottom: =6
+                                          PaddingLeft: =6
+                                          PaddingRight: =6
+                                          PaddingTop: =6
+                                          Width: =48
+                                    - icoDailyStar4:
+                                        Control: Classic/Icon@2.5.0
+                                        Properties:
+                                          AccessibleLabel: ="4 stars"
+                                          Color: =If(ctxStars >= 4, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
+                                          Height: =48
+                                          Icon: =Icon.Star
+                                          OnSelect: |-
+                                            =UpdateContext({ctxStars: 4})
+                                          PaddingBottom: =6
+                                          PaddingLeft: =6
+                                          PaddingRight: =6
+                                          PaddingTop: =6
+                                          Width: =48
+                                    - icoDailyStar5:
+                                        Control: Classic/Icon@2.5.0
+                                        Properties:
+                                          AccessibleLabel: ="5 stars"
+                                          Color: =If(ctxStars >= 5, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
+                                          Height: =48
+                                          Icon: =Icon.Star
+                                          OnSelect: |-
+                                            =UpdateContext({ctxStars: 5})
+                                          PaddingBottom: =6
+                                          PaddingLeft: =6
+                                          PaddingRight: =6
+                                          PaddingTop: =6
+                                          Width: =48
+                              - lblDailyScoreText:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =If(ctxStars >= 1, RGBA(0, 112, 112, 1), RGBA(96, 108, 118, 1))
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =24
+                                    PaddingLeft: =0
+                                    Size: =13
+                                    Text: =If(ctxStars >= 1, ctxStars & " of 5", "Tap a star to score the day")
+                              - lblDailyCommentHeading:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =28
+                                    PaddingLeft: =0
+                                    PaddingTop: =8
+                                    Size: =13
+                                    Text: ="Comment (optional)"
+                              - txtDailyComment:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    BorderColor: =RGBA(208, 216, 218, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Default: =Coalesce(ctxDaily.Review.Comment, "")
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                                    FocusedBorderThickness: =2
+                                    Font: =Font.'Segoe UI'
+                                    Height: =104
+                                    HintText: ="What went well, or what to improve"
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    Mode: =TextMode.MultiLine
+                                    PaddingLeft: =12
+                                    PressedBorderColor: =RGBA(8, 144, 144, 1)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =14
                   - conReviewRun:
                       Control: GroupContainer@1.5.0
                       Variant: AutoLayout
@@ -627,7 +1063,7 @@ Screens:
                                     PaddingLeft: =0
                                     Size: =12
                                     Text: |-
-                                      ="Driver: " & Coalesce(ctxRun.DriverName, ctxRun.Driver) & If(IsBlank(ctxRun.Partner), "", "   ·   Partner: " & ctxRun.Partner) & Char(10) & "Area: " & ctxRun.Area & "   ·   Invoices: " & ctxRun.NoofInvoices & Char(10) & "Mileage: " & ctxRun.StartMileage & " → " & Coalesce(Text(ctxRun.EndMileage), "–") & " km" & If(IsBlank(ctxRun.EndMileage), "", "  (" & (ctxRun.EndMileage - ctxRun.StartMileage) & " km)") & Char(10) & "Out " & Coalesce(ctxRun.ExpectedDeparture, "–") & "   ·   Back " & Coalesce(ctxRun.TimeReturned, "–") & " (expected " & Coalesce(ctxRun.ExpectedArrival, "–") & ")" & Char(10) & "Analog " & Coalesce(Text(ctxRun.AnalogTemp_x002e_), "–") & " °C   ·   Plug in " & Coalesce(Text(ctxRun.TemponPlugIn), "–") & " °C" & Char(10) & "Balance invoice: " & Coalesce(ctxRun.BalanceInvoice, "–") & "   ·   Qty: " & Coalesce(Text(ctxRun.QtyonBalanceRecovery), "–") & "   ·   Balanced with cashier: " & If(ctxRun.InvoiceBalanced, "Yes", "No")
+                                      ="Driver: " & Coalesce(ctxRun.DriverName, ctxRun.Driver) & If(IsBlank(ctxRun.Partner), "", "   ·   Partner: " & ctxRun.Partner) & Char(10) & "Area: " & ctxRun.Area & "   ·   Invoices: " & ctxRun.NoofInvoices & Char(10) & "Mileage: " & ctxRun.StartMileage & " → " & Coalesce(Text(ctxRun.EndMileage), "–") & " km" & If(IsBlank(ctxRun.EndMileage), "", "  (" & (ctxRun.EndMileage - ctxRun.StartMileage) & " km)") & Char(10) & "Left CD " & Coalesce(ctxRun.ExpectedDeparture, "–") & "   ·   Back " & Coalesce(ctxRun.TimeReturned, "–") & Char(10) & "Analog " & Coalesce(Text(ctxRun.AnalogTemp_x002e_), "–") & " °C   ·   Plug in " & Coalesce(Text(ctxRun.TemponPlugIn), "–") & " °C" & Char(10) & "Balance invoice: " & Coalesce(ctxRun.BalanceInvoice, "–") & "   ·   Qty: " & Coalesce(Text(ctxRun.QtyonBalanceRecovery), "–") & "   ·   Balanced with cashier: " & If(ctxRun.InvoiceBalanced, "Yes", "No")
                                     Wrap: =true
                               - lblRevRunStatus:
                                   Control: Label@2.5.1
@@ -662,12 +1098,12 @@ Screens:
                               BorderColor: =RGBA(0, 0, 0, 0)
                               Fill: =RGBA(255, 255, 255, 1)
                               FillPortions: =0
-                              Height: =CountRows(colReviewStops) * 68
+                              Height: =CountRows(colReviewStops) * 120
                               Items: =colReviewStops
                               OnSelect: =
                               ShowScrollbar: =false
                               TemplatePadding: =0
-                              TemplateSize: =68
+                              TemplateSize: =120
                               Visible: =true
                             Children:
                               - lblRevStopsTitle:
@@ -676,10 +1112,12 @@ Screens:
                                     Color: =RGBA(31, 41, 51, 1)
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Semibold
-                                    Height: =26
+                                    Height: =44
                                     OnSelect: =Select(Parent)
                                     PaddingLeft: =0
                                     Size: =15
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
                                     Text: ="Stop " & Coalesce(Text(ThisItem.StopOrder), "–") & "  ·  " & ThisItem.Title
                                     Width: =Parent.TemplateWidth - 76
                                     X: =16
@@ -689,14 +1127,16 @@ Screens:
                                   Properties:
                                     Color: =If(ThisItem.TruckTemp > -15 || ThisItem.Duration > 15, RGBA(196, 49, 75, 1), RGBA(96, 108, 118, 1))
                                     Font: =Font.'Segoe UI'
-                                    Height: =24
+                                    Height: =52
                                     OnSelect: =Select(Parent)
                                     PaddingLeft: =0
                                     Size: =12
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Wrap: =true
                                     Text: ="Out " & Coalesce(ThisItem.TimeOut, "–") & "  ·  In " & Coalesce(ThisItem.ArriveTime, "–") & "  ·  " & Coalesce(Text(ThisItem.NoofCtns), "0") & " ctns  ·  " & ThisItem.TruckTemp & " °C" & If(IsBlank(ThisItem.Duration), "", "  ·  " & ThisItem.Duration & " min") & If(IsBlank(ThisItem.HSEQComments), "", "  ·  " & ThisItem.HSEQComments)
                                     Width: =Parent.TemplateWidth - 76
                                     X: =16
-                                    Y: =40
+                                    Y: =58
                               - icoRevStopsOpen:
                                   Control: Classic/Icon@2.5.0
                                   Properties:
@@ -712,7 +1152,7 @@ Screens:
                                     Visible: =false
                                     Width: =48
                                     X: =Parent.TemplateWidth - 60
-                                    Y: =(68 - 48) / 2
+                                    Y: =(Parent.TemplateHeight - 48) / 2
                               - recRevStopsSeparator:
                                   Control: Rectangle@2.3.0
                                   Properties:
@@ -928,7 +1368,7 @@ Screens:
                   PaddingLeft: =16
                   PaddingRight: =16
                   PaddingTop: =16
-                  Visible: =!IsBlank(ctxRun) || !IsBlank(ctxDecl)
+                  Visible: =!IsBlank(ctxRun) || !IsBlank(ctxDecl) || !IsBlank(ctxDaily)
                 Children:
                   - btnReviewBackToList:
                       Control: Classic/Button@2.2.0
@@ -949,7 +1389,7 @@ Screens:
                         HoverColor: =RGBA(0, 112, 112, 1)
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnSelect: |-
-                          =UpdateContext({ctxRun: Blank(), ctxDecl: Blank()})
+                          =UpdateContext({ctxRun: Blank(), ctxDecl: Blank(), ctxDaily: Blank(), ctxStars: 0})
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
                         PressedColor: =RGBA(0, 112, 112, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1038,6 +1478,54 @@ Screens:
                         Size: =15
                         Text: =If(IsBlank(ctxDecl.field_19), "Sign off", "Already signed off")
                         Visible: =ctxTab = "Decls" && !IsBlank(ctxDecl)
+                  - btnSaveDaily:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        DisplayMode: =If(ctxStars >= 1 && Connection.Connected, DisplayMode.Edit, DisplayMode.Disabled)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        OnSelect: |-
+                          =With({d: Coalesce(dteDailyDate.SelectedDate, Today()), e: Lower(ctxDaily.Email)},
+                              With({existing: If(IsBlank(e),
+                                      LookUp('GF Fleet Daily Reviews', Title = ctxDaily.Name && ReviewDate = d),
+                                      LookUp('GF Fleet Daily Reviews', DriverEmail = e && ReviewDate = d))},
+                                  UpdateContext({ctxDailySaved: IfError(
+                                      Patch('GF Fleet Daily Reviews', If(IsBlank(existing), Defaults('GF Fleet Daily Reviews'), existing), {
+                                          Title: ctxDaily.Name,
+                                          DriverEmail: e,
+                                          ReviewDate: d,
+                                          Stars: ctxStars,
+                                          Comment: txtDailyComment.Text,
+                                          ReviewerName: User().FullName,
+                                          ActiveYN: true
+                                      }),
+                                      Notify("Score not saved: " & FirstError.Message, NotificationType.Error, 0);
+                                      Blank())})));
+                          If(!IsBlank(ctxDailySaved),
+                              Notify("Score saved for " & ctxDaily.Name, NotificationType.Success);
+                              UpdateContext({ctxDaily: Blank(), ctxStars: 0}))
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: =If(!Connection.Connected, "No signal", If(ctxStars < 1, "Pick a score", If(IsBlank(ctxDaily.Review), "Save score", "Update score")))
+                        Visible: =ctxTab = "Daily" && !IsBlank(ctxDaily)
       - lblReviewNoAccess:
           Control: Label@2.5.1
           Properties:

@@ -247,6 +247,10 @@ Called from `scrPreTrip` (`frmPreTrip.OnSuccess`) once per photo in `colPhotos` 
 | 4 | RecordID | Number | ID of the Fleet Checklist row |
 | 5 | SourceList | Text | `Fleet Checklist` |
 | 6 | file | File | the photo |
+| 7 | RunKey | Text, optional | run sheet `LocalKey` (invoice photos only, added 23 Nov 2026) |
+| 8 | StopKey | Text, optional | stop `LocalKey` (invoice photos only, added 23 Nov 2026) |
+
+Inputs 7–8 need two text columns, `RunKey` and `StopKey`, on the library (`scripts/create_runsheet_v2_columns.js`), and *Update file properties* must fill them. Optional inputs can be left out, so scrPreTrip's six-argument call keeps working. After adding them, remove and re-add the flow in the app. The run sheet uploads invoice photos with PhotoType `Invoice`, Item `Stop N · Invoice k`, RecordID = the stop ID (0 if the stop isn't sent yet) and SourceList `Run Sheet Details`.
 
 Setup (not documented before 20 Nov 2026; confirm whether the live flow matches):
 - **Library:** a document library on Fleet Operations (planned as "Defect Photos"; "Fleet Photos" fits better now) with columns `Truck` (text), `PhotoType` (text), `Item` (text), `RecordID` (number), `SourceList` (text), internal names typed first.
@@ -267,7 +271,7 @@ Alerts:
 - Use a **Teams Flow bot post** if email stays blocked.
 - Suggested: move manager approval out of the driver's form into a Power Automate **Approval** to the Fleet Controller.
 
-### 4.4 Power Apps flow: SyncAppUser (designed 23 Nov 2026, not built yet)
+### 4.4 Power Apps flow: SyncAppUser (built and tested 23 Nov 2026)
 
 Called from `scrUsers` (Add person, Save role, Remove access / Give access back). It's the only thing that writes to the App Users list or changes group membership, and it runs under the flow owner's connections, so Admins don't need SharePoint rights of their own. Adding someone to a SharePoint group through the REST API sends **no email**.
 
@@ -293,7 +297,26 @@ Removing access keeps the person's past records (Created By doesn't change) and 
 
 Setup: run `scripts/setup_app_permissions.js` (groups, permission levels, list permissions) once before the flow is used. In the app: Power Automate pane → Add flow → SyncAppUser, and Add data → **Office 365 Users** (the people search on scrUsers).
 
-### 4.5 Licensing, ownership, service account
+### 4.5 Power Apps flow: RunSheetSubmitted (designed 23 Nov 2026, not built yet)
+
+Called by `btnRunSync` on scrRunSheet once the trip and every stop are in SharePoint and no invoice photo is still waiting to upload. The app calls it directly because a SharePoint trigger would fire before the stops exist. If the call fails, the app shows a warning and still clears the run.
+
+`'RunSheetSubmitted'.Run(RunSheetID, RunKey)` → returns `ok` (Yes/No) and `message` (text). Both inputs are text.
+
+Steps:
+1. Get the Run Sheets item. If `SubmissionEmailSent` is already true, respond `ok = true` and stop, so the email is never sent twice.
+2. Get items from Run Sheet Details with `RunSheetID eq <id>`, ordered by StopOrder.
+3. Get files from the Fleet Photos library with `RunKey eq '<RunKey>'`, ordered by Created. Keep the latest file per StopKey + slot. The slot is the "Invoice k" part of `Item`, and a retake uploads a second file.
+4. Get each file's content and build one HTML page: a summary table (truck, driver, date, area, stops, cartons, flagged stops), then one `<div style="page-break-before:always"><img src="data:image/jpeg;base64,…" style="width:100%"></div>` per invoice.
+5. OneDrive for Business: **Create file** (.html), then **Convert file** to PDF. This is a standard connector, so no premium licence is needed.
+6. Outlook **Send an email (V2)** with the body from [email-templates/run-sheet-submitted.html](email-templates/run-sheet-submitted.html) and the PDF attached. It sends from the flow owner's mailbox until IT grants Send As on the shared mailbox; a Teams post with the PDF is the fallback.
+7. Delete the temporary OneDrive files.
+8. Update the Run Sheets item: `SubmissionEmailSent = true`.
+9. Respond to Power Apps with `ok` and `message`.
+
+In the app: Power Automate pane → Add flow → RunSheetSubmitted.
+
+### 4.6 Licensing, ownership, service account
 
 - **Drivers ideally have Microsoft 365 accounts** (Frontline F1/F3 are cheaper): Forms then records who submitted and when, and file upload (photos) works only on organisation-only forms. Confirm with IT.
 - Forms + standard SharePoint/Outlook/Teams connectors run on standard M365 licences. Anything premium (Dataverse, premium connectors, Power Apps offline-first on Dataverse) needs Power Apps/Automate premium licences: check before designing for it.
@@ -342,6 +365,50 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
   - **Run sheets**: `Run Sheets` with Status "Open" are waiting. The detail view shows the run and its stops from `Run Sheet Details` (red = above -15 °C or unloading over 15 min). **Verify run sheet** sets `TeamLeader` = reviewer, `DateVerified` = now, Status "Closed".
   - **Declarations**: `Driver Declarations` without Supervisor Name (`field_19`) are waiting; any "No" answer shows in red. **Sign off** sets `field_19` = reviewer, `field_20` = now.
 - Anyone who opens the screen can sign off until roles/permissions are added. Reviewed By / Approved By on Run Sheets are not used yet.
+
+### Meeting changes (23 Nov 2026, from the review with Pawan's team)
+
+**Fleet Checklist.** The screen is now generated, not hand-edited:
+- [scripts/checklist_items.json](scripts/checklist_items.json) is the single source for item order, section, wording, check instruction, photo rule, who answers it, weekly flag and truck-type rule.
+- `py -3 -I scripts/build_pretrip_screen.py screens` rebuilds [screens/scrPreTrip.txt](screens/scrPreTrip.txt). **Change the JSON and regenerate; don't edit scrPreTrip.txt by hand.**
+- The proposed wording for Pawan's approval is in [files/Fleet Checklist - item wording for approval.md](<files/Fleet Checklist - item wording for approval.md>). The screen shows each column's SharePoint display name, so approved wording is applied by renaming columns (`scripts/create_checklist_v2_columns.js`, rename mode), with no app change.
+- Sections in order: Truck and driver, Licence and Odometer, Cabin (ends with the Net/Gross weight photo), Electrical, Tyres, Leaks and Fluid Levels, Body and Chassis, Safety, General, Accessory Checks, Accident Imagery, Truck Profiles (Front, Rear, Left, Right photos), Other comments.
+- Every item has a Yes and a No box, with nothing ticked at the start. The comment box opens on No (on Yes for Accident damage) and is saved to the item's own `<field>Cmt` column. Submit waits until every item is answered, every comment is filled, Site and odometer are filled, and every required photo is taken.
+- New columns: `LicenceValid`, `CabGlassFront`, `CabGlassRear`, `CabGlassDriver`, `CabGlassPassenger`, `CabTilt`, `AccidentDamage`, plus the `…Cmt` columns (`scripts/create_checklist_v2_columns.js`).
+- Hidden but kept in SharePoint: Money Box (`field_48`), the old windscreens item (`field_24`) and the per-section comment columns.
+- The truck number is locked to the truck chosen on Home, and Site is required.
+- **Weekly reviewer-only items:** Cabin tilting (`CabTilt`) and Underneath greasing (`field_44`). Drivers don't see them. When a reviewer opens a checklist, the app looks for a signed-off checklist for the same truck in the same Monday–Sunday week with that item = Yes. If one exists, it shows "… inspection conducted on {date} by {name}" (from that record's `field_55` / `field_54`) instead of the boxes.
+- **Photos:** a retake replaces the earlier photo. There is one photo per tyre (count from the Trucks list, 6 if the truck isn't listed), four profile photos and any number of accident photos.
+
+**GF Fleet Trucks list** (`scripts/create_trucks_list.js`):
+- Columns: Title = truck number ("FJ 101" format), `TruckType` (Ambient/Frozen), `NoOfTyres`, `ActiveYN`.
+- Both app groups have Read.
+- scrPreTrip looks up the truck into `varTruckInfo`. It sets the tyre-photo count and hides items whose truck type doesn't match. Today only Blower service due and Plug wire are Frozen-only, as placeholders until Krish confirms. Krish provides the full truck table.
+
+**Run sheet:**
+- Trip tab: "Actual times" with Actual departure time only (still stored in `ExpectedDeparture`). `ExpectedArrival` is no longer filled; Time returned is the arrival.
+- Every time field is two boxes, HH : MM, joined into "HH:MM".
+- Stop order: Arrive time first, "Time left the premises" (`TimeOut`) last.
+- New per-stop **No. of invoices** (`NoofInvoices` on Run Sheet Details), with one in-app camera photo per invoice. There's no gallery access, so drivers can't upload old pictures.
+- The truck number is locked when it came from Home.
+- Invoice photos are queued on the phone and uploaded on every sync (see CLAUDE.md, Offline). The **RunSheetSubmitted** flow (4.5) emails a PDF of all of a run's invoices.
+
+**Daily review:**
+- List **GF Fleet Daily Reviews** (`scripts/create_daily_reviews.js`): Title = driver, `DriverEmail`, `ReviewDate`, `Stars` 1–5, `Comment`, `ReviewerName`, `ActiveYN`. Reviewers add and edit; Drivers read.
+- scrReview has a 4th tab, **Daily review**. It lists drivers who submitted anything on the chosen date, matched by Created By email. The reviewer picks 1–5 stars and an optional comment, and Save creates the driver's row for that date or updates it.
+- scrHome shows the driver their latest review from the last 7 days (not today) until they tap "Got it". Dismissals are saved on the phone ("fcSeenReview").
+- A driver could read other drivers' reviews by opening the list in SharePoint. Per-item permissions would need a flow.
+
+**Deferred:**
+- Reading COF and blower due dates by scanning needs samples of both labels. A QR code or barcode on the label can use the existing scanner; printed text needs AI Builder (premium).
+- Document scanning of invoices (edge detection) also needs AI Builder.
+
+**Phase 2: Driver Assessment (not built):**
+- A monthly fitness-to-drive assessment.
+- New `Assessor` role: an AppRole choice plus a SharePoint group, with SyncAppUser extended.
+- An assessments list and screen.
+- A driver who fails can't start a checklist or run sheet that month.
+- Assessors get a reminder (scheduled flow or banner) of drivers with no assessment this month.
 
 ---
 

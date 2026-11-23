@@ -284,11 +284,46 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 - **Run sheet is add-only:** nothing is written until Submit; then the trip (Status Open) and its stops are created as new rows. Sent stops can't be edited in the app. "In Progress" is no longer written, so Team Leaders don't see a run until it's submitted.
 - **Lessons from building the flow:** rename actions before referencing them; fill fields from the Expression tab only (SharePoint tokens add Apply to each loops); make both Respond steps identical by copying; a flow created from Studio's pane keeps an automatic `PowerAppV2->…` name in the app (fixed with Save As + re-add); one-line YAML values containing `: ` break the paste (PA1001).
 
+## Update 23 Nov 2026 (later): meeting with Pawan's team
+
+- **Checklist:**
+  - Reordered: Licence and Odometer, then Cabin, Electrical, Tyres, Leaks and Fluid Levels, and the rest.
+  - Rewritten with a plain check instruction under every item. The wording goes to Pawan for approval (`files/Fleet Checklist - item wording for approval.md`).
+  - Every item is now an explicit **Yes / No** with a comment on No. This replaces the 19 Nov rule where ticked = Yes and unticked = No.
+  - Added: licence, four glass checks (2-seat cabin), net/gross weight photo, accident imagery, and truck profile photos (Front, Rear, Left, Right).
+  - Money Box removed. One photo per tyre.
+  - Cabin tilting and underneath greasing are weekly and reviewer-only. The app shows "inspection conducted on … by …" when the truck was already done that week (user's design).
+  - Truck number locked once set on Home. Site required.
+  - The screen is now generated from `scripts/checklist_items.json`.
+- **Trucks list** (GF Fleet Trucks) for truck type and number of tyres. Krish to send the full table. Which items each truck type sees is still to confirm.
+- **Run sheet:**
+  - Actual departure time only.
+  - HH : MM time entry.
+  - Arrive time first, "time left the premises" last.
+  - Invoices per stop, each with an in-app photo. No gallery, by the user's decision.
+  - Photos upload whenever there's signal.
+  - A planned **RunSheetSubmitted** flow emails a PDF of all invoices.
+- **Daily review:** reviewers give each driver 1–5 stars a day, with an optional comment. The driver sees it on Home on their next shift (named "Daily review" by the user).
+- **Deferred:**
+  - Reading COF and blower dates by scanning (needs label samples; printed text would need AI Builder).
+  - Invoice document scanning.
+  - Phase 2 Driver Assessment with an Assessor role.
+- The cut-off meeting note about truck numbers was dropped.
+
 ## Suggested next steps
 
-1. Paste the latest screens, refresh data sources, and test on a phone (including airplane mode for the run sheet).
-2. Confirm roles with Krish, then share and publish (see the access guide).
-3. Confirm the SaveFleetPhoto library and add a photo strip to the review screen.
-4. Krish's remaining meeting items: Trade Issue email (total vs actual quantity), Run Sheet Submission email, Fleet Checklist to Excel/MEX email.
-5. Decide whether the fleet checklist and declaration need to work offline too.
-6. Consider `git init` so changes are tracked.
+1. Run the new scripts:
+   - `create_checklist_v2_columns.js`
+   - `create_trucks_list.js`
+   - `create_runsheet_v2_columns.js`
+   - `create_daily_reviews.js`
+2. Add the new lists as data sources and refresh Fleet Checklist, Run Sheet Details and the photo library.
+3. Add the two SaveFleetPhoto inputs, then re-add the flow in the app.
+4. Paste every screen and test on a phone, including airplane mode for the run sheet.
+5. Build the RunSheetSubmitted flow.
+6. Send the wording document to Pawan. Once approved, run the column script in rename mode.
+7. Get the truck table from Krish, and photos of the COF and blower labels.
+8. Confirm roles with Krish, then share and publish (see the access guide).
+9. Add a photo strip to the review screen.
+10. Krish's remaining meeting items: Trade Issue email (total vs actual quantity), Fleet Checklist to Excel/MEX email.
+11. Decide whether the fleet checklist and declaration need to work offline too.
