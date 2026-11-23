@@ -17,7 +17,33 @@ Screens:
             With({me: Lower(User().Email), tday: Today(), wk: DateAdd(Today(), -7, TimeUnit.Days)},
                 Set(varLastDailyReview, IfError(
                     First(Sort(Filter('GF Fleet Daily Reviews', DriverEmail = me && ReviewDate >= wk && ReviewDate < tday && ActiveYN = true), ReviewDate, SortOrder.Descending)),
-                    Blank()))))
+                    Blank()))));
+        If(IsEmpty(colDraft),
+            IfError(LoadData(colDraft, "fcCheckDraft", true); true, false);
+            If(!IsEmpty(colDraft) && IsEmpty(colPhotos), IfError(LoadData(colPhotos, "fcCheckPhotos", true); true, false)));
+        If(IsEmpty(colPendingDefects), IfError(LoadData(colPendingDefects, "fcCheckRetry", true); true, false));
+        If(IsEmpty(colPendingPhotos), IfError(LoadData(colPendingPhotos, "fcCheckRetryPhotos", true); true, false));
+        If(Connection.Connected && (!IsEmpty(colPendingDefects) || !IsEmpty(colPendingPhotos)),
+            ClearCollect(colRetryDefects, colPendingDefects);
+            ClearCollect(colRetryPhotos, colPendingPhotos);
+            Clear(colPendingDefects);
+            Clear(colPendingPhotos);
+            ForAll(colRetryDefects As d,
+                IfError(
+                    Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
+                        Title: d.Title, ChecklistID: d.RecId, Truck: d.Truck, ItemField: d.ItemField,
+                        Comment: d.Comment, ActiveYN: true}),
+                    Collect(colPendingDefects, d)));
+            ForAll(colRetryPhotos As p,
+                IfError(
+                    'SaveFleetPhoto'.Run(p.Truck, p.Type, p.Item, p.RecId, "Fleet Checklist",
+                        {file: {name: "photo.jpg", contentBytes: p.Img}}),
+                    Collect(colPendingPhotos, p)));
+            Clear(colRetryDefects);
+            Clear(colRetryPhotos);
+            IfError(SaveData(colPendingDefects, "fcCheckRetry"); SaveData(colPendingPhotos, "fcCheckRetryPhotos"); true, false);
+            If(IsEmpty(colPendingDefects) && IsEmpty(colPendingPhotos),
+                Notify("Checklist photos and defect notes kept on this phone have now been sent", NotificationType.Success)))
     Children:
       - conHome:
           Control: GroupContainer@1.5.0
@@ -225,6 +251,122 @@ Screens:
                               RadiusTopRight: =10
                               Size: =15
                               Text: ="Got it"
+                  - conHomeDraft:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(226, 243, 242, 1)
+                        FillPortions: =0
+                        Height: =32 + lblHomeDraft.Height + 10 + 56
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =10
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"] && !IsEmpty(colDraft)
+                      Children:
+                        - lblHomeDraft:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 112, 112, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              PaddingLeft: =0
+                              Size: =15
+                              Text: |-
+                                ="You have an unfinished checklist for " & LookUp(colDraft, f = "_truck").a & " started " & LookUp(colDraft, f = "_started").a & If(Connection.Connected, "", ". Carry on when you have signal.")
+                              Wrap: =true
+                        - conHomeDraftButtons:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =56
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =10
+                              LayoutMinHeight: =56
+                            Children:
+                              - btnHomeDraftCarryOn:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                                    DisabledColor: =RGBA(255, 255, 255, 1)
+                                    DisabledFill: =RGBA(186, 198, 200, 1)
+                                    DisplayMode: =If(Connection.Connected, DisplayMode.Edit, DisplayMode.Disabled)
+                                    Fill: =RGBA(8, 144, 144, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =56
+                                    HoverBorderColor: =RGBA(0, 0, 0, 0)
+                                    HoverColor: =RGBA(255, 255, 255, 1)
+                                    HoverFill: =RGBA(0, 112, 112, 1)
+                                    OnSelect: |-
+                                      =Set(varTruck, LookUp(colDraft, f = "_truck").a);
+                                      Set(varReviewing, false);
+                                      Set(varCheck, Blank());
+                                      UpdateContext({ctxConfirmDiscard: false});
+                                      NewForm(frmPreTrip);
+                                      Navigate(scrPreTrip, ScreenTransition.None, {ctxPage: 1, ctxSec: "licence"})
+                                    PressedBorderColor: =RGBA(0, 0, 0, 0)
+                                    PressedColor: =RGBA(255, 255, 255, 1)
+                                    PressedFill: =RGBA(0, 112, 112, 1)
+                                    RadiusBottomLeft: =10
+                                    RadiusBottomRight: =10
+                                    RadiusTopLeft: =10
+                                    RadiusTopRight: =10
+                                    Size: =15
+                                    Text: ="Carry on"
+                              - btnHomeDraftDiscard:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(8, 144, 144, 1)
+                                    BorderStyle: =BorderStyle.Solid
+                                    BorderThickness: =2
+                                    Color: =RGBA(0, 112, 112, 1)
+                                    DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                                    DisabledColor: =RGBA(255, 255, 255, 1)
+                                    DisabledFill: =RGBA(186, 198, 200, 1)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =56
+                                    HoverBorderColor: =RGBA(8, 144, 144, 1)
+                                    HoverColor: =RGBA(0, 112, 112, 1)
+                                    HoverFill: =RGBA(226, 243, 242, 1)
+                                    OnSelect: |-
+                                      =If(ctxConfirmDiscard,
+                                          Clear(colDraft);
+                                          Clear(colPhotos);
+                                          IfError(SaveData(colDraft, "fcCheckDraft"); SaveData(colPhotos, "fcCheckPhotos"); true, false);
+                                          UpdateContext({ctxConfirmDiscard: false});
+                                          Notify("Unfinished checklist discarded", NotificationType.Information),
+                                          UpdateContext({ctxConfirmDiscard: true}))
+                                    PressedBorderColor: =RGBA(0, 112, 112, 1)
+                                    PressedColor: =RGBA(0, 112, 112, 1)
+                                    PressedFill: =RGBA(226, 243, 242, 1)
+                                    RadiusBottomLeft: =10
+                                    RadiusBottomRight: =10
+                                    RadiusTopLeft: =10
+                                    RadiusTopRight: =10
+                                    Size: =If(ctxConfirmDiscard, 13, 15)
+                                    Text: =If(ctxConfirmDiscard, "Tap again to discard", "Discard")
                   - conHomeTruck:
                       Control: GroupContainer@1.5.0
                       Variant: AutoLayout
@@ -383,7 +525,7 @@ Screens:
                         DisabledBorderColor: =RGBA(0, 0, 0, 0)
                         DisabledColor: =RGBA(255, 255, 255, 1)
                         DisabledFill: =RGBA(186, 198, 200, 1)
-                        DisplayMode: =If(!Connection.Connected, DisplayMode.Disabled, If(IsBlank(varTruck), DisplayMode.Disabled, DisplayMode.Edit))
+                        DisplayMode: =If(!Connection.Connected || IsBlank(varTruck) || !IsEmpty(colDraft), DisplayMode.Disabled, DisplayMode.Edit)
                         Fill: =RGBA(8, 144, 144, 1)
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
@@ -395,8 +537,10 @@ Screens:
                           =Set(varReviewing, false);
                           Set(varCheck, Blank());
                           Clear(colPhotos);
+                          ClearCollect(colDraft, {f: "_truck", a: varTruck, c: ""}, {f: "_started", a: Text(Now(), "ddd d mmm, hh:mm"), c: ""});
+                          IfError(SaveData(colDraft, "fcCheckDraft"); SaveData(colPhotos, "fcCheckPhotos"); true, false);
                           NewForm(frmPreTrip);
-                          Navigate(scrPreTrip)
+                          Navigate(scrPreTrip, ScreenTransition.None, {ctxPage: 1, ctxSec: "licence"})
                         PressedBorderColor: =RGBA(0, 0, 0, 0)
                         PressedColor: =RGBA(255, 255, 255, 1)
                         PressedFill: =RGBA(0, 112, 112, 1)
@@ -405,7 +549,7 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =15
-                        Text: =If(IsBlank(varTruck), "Select a truck first", "Start fleet checklist")
+                        Text: =If(!IsEmpty(colDraft), "Finish or discard your checklist first", IsBlank(varTruck), "Select a truck first", "Start fleet checklist")
                   - btnDriverDeclaration:
                       Control: Classic/Button@2.2.0
                       Properties:

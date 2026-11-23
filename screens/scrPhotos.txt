@@ -300,9 +300,11 @@ Screens:
                                 =If(IsBlank(varPhotoItem),
                                     Collect(colPhotos, {Img: camCheck.Stream, Type: drpPhotoType.Selected.Value, Item: txtPhotoItem.Text});
                                     Reset(txtPhotoItem);
+                                    IfError(SaveData(colPhotos, "fcCheckPhotos"); true, Notify("Photo kept, but this phone is running out of space to save it. Finish the checklist before closing the app.", NotificationType.Warning));
                                     Notify("Photo added", NotificationType.Success),
                                     RemoveIf(colPhotos, Type = varPhotoType && Item = varPhotoItem);
                                     Collect(colPhotos, {Img: camCheck.Stream, Type: varPhotoType, Item: varPhotoItem});
+                                    IfError(SaveData(colPhotos, "fcCheckPhotos"); true, Notify("Photo kept, but this phone is running out of space to save it. Finish the checklist before closing the app.", NotificationType.Warning));
                                     Notify("Photo saved", NotificationType.Success);
                                     Set(varPhotoType, Blank());
                                     Set(varPhotoItem, Blank());
@@ -436,7 +438,9 @@ Screens:
                               HoverColor: =RGBA(16, 110, 190, 1)
                               HoverFill: =RGBA(0, 0, 0, 0)
                               Icon: =Icon.Trash
-                              OnSelect: =Remove(colPhotos, ThisItem)
+                              OnSelect: |-
+                                =Remove(colPhotos, ThisItem);
+                                IfError(SaveData(colPhotos, "fcCheckPhotos"); true, false)
                               PressedBorderColor: =RGBA(0, 0, 0, 0)
                               PressedColor: =RGBA(16, 110, 190, 1)
                               PressedFill: =RGBA(0, 0, 0, 0)

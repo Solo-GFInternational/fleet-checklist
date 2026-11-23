@@ -60,7 +60,10 @@ The paper forms come from SOP **DC/16.0 Driver Responsibilities & Customer Servi
 
 1. Open the app and scan or enter the truck number on **Home**.
 2. Complete the **Fitness for Driving declaration**. Each statement is a checkbox. Any unticked statement makes Comments required and tells the driver to contact their supervisor.
-3. Complete the **Pre-Trip Checklist**, in order: Licence and Odometer, Cabin, Electrical, Tyres, Leaks and Fluid Levels, then the rest. Each item says what the driver should see (for example "Battery water at top mark"), with a **Yes / No**. A **No** needs a comment. The truck number is locked to the truck chosen on Home, and Site is required.
+3. Complete the **Pre-Trip Checklist**, one section per page (**Back** / **Next**, with "Section 3 of 12" and a progress bar), in order: Licence and Odometer, Cabin, Electrical, Tyres, Leaks and Fluid Levels, then the rest. Each item says what the driver should see (for example "Battery water at top mark"), with a **Yes / No**. A **No** needs a comment. The truck number is locked to the truck chosen on Home, and Site is required. The footer shows how many items on the page are still to do; on the last page, **Go to it** jumps to the first missing one.
+   - COF expiry, blower service and truck service dates come from the Trucks list, marked **Expired**, **Due within 30 days** or **OK**. The driver only enters a date (with a photo) when the truck has none on file.
+   - The odometer shows the last reading and warns if the new one is lower, or more than 1,000 km higher.
+   - Answers and photos are saved on the phone as the driver goes. If the app closes, Home offers **Carry on** or **Discard**; a new checklist can't be started until that one is finished or discarded.
 4. Take the required **photos**: odometer, accessory items, one per tyre, net/gross weight plate, four truck profiles (Front, Rear, Left, Right), and accident photos if there's new damage. Submit stays locked until everything is answered and photographed. Photos upload through the `SaveFleetPhoto` flow after the checklist is saved.
 5. If they were reviewed yesterday, Home shows their **Daily review** (stars and comment) until they tap "Got it".
 

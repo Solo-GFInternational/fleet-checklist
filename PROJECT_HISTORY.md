@@ -310,6 +310,7 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
   - Invoice document scanning.
   - Phase 2 Driver Assessment with an Assessor role.
 - The cut-off meeting note about truck numbers was dropped.
+- **Four checklist improvements (user's choice, same day):** COF / blower / truck service dates read from the Trucks list with an Expired / Due soon / OK status (date picker + photo only as fallback); an odometer sanity warning against the truck's last reading (new UpdateTruckOdometer flow keeps it current); a draft saved on the phone with Carry on / Discard on Home, plus a local retry queue for defect rows and photos that fail after save; and one section per page with Back / Next and a progress bar.
 
 ## Suggested next steps
 
@@ -328,3 +329,4 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 9. Add a photo strip to the review screen.
 10. Krish's remaining meeting items: Trade Issue email (total vs actual quantity), Fleet Checklist to Excel/MEX email.
 11. Decide whether the fleet checklist and declaration need to work offline too.
+12. Rerun `create_trucks_list.js` (new date and odometer columns, Reviewers get edit), have the office fill in the due dates, and build the UpdateTruckOdometer flow (handover 4.6).

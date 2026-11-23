@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "description": "Fleet Checklist items: single source for scrPreTrip, column scripts and the wording document. commentOn = the answer that requires a comment (and photos for photo 'multi'); the comment is saved as a row in the GF Fleet Checklist Defects list (no comment columns, so commentField is null).",
+  "description": "Fleet Checklist items: single source for scrPreTrip, column scripts and the wording document. commentOn = the answer that requires a comment (and photos for photo 'multi'); the comment is saved as a row in the GF Fleet Checklist Defects list (no comment columns, so commentField is null). truckDate = the GF Fleet Trucks date column shown read-only (with Expired / Due within 30 days / OK) instead of the date picker and photo when the truck has that date.",
   "sections": [
     {
       "key": "header",
@@ -1288,6 +1288,7 @@
       "instruction": "",
       "commentField": null,
       "commentOn": null,
+      "truckDate": "COFExpiry",
       "photo": "one",
       "photoSlots": [
         "COF expiry date"
@@ -1310,6 +1311,7 @@
       "instruction": "",
       "commentField": null,
       "commentOn": null,
+      "truckDate": "BlowerServiceDue",
       "photo": "one",
       "photoSlots": [
         "Blower service due date"
@@ -1332,6 +1334,7 @@
       "instruction": "",
       "commentField": null,
       "commentOn": null,
+      "truckDate": "TruckServiceDue",
       "photo": "one",
       "photoSlots": [
         "Truck service due date"

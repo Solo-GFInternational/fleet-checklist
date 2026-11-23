@@ -21,6 +21,17 @@ What it builds:
   - Weekly reviewer-only items (cabin tilting, greasing): only when reviewing; replaced by
     "... conducted on <date> by <name>" when this truck already has a Yes this week (Mon-Sun).
   - Submit button that names the first missing answer, comment, field or photo.
+  - One section per page: ctxPage / ctxSec (colPages, built in OnVisible; header + Licence and
+    Odometer are page 1, sign-off cards sit on the last page). Footer: progress label and bar,
+    Back / Next, "N still to do" for the current page, Submit and "Go to it" on the last page.
+    Starters pass {ctxPage: 1, ctxSec: "licence"} in Navigate.
+  - Draft on the phone: every answer, comment, date and header field is written to colDraft
+    ({f, a, c}; rows "_truck" and "_started" are made by scrHome) and saved with
+    SaveData "fcCheckDraft"; a new checklist's Defaults read it back (reviewing ignores it).
+  - Items with "truckDate": the date comes from the GF Fleet Trucks column of that name, shown
+    read-only with Expired / Due within 30 days / OK; date picker and photo only when it is blank.
+  - Odometer: "Last reading" hint and a warning when the entry is below the truck's LastOdometer
+    or more than 1,000 km above it.
 
 Items with "hidden": true are left off the screen (their SharePoint columns stay).
 Stdlib only.
@@ -44,6 +55,10 @@ LINE = 'RGBA(208, 216, 218, 1)'
 RED = 'RGBA(196, 49, 75, 1)'
 CLEAR = 'RGBA(0, 0, 0, 0)'
 WHITE = 'RGBA(255, 255, 255, 1)'
+YELLOW_TINT = 'RGBA(254, 246, 204, 1)'
+
+FIRST_PAGE = 'licence'   # header + Licence and Odometer share page 1
+LAST_PAGE = 'remarks'    # sign-off cards sit on the last page
 
 MAX_TYRES = 12          # tyre photo buttons generated; NoOfTyres above this is capped
 FIRST_NEW_NUMBER = 103  # DataCardValueN numbers for new cards start here (1-102 are used by scrPreTrip/scrTest)
@@ -88,6 +103,16 @@ WEEKLY = {
     'CabTilt': ('varWeekTilt', 'Cabin Tilting inspection'),
     'field_44': ('varWeekGrease', 'Underneath greasing inspection'),
 }
+
+def draft_text_mod(field, numeric=False):
+    """(old, new) for add_template: a verbatim text input's Default reads the draft; OnChange saves it."""
+    review = 'Text(Parent.Default)' if numeric else 'Parent.Default'
+    pad = ' ' * 24
+    body = [f'{pad}Default: |-', f'{pad}  =If(varReviewing, {review}, {draft_value(field)}.a)',
+            f'{pad}OnChange: |-']
+    body += [f'{pad}  {ln}' for ln in ('=' + draft_save(field, 'Self.Text')).split('\n')]
+    return (f'{pad}Default: =Parent.Default\n', '\n'.join(body) + '\n')
+
 
 TRUCK_TYPE_RULE = '(IsBlank(varTruckInfo) || varTruckInfo.TruckType.Value = "{t}")'
 
@@ -192,14 +217,30 @@ def star_label(n):
     ], KID, metadata='FieldRequired')
 
 
-def checkbox(name, caption, default, on_check, x, y, visible=None):
+def draft_save(field, answer, comment='""'):
+    """Write one row of the phone draft (colDraft) and save it. Skipped when reviewing."""
+    return (f'If(!varReviewing,\n'
+            f'    RemoveIf(colDraft, f = {fx_str(field)});\n'
+            f'    Collect(colDraft, {{f: {fx_str(field)}, a: {answer}, c: {comment}}});\n'
+            f'    IfError(SaveData(colDraft, "fcCheckDraft"); true, false))')
+
+
+def draft_value(field):
+    return f'LookUp(colDraft, f = {fx_str(field)})'
+
+
+def checkbox(name, caption, default, on_check, x, y, visible=None, on_uncheck=None):
     props = [
         ('BorderColor', CLEAR), ('CheckboxBackgroundFill', WHITE), ('CheckboxBorderColor', TEAL),
         ('CheckboxSize', '30'), ('CheckmarkFill', TEAL), ('Color', INK), ('Default', default),
         ('DisabledColor', INK), ('DisplayMode', 'Parent.DisplayMode'), ('Fill', CLEAR),
         ('Font', "Font.'Segoe UI'"), ('FontWeight', 'FontWeight.Semibold'), ('Height', '48'),
-        ('HoverColor', INK), ('HoverFill', TINT), ('OnCheck', on_check), ('PressedColor', INK),
-        ('PressedFill', TINT), ('Size', '15'), ('Text', fx_str(caption)),
+        ('HoverColor', INK), ('HoverFill', TINT), ('OnCheck', on_check),
+    ]
+    if on_uncheck:
+        props.append(('OnUncheck', on_uncheck))
+    props += [
+        ('PressedColor', INK), ('PressedFill', TINT), ('Size', '15'), ('Text', fx_str(caption)),
     ]
     if visible:
         props.append(('Visible', visible))
@@ -250,8 +291,9 @@ def photo_type(it):
     return {'perTyre': 'Tyre', 'fourSides': 'Profile', 'multi': 'Accident'}.get(it['photo'], 'Accessory')
 
 
-def photo_controls(it, suffix, y, answer_box):
-    """Photo buttons + status for an item. Returns (controls, list of (condition, message) for Submit)."""
+def photo_controls(it, suffix, y, answer_box, show='!varReviewing'):
+    """Photo buttons + status for an item. Returns (controls, list of (condition, message) for Submit).
+    show: Visible of the 'one' photo button and status."""
     ptype = photo_type(it)
     out, missing = [], []
     rule = it['photo']
@@ -260,9 +302,9 @@ def photo_controls(it, suffix, y, answer_box):
         taken = photo_taken(ptype, item)
         out.append(secondary_button(
             f'btn{suffix}Photo', f'If({taken}, "Retake photo", "Take photo")',
-            photo_onselect(ptype, fx_str(item)), '150', '30', y, '!varReviewing'))
+            photo_onselect(ptype, fx_str(item)), '150', '30', y, show))
         out.append(status_label(f'lbl{suffix}Photo', taken, '"✓ Photo taken"', '"Photo required"',
-                                'Parent.Width - 210', '192', y, '!varReviewing'))
+                                'Parent.Width - 210', '192', y, show))
         missing.append((photo_missing(ptype, item), fx_str('Photo needed: ' + item)))
     elif rule in ('perTyre', 'fourSides'):
         if rule == 'perTyre':
@@ -319,9 +361,12 @@ class Builder:
         self.row = 0
         self.next_n = FIRST_NEW_NUMBER
         self.cards = []           # list of line lists
-        self.missing = []         # Submit gate: (condition, message expr)
+        self.missing = []         # Submit gate: (condition, message expr, page key)
         self.weekly = []          # (field, var, yes box, no box, key n, comment box or None)
+        self.page_keys = []       # page (section) keys in order
+        self.review_pages = set() # pages that show something when reviewing
         self.defects = []         # driver items with a comment box: (field, key n, problem box, comment box, truck rule)
+        self.page_key = FIRST_PAGE  # section key of the page the cards being built sit on
 
     def new_n(self):
         n = self.next_n
@@ -357,13 +402,21 @@ class Builder:
         for old, new in mods:
             assert old in text, old
             text = text.replace(old, new)
+        # card-level Visible gets the page rule (inserted when the card has none)
+        page = f'ctxSec = {fx_str(self.page_key)}'
+        if '\n                  Visible: =varReviewing\n' in text:
+            text = text.replace('\n                  Visible: =varReviewing\n',
+                                f'\n                  Visible: =varReviewing && {page}\n')
+        else:
+            assert '\n                  Visible: =' not in text
+            text = text.replace('\n                  Width: =Parent.Width\n',
+                                f'\n                  Visible: ={page}\n                  Width: =Parent.Width\n', 1)
         self.cards.append(text.rstrip('\n').split('\n'))
 
     def add_heading(self, key, title, visible=None):
         k = key[0].upper() + key[1:]
-        props = [('BorderColor', LINE), ('DisplayName', fx_str(title)), ('Height', '60')]
-        if visible:
-            props.append(('Visible', visible))
+        props = [('BorderColor', LINE), ('DisplayName', fx_str(title)), ('Height', '60'),
+                 ('Visible', self.page_vis(visible))]
         props += [('Width', 'Parent.Width'), ('WidthFit', 'true'), ('X', '0'), ('Y', str(self.take_row()))]
         lbl = control(f'lblSec{k}', 'Label@2.5.1', [
             ('Wrap', 'true'), ('Align', 'Align.Left'), ('Fill', TEAL), ('PaddingLeft', '16'),
@@ -384,7 +437,7 @@ class Builder:
             ('Width', 'Parent.Width - 48'), ('Wrap', 'true'), ('X', '24'), ('Y', '10'),
         ], KID)
         props = [('BorderColor', CLEAR), ('DisplayName', '"Truck note"'),
-                 ('Height', '60 + (lblTruckNotFound.Height - 40)'), ('Visible', 'IsBlank(varTruckInfo)'),
+                 ('Height', '60 + (lblTruckNotFound.Height - 40)'), ('Visible', self.page_vis('IsBlank(varTruckInfo)')),
                  ('Width', 'Parent.Width'), ('WidthFit', 'true'), ('X', '0'), ('Y', str(self.take_row()))]
         self.cards.append(control('crdTruckNote', 'TypedDataCard@1.0.7', props, CARD, variant='BlankCard',
                                   children=[lbl]))
@@ -411,8 +464,18 @@ class Builder:
             dm = 'If(varReviewing, DisplayMode.View, DisplayMode.Edit)'
             card_vis = truck_vis
             box_vis = None
-            yes_default = f'ThisItem.{f}.Value = "Yes"'
-            no_default = f'ThisItem.{f}.Value = "No"'
+            yes_default = f'If(varReviewing, ThisItem.{f}.Value = "Yes", {draft_value(f)}.a = "Yes")'
+            no_default = f'If(varReviewing, ThisItem.{f}.Value = "No", {draft_value(f)}.a = "No")'
+        cmt = f'txt{sfx}Cmt' if it.get('commentOn') else None
+        answer = f'If({yes_box}.Value, "Yes", {no_box}.Value, "No", "")'
+        cmt_text = f'{cmt}.Text' if cmt else '""'
+
+        def on_check(ans, other):
+            if reviewer:
+                return f'Reset({other})'
+            # draft first: Reset puts the other box back to its Default, which reads the draft
+            return draft_save(f, fx_str(ans), cmt_text) + f';\nReset({other})'
+        on_uncheck = None if reviewer else draft_save(f, answer, cmt_text)
 
         kids = [key_label(n)]
         below = f'DataCardKey{n}.Y + DataCardKey{n}.Height'
@@ -420,8 +483,10 @@ class Builder:
             kids.append(hint_label(f'lbl{sfx}Hint', it['instruction'], f'{below} + 2'))
             below = f'lbl{sfx}Hint.Y + lbl{sfx}Hint.Height'
         box_y = f'{below} + 4'
-        kids.append(checkbox(yes_box, 'Yes', yes_default, f'Reset({no_box})', '30', box_y, box_vis))
-        kids.append(checkbox(no_box, 'No', no_default, f'Reset({yes_box})', '150', box_y, box_vis))
+        kids.append(checkbox(yes_box, 'Yes', yes_default, on_check('Yes', no_box), '30', box_y, box_vis,
+                             on_uncheck))
+        kids.append(checkbox(no_box, 'No', no_default, on_check('No', yes_box), '150', box_y, box_vis,
+                             on_uncheck))
         err_y = f'{yes_box}.Y + {yes_box}.Height'
         if reviewer:
             done = f'lbl{sfx}Done'
@@ -435,10 +500,9 @@ class Builder:
             ], KID))
             err_y = f'{box_y} + If(IsBlank({week_var}), {yes_box}.Height, {done}.Height)'
         problem_box = yes_box if it.get('commentOn') == 'Yes' else no_box
-        cmt = None
-        if it.get('commentOn'):
-            cmt = f'txt{sfx}Cmt'
-            kids.append(self.comment_box(it, cmt, problem_box, yes_box, reviewer, week_var if reviewer else None))
+        if cmt:
+            kids.append(self.comment_box(it, cmt, problem_box, yes_box, reviewer, week_var if reviewer else None,
+                                         None if reviewer else draft_save(f, answer, 'Self.Text')))
             err_y = f'If({cmt}.Visible, {cmt}.Y + {cmt}.Height, {err_y})'
         kids.append(error_label(n, err_y))
         kids.append(star_label(n))
@@ -454,7 +518,7 @@ class Builder:
             ('DataField', fx_str(f)), ('Default', f'ThisItem.{f}'), ('DisplayMode', dm),
             ('DisplayName', f"DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'{f}')"),
             ('Required', 'false'), ('Update', update),
-        ], card_vis)
+        ], self.page_vis(card_vis))
         self.cards.append(control(card, 'TypedDataCard@1.0.7', props, CARD, variant='ClassicComboBoxEdit',
                                   children=kids))
         if it['required'] and not reviewer:
@@ -469,12 +533,16 @@ class Builder:
         if reviewer:
             self.weekly.append((f, week_var, yes_box, no_box, n, cmt))
 
+    def page_vis(self, vis=None):
+        """Card Visible: its own rule plus 'on the current page'."""
+        return self.wrap(vis, f'ctxSec = {fx_str(self.page_key)}')
+
     @staticmethod
     def wrap(vis, cond):
         return f'{vis} && {cond}' if vis else cond
 
     @staticmethod
-    def comment_box(it, name, problem_box, yes_box, reviewer, week_var):
+    def comment_box(it, name, problem_box, yes_box, reviewer, week_var, on_change=None):
         """Multi-line comment inside the item's card, below the Yes/No boxes. Saved to the defects list,
         not to a column. Reviewing: shows the saved defect comment, view-only (weekly reviewer items
         stay editable until a defect row exists)."""
@@ -484,7 +552,7 @@ class Builder:
             dm = f'If(IsBlank({defect}), DisplayMode.Edit, DisplayMode.View)'
             vis = f'IsBlank({week_var}) && {problem_box}.Value'
         else:
-            default = f'If(varReviewing, {defect}.Comment, "")'
+            default = f'If(varReviewing, {defect}.Comment, {draft_value(it["field"])}.c)'
             dm = 'Parent.DisplayMode'
             vis = f'{problem_box}.Value'
         hint = 'Describe the damage' if it.get('commentOn') == 'Yes' else 'Say what is wrong'
@@ -495,7 +563,8 @@ class Builder:
             ('DisabledBorderColor', CLEAR), ('DisabledColor', 'RGBA(161, 159, 157, 1)'),
             ('DisabledFill', 'RGBA(242, 242, 241, 0)'), ('DisplayMode', dm), ('Font', "Font.'Segoe UI'"),
             ('Height', '80'), ('HintText', fx_str(hint)), ('HoverBorderColor', TEAL),
-            ('HoverColor', 'RGBA(50, 49, 48, 1)'), ('HoverFill', WHITE), ('PaddingLeft', '5'),
+            ('HoverColor', 'RGBA(50, 49, 48, 1)'), ('HoverFill', WHITE)] + (
+            [('OnChange', on_change)] if on_change else []) + [('PaddingLeft', '5'),
             ('PressedBorderColor', TEAL), ('PressedColor', 'RGBA(50, 49, 48, 1)'), ('PressedFill', WHITE),
             ('RadiusBottomLeft', '8'), ('RadiusBottomRight', '8'), ('RadiusTopLeft', '8'),
             ('RadiusTopRight', '8'), ('Size', '15'), ('Tooltip', fx_str(hint)), ('Visible', vis),
@@ -516,7 +585,7 @@ class Builder:
         if it['required']:
             self.missing += [(self.wrap(truck_vis, c), m) for c, m in miss]
         props = [('BorderColor', LINE), ('DisplayName', fx_str(it['proposedName'])),
-                 ('Visible', self.wrap(truck_vis, '!varReviewing') if truck_vis else '!varReviewing'),
+                 ('Visible', self.page_vis(self.wrap(truck_vis, '!varReviewing'))),
                  ('Width', 'Parent.Width'), ('WidthFit', 'true'), ('X', '0'), ('Y', str(self.take_row()))]
         self.cards.append(control(card, 'TypedDataCard@1.0.7', props, CARD, variant='BlankCard', children=kids))
 
@@ -530,35 +599,68 @@ class Builder:
         if it['instruction']:
             kids.append(hint_label(f'lbl{sfx}Hint', it['instruction'], f'{below} + 2'))
             below = f'lbl{sfx}Hint.Y + lbl{sfx}Hint.Height'
-        kids.append(control(f'DataCardValue{n}', 'Classic/DatePicker@2.6.0', [
+        # truckDate: the Trucks list has the date -> show it read-only (no picker, no photo)
+        td = f"varTruckInfo.{it['truckDate']}" if it.get('truckDate') else None
+        no_td = f'IsBlank({td})' if td else None     # fall back to picker + photo
+        picker = f'DataCardValue{n}'
+        draft = f'With({{d: {draft_value(f)}.a}}, If(varReviewing || IsBlank(d), Parent.Default, DateValue(d)))'
+        kids.append(control(picker, 'Classic/DatePicker@2.6.0', [
             ('BorderColor', 'If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)'), ('Color', INK),
-            ('Height', '48'), ('DefaultDate', 'Parent.Default'), ('DisabledBorderColor', CLEAR),
+            ('Height', '48'), ('DefaultDate', draft), ('DisabledBorderColor', CLEAR),
             ('DisabledColor', 'RGBA(161, 159, 157, 1)'), ('DisabledFill', 'RGBA(242, 242, 241, 0)'),
             ('DisplayMode', 'Parent.DisplayMode'), ('EndYear', 'Year(Today())+100'), ('Fill', WHITE),
             ('Font', "Font.'Segoe UI'"), ('IconBackground', TEAL), ('IconFill', WHITE), ('IsEditable', 'true'),
+            ('OnChange', draft_save(f, 'Text(Self.SelectedDate, "yyyy-mm-dd")')),
             ('PaddingBottom', '0'), ('PaddingLeft', 'If(Self.DisplayMode = DisplayMode.Edit, 5, 0)'),
             ('Size', '15'), ('StartYear', '1899'), ('Tooltip', 'Parent.DisplayName'),
+        ] + ([('Visible', f'varReviewing || {no_td}')] if td else []) + [
             ('Width', 'Parent.Width - 60'), ('X', '30'), ('Y', f'{below} + 5'),
         ], KID, metadata='FieldValue'))
-        kids.append(error_label(n, f'DataCardValue{n}.Y + DataCardValue{n}.Height'))
+        err_y = f'{picker}.Y + {picker}.Height'
+        if td:
+            date_lbl, status_lbl = f'lbl{sfx}TruckDate', f'lbl{sfx}DueStatus'
+            shown = f'!varReviewing && !{no_td}'
+
+            def by_status(expired, due, ok):
+                return (f'If({td} < Today(), {expired}, {td} <= DateAdd(Today(), 30, TimeUnit.Days), '
+                        f'{due}, {ok})')
+            kids.append(control(date_lbl, 'Label@2.5.1', [
+                ('BorderStyle', 'BorderStyle.None'), ('Color', INK), ('Font', "Font.'Segoe UI'"),
+                ('FontWeight', 'FontWeight.Semibold'), ('Height', '48'), ('PaddingLeft', '0'), ('Size', '15'),
+                ('Text', f'Text({td}, "dd mmm yyyy")'), ('Visible', shown), ('Width', '150'),
+                ('X', '30'), ('Y', f'{below} + 5'),
+            ], KID))
+            kids.append(control(status_lbl, 'Label@2.5.1', [
+                ('Align', 'Align.Center'), ('BorderStyle', 'BorderStyle.None'),
+                ('Color', by_status(WHITE, INK, DARK_TEAL)), ('Fill', by_status(RED, YELLOW_TINT, TINT)),
+                ('Font', "Font.'Segoe UI'"), ('FontWeight', 'FontWeight.Semibold'), ('Height', '36'),
+                ('PaddingLeft', '8'), ('PaddingRight', '8'), ('Size', '13'),
+                ('Text', by_status('"Expired"', '"Due within 30 days"', '"OK"')), ('Visible', shown),
+                ('Width', 'Parent.Width - 220'), ('Wrap', 'true'), ('X', '190'), ('Y', f'{below} + 11'),
+            ], KID))
+            err_y = f'If({picker}.Visible, {err_y}, {date_lbl}.Y + {date_lbl}.Height)'
+        kids.append(error_label(n, err_y))
         kids.append(star_label(n))
         photo_missing_list = []
+        fallback = self.wrap(truck_vis, no_td) if td else truck_vis
         if it['photo'] != 'none':
-            pc, miss = photo_controls(it, sfx, f'ErrorMessage{n}.Y + ErrorMessage{n}.Height - 4', None)
+            pc, miss = photo_controls(it, sfx, f'ErrorMessage{n}.Y + ErrorMessage{n}.Height - 4', None,
+                                      self.wrap('!varReviewing', no_td))
             kids += pc
             if it['required']:
-                photo_missing_list = [(self.wrap(truck_vis, c), m) for c, m in miss]
-        required = self.wrap(truck_vis, '!varReviewing') if it['required'] else 'false'
+                photo_missing_list = [(self.wrap(fallback, c), m) for c, m in miss]
+        required = self.wrap(fallback, '!varReviewing') if it['required'] else 'false'
+        update = f'If(IsBlank({td}), {picker}.SelectedDate, {td})' if td else f'{picker}.SelectedDate'
         props = [('DisplayMode', 'If(varReviewing, DisplayMode.View, DisplayMode.Edit)')] + card_frame(
             self.take_row(), [
                 ('DataField', fx_str(f)), ('Default', f'ThisItem.{f}'),
                 ('DisplayName', f"DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'{f}')"),
-                ('Required', required), ('Update', f'DataCardValue{n}.SelectedDate'),
-            ], truck_vis)
+                ('Required', required), ('Update', update),
+            ], self.page_vis(truck_vis))
         self.cards.append(control(card, 'TypedDataCard@1.0.7', props, CARD, variant='ClassicDateEdit',
                                   children=kids))
         if it['required']:
-            self.missing.append((self.wrap(truck_vis, f'IsBlank(DataCardValue{n}.SelectedDate)'),
+            self.missing.append((self.wrap(fallback, f'IsBlank({picker}.SelectedDate)'),
                                  f'"Fill in: " & DataCardKey{n}.Text'))
         self.missing += photo_missing_list
 
@@ -571,7 +673,37 @@ class Builder:
                                  photo_onselect(ptype, fx_str(item)), '150', '30', y, '!varReviewing')
         extra += status_label('lblOdometerPhoto', taken, '"✓ Photo taken"', '"Photo required"',
                               'Parent.Width - 210', '192', y, '!varReviewing')
-        self.add_template(T_ODOMETER + '\n'.join(extra) + '\n')
+        k = ' ' * KID
+        last = 'varTruckInfo.LastOdometer'
+        odo = 'Value(DataCardValue69.Text)'
+        extra += control('lblOdometerLast', 'Label@2.5.1', [
+            ('AutoHeight', 'true'), ('BorderStyle', 'BorderStyle.None'), ('Color', MUTED),
+            ('Font', "Font.'Segoe UI'"), ('Height', '24'), ('PaddingLeft', '0'), ('PaddingTop', '0'), ('Size', '12'),
+            ('Text', f'"Last reading: " & Text({last}, "#,##0") & " km" & '
+                     f'If(IsBlank(varTruckInfo.LastOdometerDate), "", " on " & Text(varTruckInfo.LastOdometerDate, "dd mmm yyyy"))'),
+            ('Visible', f'!varReviewing && !IsBlank({last})'), ('Width', 'Parent.Width - 60'), ('Wrap', 'true'),
+            ('X', '30'), ('Y', 'DataCardKey69.Y + DataCardKey69.Height + 2'),
+        ], KID)
+        extra += control('lblOdometerWarn', 'Label@2.5.1', [
+            ('AutoHeight', 'true'), ('BorderStyle', 'BorderStyle.None'), ('Color', INK), ('Fill', YELLOW_TINT),
+            ('Font', "Font.'Segoe UI'"), ('FontWeight', 'FontWeight.Semibold'), ('Height', '40'),
+            ('PaddingBottom', '8'), ('PaddingLeft', '12'), ('PaddingRight', '12'), ('PaddingTop', '8'), ('Size', '13'),
+            ('Text', f'If({odo} < {last}, "Lower than the last reading of " & Text({last}, "#,##0") & " km", '
+                     f'"More than 1,000 km since the last reading of " & Text({last}, "#,##0") & " km – check the number")'),
+            ('Visible', f'!varReviewing && !IsBlank({last}) && !IsBlank(DataCardValue69.Text) && '
+                        f'({odo} < {last} || {odo} > {last} + 1000)'),
+            ('Width', 'Parent.Width - 60'), ('Wrap', 'true'), ('X', '30'),
+            ('Y', 'DataCardValue69.Y + DataCardValue69.Height + 4'),
+        ], KID)
+        self.add_template(
+            T_ODOMETER + '\n'.join(extra) + '\n',
+            (f'{k}      Y: =DataCardKey69.Y + DataCardKey69.Height + 5\n',
+             f'{k}      Y: =If(lblOdometerLast.Visible, lblOdometerLast.Y + lblOdometerLast.Height, '
+             f'DataCardKey69.Y + DataCardKey69.Height) + 5\n'),
+            (f'{k}      Y: =DataCardValue69.Y + DataCardValue69.Height\n',
+             f'{k}      Y: =If(lblOdometerWarn.Visible, lblOdometerWarn.Y + lblOdometerWarn.Height, '
+             f'DataCardValue69.Y + DataCardValue69.Height)\n'),
+            draft_text_mod('field_50', numeric=True))
         self.missing.append(('IsBlank(DataCardValue69.Text)', '"Fill in: " & DataCardKey69.Text'))
         self.missing.append((missing, '"Photo needed: odometer"'))
 
@@ -579,16 +711,23 @@ class Builder:
     def build(self):
         sections = {s['key']: s for s in self.data['sections']}
         items = sorted([i for i in self.data['items'] if not i.get('hidden')], key=lambda i: i['order'])
+        self.page_key = FIRST_PAGE
         self.add_truck_note()
         current = None
         for it in items:
             sec = it['section']
             if sec != current:
                 current = sec
+                self.page_key = FIRST_PAGE if sec in ('header', FIRST_PAGE) else sec
+                if self.page_key not in self.page_keys:
+                    self.page_keys.append(self.page_key)
                 if sec != 'header':
                     sec_items = [i for i in items if i['section'] == sec]
                     review_shows = any(i['kind'] != 'photoOnly' for i in sec_items)
                     self.add_heading(sec, sections[sec]['title'], None if review_shows else '!varReviewing')
+            if it['kind'] != 'photoOnly' or sec == 'header':
+                self.review_pages.add(self.page_key)
+            first_gate = len(self.missing)
             f = it['field']
             if f == 'field_1':
                 self.add_template(T_TRUCKNO, (
@@ -599,14 +738,15 @@ class Builder:
                 self.add_template(T_DRIVERNAME)
             elif f == 'field_3':
                 self.add_template(T_SITE, ('                  Required: =false\n',
-                                           '                  Required: =!varReviewing\n'))
+                                           '                  Required: =!varReviewing\n'),
+                                  draft_text_mod('field_3'))
                 self.missing.append(('IsBlank(DataCardValue20.Text)', '"Fill in: " & DataCardKey20.Text'))
             elif f == 'field_50':
                 self.add_odometer(it)
             elif f == 'NextServiceDue':
-                self.add_template(self.renumber(T_NEXTSERVICE, 90))
+                self.add_template(self.renumber(T_NEXTSERVICE, 90), draft_text_mod('NextServiceDue', numeric=True))
             elif f == 'field_51':
-                self.add_template(T_REMARKS)
+                self.add_template(T_REMARKS, draft_text_mod('field_51'))
             elif it['kind'] == 'yesno':
                 self.add_yesno(it)
             elif it['kind'] == 'date':
@@ -615,6 +755,9 @@ class Builder:
                 self.add_photo_only(it)
             else:
                 raise SystemExit(f'No card builder for {f} ({it["kind"]})')
+            self.missing[first_gate:] = [(c, m, self.page_key) for c, m in self.missing[first_gate:]]
+        assert self.page_keys[-1] == LAST_PAGE, self.page_keys
+        self.page_key = LAST_PAGE
         self.add_template(T_SIGNOFF)
 
     def on_visible(self):
@@ -623,6 +766,8 @@ class Builder:
             f'Set(varTyreCount, Min(Coalesce(varTruckInfo.NoOfTyres, 6), {MAX_TYRES}));',
             "If(varReviewing, ClearCollect(colCheckDefects, Filter('GF Fleet Checklist Defects', "
             "ChecklistID = varCheck.ID && ActiveYN = true)), Clear(colCheckDefects));",
+            self.pages_formula() + ';',
+            f'If(IsBlank(ctxSec), UpdateContext({{ctxPage: 1, ctxSec: {fx_str(FIRST_PAGE)}}}));',
         ]
         if self.weekly:
             sets = []
@@ -641,6 +786,31 @@ class Builder:
             ]
         return '\n'.join(lines)
 
+    def pages_formula(self):
+        """colPages: PageNo, SecKey, SecTitle. Reviewing skips pages with only driver photo cards."""
+        titles = {s['key']: s['title'] for s in self.data['sections']}
+        titles[FIRST_PAGE] = titles['header']
+
+        def table(keys):
+            rows = [f'{{PageNo: {i}, SecKey: {fx_str(k)}, SecTitle: {fx_str(titles[k])}}}'
+                    for i, k in enumerate(keys, 1)]
+            return 'Table(\n        ' + ',\n        '.join(rows) + ')'
+        review = [k for k in self.page_keys if k in self.review_pages]
+        return f'ClearCollect(colPages, If(varReviewing,\n    {table(review)},\n    {table(self.page_keys)}))'
+
+    def todo_count(self):
+        """Number of Submit-gate entries still open on the current page."""
+        parts = []
+        for key in self.page_keys:
+            conds = [c for c, _m, k in self.missing if k == key]
+            if conds:
+                parts.append(f'    {fx_str(key)},\n        ' + ' +\n        '.join(f'If({c}, 1, 0)' for c in conds))
+        return 'Switch(ctxSec,\n' + ',\n'.join(parts) + ',\n    0)'
+
+    def first_missing_page(self):
+        parts = [f'    {c},\n        {fx_str(k)},' for c, _m, k in self.missing]
+        return 'If(\n' + '\n'.join(parts) + '\n    ctxSec)'
+
     def defect_rows(self):
         """Rows for frmPreTrip.OnSuccess: {f, name, no, c} per driver item with a comment box."""
         rows = []
@@ -651,7 +821,7 @@ class Builder:
 
     def submit_text(self):
         parts = []
-        for cond, msg in self.missing:
+        for cond, msg, _k in self.missing:
             parts.append(f'    {cond},\n        {msg},')
         return 'If(\n' + '\n'.join(parts) + '\n    "Submit")'
 
@@ -698,10 +868,14 @@ class Builder:
         for c in self.cards:
             out += c
         footer = T_FOOTER
-        footer = footer.replace('@@SUBMIT_TEXT@@', '\n'.join(
-            '                    ' + ln if ln else '' for ln in ('=' + self.submit_text()).split('\n')))
-        footer = footer.replace('@@SIGNOFF_ONSELECT@@', '\n'.join(
-            '                    ' + ln if ln else '' for ln in ('=' + self.signoff_onselect()).split('\n')))
+        def block(formula):
+            return '\n'.join(' ' * 26 + ln if ln else '' for ln in ('=' + formula).split('\n'))
+        footer = footer.replace('@@SUBMIT_TEXT@@', block(self.submit_text()))
+        footer = footer.replace('@@SIGNOFF_ONSELECT@@', block(self.signoff_onselect()))
+        footer = footer.replace('@@TODO_COUNT@@', block(self.todo_count() + ' & " still to do"'))
+        footer = footer.replace('@@GO_MISSING@@', block(
+            f'With({{goKey: {self.first_missing_page()}}},\n'
+            '    UpdateContext({ctxSec: goKey, ctxPage: LookUp(colPages, SecKey = goKey).PageNo}))'))
         out += footer.rstrip('\n').split('\n')
         return '\n'.join(out) + '\n'
 
@@ -838,7 +1012,7 @@ T_CHROME = r'''    Children:
             Fill: =RGBA(255, 255, 255, 1)
             DataSource: ='Fleet Checklist'
             DefaultMode: =FormMode.New
-            Height: =Parent.Height - 90 - 88
+            Height: =Parent.Height - 90 - 146
             Item: =varCheck
             NumberOfColumns: =1
             OnFailure: |-
@@ -852,28 +1026,33 @@ T_CHROME = r'''    Children:
                           Table(
 @@DEFECT_ROWS@@
                           ), no)},
-                      Set(varDefectsSaved, IfError(
-                          ForAll(defects,
+                      ForAll(defects,
+                          IfError(
                               Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
                                   Title: name, ChecklistID: recId, Truck: varTruck, ItemField: f,
-                                  Comment: c, ActiveYN: true}));
-                          true,
-                          false));
-                      IfError(
-                          ForAll(colPhotos,
+                                  Comment: c, ActiveYN: true}),
+                              Collect(colPendingDefects, {RecId: recId, Truck: varTruck, Title: name, ItemField: f, Comment: c})));
+                      ForAll(colPhotos,
+                          IfError(
                               'SaveFleetPhoto'.Run(
                                   Coalesce(varTruck, "Unknown"),
                                   Coalesce(ThisRecord.Type, "Photo"),
                                   Coalesce(ThisRecord.Item, ThisRecord.Type, "Photo"),
                                   recId,
                                   "Fleet Checklist",
-                                  {file: {name: "photo.jpg", contentBytes: ThisRecord.Img}}));
-                          If(varDefectsSaved,
-                              Notify("Checklist saved", NotificationType.Success),
-                              Notify("Checklist saved, but some defect comments did not save", NotificationType.Warning, 0)),
-                          Notify("Checklist saved, but the photos did not upload: " & FirstError.Message, NotificationType.Warning, 0)));
+                                  {file: {name: "photo.jpg", contentBytes: ThisRecord.Img}}),
+                              Collect(colPendingPhotos, {RecId: recId, Truck: Coalesce(varTruck, "Unknown"),
+                                  Type: Coalesce(ThisRecord.Type, "Photo"), Item: Coalesce(ThisRecord.Item, ThisRecord.Type, "Photo"),
+                                  Img: ThisRecord.Img})));
+                      IfError(SaveData(colPendingDefects, "fcCheckRetry"); SaveData(colPendingPhotos, "fcCheckRetryPhotos"); true, false);
+                      If(IsEmpty(colPendingDefects) && IsEmpty(colPendingPhotos),
+                          Notify("Checklist saved", NotificationType.Success),
+                          Notify("Checklist saved. Some photos or defect notes did not upload; they are kept on this phone and sent when you next open the app with signal.", NotificationType.Warning, 0)));
                   Clear(colPhotos);
+                  Clear(colDraft);
+                  IfError(SaveData(colDraft, "fcCheckDraft"); SaveData(colPhotos, "fcCheckPhotos"); true, false);
                   ResetForm(frmPreTrip);
+                  UpdateContext({ctxPage: 1, ctxSec: "licence"});
                   Navigate(scrHome))
             Width: =Parent.Width
             Y: =90
@@ -2105,109 +2284,268 @@ T_FOOTER = r'''      - conPreTripFooter:
           Properties:
             DropShadow: =DropShadow.Light
             Fill: =RGBA(255, 255, 255, 1)
-            Height: =88
-            LayoutAlignItems: =LayoutAlignItems.Center
-            LayoutDirection: =LayoutDirection.Horizontal
-            LayoutGap: =12
-            PaddingBottom: =16
+            Height: =146
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =8
+            PaddingBottom: =12
             PaddingLeft: =16
             PaddingRight: =16
-            PaddingTop: =16
+            PaddingTop: =10
             Width: =Parent.Width
             X: =0
-            Y: =Parent.Height - 88
+            Y: =Parent.Height - 146
           Children:
-            - btnPhotos:
-                Control: Classic/Button@2.2.0
+            - conPreTripProgress:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
                 Properties:
-                  BorderColor: =RGBA(8, 144, 144, 1)
-                  BorderStyle: =BorderStyle.Solid
-                  BorderThickness: =2
-                  Color: =RGBA(0, 112, 112, 1)
-                  DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                  DisabledColor: =RGBA(255, 255, 255, 1)
-                  DisabledFill: =RGBA(186, 198, 200, 1)
-                  Fill: =RGBA(255, 255, 255, 1)
-                  FillPortions: =1
-                  Font: =Font.'Segoe UI'
-                  FontWeight: =FontWeight.Semibold
-                  Height: =56
-                  HoverBorderColor: =RGBA(8, 144, 144, 1)
-                  HoverColor: =RGBA(0, 112, 112, 1)
-                  HoverFill: =RGBA(226, 243, 242, 1)
-                  OnSelect: |-
-                    =Set(varPhotoType, Blank());
-                    Set(varPhotoItem, Blank());
-                    Navigate(scrPhotos)
-                  PressedBorderColor: =RGBA(0, 112, 112, 1)
-                  PressedColor: =RGBA(0, 112, 112, 1)
-                  PressedFill: =RGBA(226, 243, 242, 1)
-                  RadiusBottomLeft: =10
-                  RadiusBottomRight: =10
-                  RadiusTopLeft: =10
-                  RadiusTopRight: =10
-                  Size: =15
-                  Text: ="Photos (" & CountRows(colPhotos) & ")"
-                  Visible: =!varReviewing
-            - btnSubmitChecklist:
-                Control: Classic/Button@2.2.0
+                  Fill: =RGBA(208, 216, 218, 1)
+                  FillPortions: =0
+                  Height: =4
+                  LayoutMinHeight: =4
+                Children:
+                  - recPreTripProgress:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        Height: =4
+                        Width: =Parent.Width * ctxPage / Max(1, CountRows(colPages))
+                        X: =0
+                        Y: =0
+            - conPreTripInfo:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
                 Properties:
-                  BorderColor: =RGBA(0, 0, 0, 0)
-                  BorderStyle: =BorderStyle.None
-                  Color: =RGBA(255, 255, 255, 1)
-                  DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                  DisabledColor: =RGBA(255, 255, 255, 1)
-                  DisabledFill: =RGBA(186, 198, 200, 1)
-                  DisplayMode: =If(Self.Text = "Submit", DisplayMode.Edit, DisplayMode.Disabled)
-                  Fill: =RGBA(8, 144, 144, 1)
-                  FillPortions: =1
-                  Font: =Font.'Segoe UI'
-                  FontWeight: =FontWeight.Semibold
+                  FillPortions: =0
+                  Height: =48
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =48
+                Children:
+                  - lblPreTripProgress:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        PaddingLeft: =0
+                        Size: =13
+                        Text: ="Section " & ctxPage & " of " & CountRows(colPages) & " · " & LookUp(colPages, PageNo = ctxPage).SecTitle
+                        Wrap: =true
+                  - lblPreTripToDo:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(196, 49, 75, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        Size: =13
+                        Text: |-
+@@TODO_COUNT@@
+                        Visible: =!varReviewing && ctxPage < CountRows(colPages) && !StartsWith(Self.Text, "0 ")
+                        Width: =110
+                        Wrap: =true
+                  - btnPreTripGoMissing:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =RGBA(0, 112, 112, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Height: =48
+                        OnSelect: |-
+@@GO_MISSING@@
+                        Size: =14
+                        Text: ="Go to it"
+                        Visible: =!varReviewing && ctxPage >= CountRows(colPages) && btnSubmitChecklist.Text <> "Submit"
+                        Width: =110
+            - conPreTripButtons:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
                   Height: =56
-                  HoverBorderColor: =RGBA(0, 0, 0, 0)
-                  HoverColor: =RGBA(255, 255, 255, 1)
-                  HoverFill: =RGBA(0, 112, 112, 1)
-                  OnSelect: =SubmitForm(frmPreTrip)
-                  PressedBorderColor: =RGBA(0, 0, 0, 0)
-                  PressedColor: =RGBA(255, 255, 255, 1)
-                  PressedFill: =RGBA(0, 112, 112, 1)
-                  RadiusBottomLeft: =10
-                  RadiusBottomRight: =10
-                  RadiusTopLeft: =10
-                  RadiusTopRight: =10
-                  Size: =If(Self.Text = "Submit", 15, 13)
-                  Text: |-
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =10
+                  LayoutMinHeight: =56
+                Children:
+                  - btnPreTripBack:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =RGBA(0, 112, 112, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Height: =56
+                        OnSelect: |-
+                          =UpdateContext({ctxPage: ctxPage - 1, ctxSec: LookUp(colPages, PageNo = ctxPage - 1).SecKey})
+                        Size: =15
+                        Text: ="Back"
+                        Visible: =ctxPage > 1
+                        Width: =88
+                  - btnPhotos:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =RGBA(0, 112, 112, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        FillPortions: =1
+                        Height: =56
+                        OnSelect: |-
+                          =Set(varPhotoType, Blank());
+                          Set(varPhotoItem, Blank());
+                          Navigate(scrPhotos)
+                        Size: =15
+                        Text: ="Photos (" & CountRows(colPhotos) & ")"
+                        Visible: =!varReviewing
+                  - btnPreTripNext:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        FillPortions: =1
+                        Height: =56
+                        OnSelect: |-
+                          =UpdateContext({ctxPage: ctxPage + 1, ctxSec: LookUp(colPages, PageNo = ctxPage + 1).SecKey})
+                        Size: =15
+                        Text: ="Next"
+                        Visible: =ctxPage < CountRows(colPages)
+                  - btnSubmitChecklist:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        DisplayMode: =If(Self.Text = "Submit", DisplayMode.Edit, DisplayMode.Disabled)
+                        FillPortions: =2
+                        Height: =56
+                        OnSelect: =SubmitForm(frmPreTrip)
+                        Size: =If(Self.Text = "Submit", 15, 12)
+                        Text: |-
 @@SUBMIT_TEXT@@
-                  Visible: =!varReviewing
-            - btnSaveSignoff:
-                Control: Classic/Button@2.2.0
-                Properties:
-                  BorderColor: =RGBA(0, 0, 0, 0)
-                  BorderStyle: =BorderStyle.None
-                  Color: =RGBA(255, 255, 255, 1)
-                  DisabledBorderColor: =RGBA(0, 0, 0, 0)
-                  DisabledColor: =RGBA(255, 255, 255, 1)
-                  DisabledFill: =RGBA(186, 198, 200, 1)
-                  Fill: =RGBA(8, 144, 144, 1)
-                  FillPortions: =1
-                  Font: =Font.'Segoe UI'
-                  FontWeight: =FontWeight.Semibold
-                  Height: =56
-                  HoverBorderColor: =RGBA(0, 0, 0, 0)
-                  HoverColor: =RGBA(255, 255, 255, 1)
-                  HoverFill: =RGBA(0, 112, 112, 1)
-                  OnSelect: |-
+                        Visible: =!varReviewing && ctxPage >= CountRows(colPages)
+                  - btnSaveSignoff:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        FillPortions: =2
+                        Height: =56
+                        OnSelect: |-
 @@SIGNOFF_ONSELECT@@
-                  PressedBorderColor: =RGBA(0, 0, 0, 0)
-                  PressedColor: =RGBA(255, 255, 255, 1)
-                  PressedFill: =RGBA(0, 112, 112, 1)
-                  RadiusBottomLeft: =10
-                  RadiusBottomRight: =10
-                  RadiusTopLeft: =10
-                  RadiusTopRight: =10
-                  Size: =15
-                  Text: ="Save sign-off"
-                  Visible: =varReviewing
+                        Size: =15
+                        Text: ="Save sign-off"
+                        Visible: =varReviewing && ctxPage >= CountRows(colPages)
 '''
 
 
@@ -2218,6 +2556,11 @@ def main():
     with open(ITEMS_JSON, encoding='utf-8') as fh:
         data = json.load(fh)
     text = Builder(data).render()
+    # Paging hides cards on other sections, but SubmitForm still validates hidden
+    # cards, so a driver-required card only counts while its page is showing. The
+    # Submit gate (btnSubmitChecklist) checks every required value across pages.
+    text = re.sub(r'(\n *Required: =)(?!false\n|varReviewing\n)([^\n]+)',
+                  lambda m: f'{m.group(1)}({m.group(2)}) && Self.Visible', text)
     os.makedirs(sys.argv[1], exist_ok=True)
     path = os.path.join(sys.argv[1], 'scrPreTrip.txt')
     with open(path, 'w', encoding='utf-8', newline='\n') as fh:
