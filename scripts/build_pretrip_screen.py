@@ -21,8 +21,8 @@ What it builds:
   - Weekly reviewer-only items (cabin tilting, greasing): only when reviewing; replaced by
     "... conducted on <date> by <name>" when this truck already has a Yes this week (Mon-Sun).
   - Submit button that names the first missing answer, comment, field or photo.
-  - One section per page: ctxPage / ctxSec (colPages, built in OnVisible; header + Licence and
-    Odometer are page 1, sign-off cards sit on the last page). Footer: progress label and bar,
+  - One section per page: ctxPage / ctxSec (colPages, built in OnVisible; header + In the cabin
+    are page 1, sign-off cards sit on the last page). Footer: progress label and bar,
     Back / Next, "N still to do" for the current page, Submit and "Go to it" on the last page.
     Starters pass {ctxPage: 1, ctxSec: "licence"} in Navigate.
   - Draft on the phone: every answer, comment, date and header field is written to colDraft
@@ -55,7 +55,7 @@ CLEAR = 'RGBA(0, 0, 0, 0)'
 WHITE = 'RGBA(255, 255, 255, 1)'
 YELLOW_TINT = 'RGBA(254, 246, 204, 1)'
 
-FIRST_PAGE = 'licence'   # header + Licence and Odometer share page 1
+FIRST_PAGE = 'cabin'   # header (truck, driver, site) + In the cabin share page 1
 LAST_PAGE = 'remarks'    # sign-off cards sit on the last page
 
 MAX_TYRES = 12          # tyre photo buttons generated; NoOfTyres above this is capped
@@ -759,7 +759,6 @@ class Builder:
     def pages_formula(self):
         """colPages: PageNo, SecKey, SecTitle. Reviewing skips pages with only driver photo cards."""
         titles = {s['key']: s['title'] for s in self.data['sections']}
-        titles[FIRST_PAGE] = titles['header']
 
         def table(keys):
             rows = [f'{{PageNo: {i}, SecKey: {fx_str(k)}, SecTitle: {fx_str(titles[k])}}}'

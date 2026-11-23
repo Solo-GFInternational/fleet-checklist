@@ -404,7 +404,7 @@ Screens:
                                 =Set(varReviewing, true);
                                 Set(varCheck, LookUp('Fleet Checklist', ID = ThisItem.ID));
                                 EditForm(frmPreTrip);
-                                Navigate(scrPreTrip, ScreenTransition.None, {ctxPage: 1, ctxSec: "licence"})
+                                Navigate(scrPreTrip, ScreenTransition.None, {ctxPage: 1, ctxSec: "cabin"})
                               TemplatePadding: =0
                               TemplateSize: =120
                               Visible: =ctxTab = "Checks"

@@ -1,14 +1,23 @@
 # Fleet Checklist – item wording for approval
 
-For: Pawan (Fleet Operations). Each item is now a short statement of what the driver should see: 7 words or fewer. The driver ticks **Yes** if the truck matches it, or **No** and writes what is wrong. Please mark any wording you want changed and send it back; once approved it goes live without an app update.
+For: Pawan (Fleet Operations). Each item is a short statement of what the driver should see: 7 words or fewer. The driver ticks **Yes** if the truck matches it, or **No** and writes what is wrong. Please mark any wording you want changed and send it back; once approved it goes live without an app update.
 
-## What else is changing
+## How the checklist runs
 
-- **New order**, following how a driver walks the truck: Licence and Odometer, Cabin, Electrical, Tyres, Leaks and Fluid Levels, then Body and Chassis, Safety, General, Accessory Checks, Accident Imagery and Truck Profiles.
+The order follows the driver around the truck:
+
+1. **In the cabin**: licence, odometer, controls, glass, cleanliness and the safety gear kept in the cabin.
+2. **Expiry and weight stickers**: step out and read the service, COF and blower stickers and photograph the weight plate.
+3. **Walk-around 1: Electrical**: battery, then every light, the reverse alarm and the cables.
+4. **Walk-around 2: Body, engine and tyres**: bumpers, fluids and leaks, chassis, PTO, load area, then every tyre and the tyre tools.
+5. **Accident Imagery** and **Truck Profiles** photos, then any other comments.
+
+Other changes:
+
 - **Yes or No on every item**, nothing ticked at the start. A **No** needs a short comment (and photos for new dents or cracks).
-- **More photos:** one per tyre, the weight plate, any new damage, and the truck from the front, rear, left and right.
+- **Accessory Checks are merged into the checklist.** Where an accessory check repeated an earlier item, the accessory version (with its photo) replaces the old item. The rest sit where the driver finds them.
 - **Truck number is locked** to the truck scanned on the home screen, and **Site** must be filled in.
-- The comment boxes at the end of each section are replaced by the per-item comments and one optional **Other comments** box.
+- **Cabin tilting** and **underneath greasing** are checked weekly by a reviewer, not the driver.
 
 ## Truck and driver
 
@@ -18,112 +27,85 @@ For: Pawan (Fleet Operations). Each item is now a short statement of what the dr
 | 2 | Driver name | – | Driver Name |
 | 3 | Site | – | Site |
 
-## Licence and Odometer
+## In the cabin
 
 | # | Item (proposed wording) | Photo | Was |
 | -- | -- | -- | -- |
 | 1 | Valid driver's licence with you | – | New |
 | 2 | Odometer reading (km) | 1 photo | Truck odometer reading before delivery (km) |
-| 3 | Next service due (km) | – | Next Service Due (km) |
+| 3 | Dashboard gauges and warning lights working | – | Cabin Dashboard Gauges / Meters (Functional) |
+| 4 | Horn working | – | Horn (Functional) |
+| 5 | Cabin interior light working | – | Cabin Interior Spot Light (Functional) |
+| 6 | Foot brake and park brake working | – | Service / Park Brake Condition |
+| 7 | Both seat belts lock and release | – | Driver / Passenger Seat Belts (Functional) |
+| 8 | Mirrors clean, uncracked and adjusted | – | Rear Vision Mirrors / Immediate Vicinity Check Mirrors |
+| 9 | Cabin doors open, close and lock | – | Cabin Doors / Windows / Locks (Functional) |
+| 10 | Driver's window uncracked and winds freely | – | New |
+| 11 | Passenger's window uncracked and winds freely | – | New |
+| 12 | Front and rear windscreens free of cracks | – | Front / Rear Windscreens (Free of Cracks) |
+| 13 | Cabin clean and tidy | 1 photo | Cabin Cleanliness |
+| 14 | Floor mats in cabin | 1 photo | Mats Available |
+| 15 | Fuel card in truck | 1 photo | Fuel Card Available |
+| 16 | Your PPE with you | – | Drivers PPE (All Present) |
+| 17 | Fire extinguisher mounted, serviceable and in date | 1 photo | Fire Extinguishers (Present / Functional) + Accessory Check "Fire Extinguisher Mounted and Serviceable" (merged) |
+| 18 | First aid kit in truck and stocked | 1 photo | First Aid Box (Present and Stocked) + Accessory Check "First Aid Kit Available" (merged) |
+| 19 | Torch working | – | Hand Torch (Operational) |
+| 20 | Raincoat and helmet in truck | – | Rain Coat and Helmet (Present / Good Condition) |
+| 21 | Cones and reflector triangle in truck | 1 photo | Cones & Reflector + Accessory Check "Traffic Cones Available" (merged) |
+| 22 | Wheel chocks in truck | – | Braking Angle Blocks (Present) |
 
-## Cabin
+## Expiry and weight stickers
 
 | # | Item (proposed wording) | Photo | Was |
 | -- | -- | -- | -- |
-| 1 | Cabin doors open, close and lock | – | Cabin Doors / Windows / Locks (Functional) |
-| 2 | Front and rear windscreens free of cracks | – | Front / Rear Windscreens (Free of Cracks) |
-| 3 | Driver's window uncracked and winds freely | – | New |
-| 4 | Passenger's window uncracked and winds freely | – | New |
-| 5 | Mirrors clean, uncracked and adjusted | – | Rear Vision Mirrors / Immediate Vicinity Check Mirrors |
-| 6 | Both seat belts lock and release | – | Driver / Passenger Seat Belts (Functional) |
-| 7 | Dashboard gauges and warning lights working | – | Cabin Dashboard Gauges / Meters (Functional) |
-| 8 | Cabin clean and tidy | 1 photo | Cabin Cleanliness |
-| 9 | Floor mats in cabin | 1 photo | Mats Available |
-| 10 | Net / gross weight plate photo | 1 photo | New |
+| 1 | Next service due (km) | – | Next Service Due (km) |
+| 2 | COF expiry date | 1 photo | COF Expiry Date |
+| 3 | Blower service due date | 1 photo | Blower Service Due Date |
+| 4 | Truck service due date | 1 photo | Truck Service Due Date |
+| 5 | Net / gross weight plate photo | 1 photo | New |
 
-## Electrical
+## Walk-around 1: Electrical
 
 | # | Item (proposed wording) | Photo | Was |
 | -- | -- | -- | -- |
-| 1 | Battery water at top mark | – | Battery Water Level (Top Mark) |
-| 2 | Battery terminals tight and clean | – | Battery Terminals (No Loose Terminals / Acid Build Up) |
-| 3 | Battery isolator switch working | – | Battery Master Isolator Switch |
+| 1 | Battery isolator switch working | – | Battery Master Isolator Switch |
+| 2 | Battery water at top mark | – | Battery Water Level (Top Mark) |
+| 3 | Battery terminals tight and clean | – | Battery Terminals (No Loose Terminals / Acid Build Up) |
 | 4 | Headlights and fog lights working | – | Head / Fog Light (Left and Right) Functional |
 | 5 | All indicators working | – | Indicators (Left/Right & Front/Rear Truck) (Functional) |
 | 6 | Brake lights working | – | Brake Lights (Left & Right, Truck) (Functional) |
 | 7 | Reverse alarm and lights working | – | Reverse Alarm / Lights (Left & Right Truck) (Functional) |
-| 8 | Cabin interior light working | – | Cabin Interior Spot Light (Functional) |
-| 9 | Rear spotlight working | – | Rear Spot Light (Functional) |
-| 10 | Horn working | – | Horn (Functional) |
-| 11 | Truck and bin cables undamaged | – | Truck / Bulk Bin Electrical Cables (Damage Free) |
+| 8 | Rear spotlight working | – | Rear Spot Light (Functional) |
+| 9 | Truck and bin cables undamaged | – | Truck / Bulk Bin Electrical Cables (Damage Free) |
 
-## Tyres
+## Walk-around 2: Body and engine
 
 | # | Item (proposed wording) | Photo | Was |
 | -- | -- | -- | -- |
-| 1 | Tyres good, no steer-wheel retreads | – | Tyre Condition (Any Retreads on Steer Wheels) |
-| 2 | All wheel nuts and studs present | – | Wheel Studs (All Present) |
-| 3 | Spare tyre in good condition | – | Spare Tyre (In Good Condition) |
-| 4 | Jack and wheel brace present and working | – | Jack / Wheel Brace / Accessories (All Present and Functional) |
-
-## Leaks and Fluid Levels
-
-| # | Item (proposed wording) | Photo | Was |
-| -- | -- | -- | -- |
-| 1 | No oil or water leaks | – | Oil / Water Leaks |
+| 1 | Front and rear bumpers secure | – | Front and Rear Bumpers – Impact Absorption |
 | 2 | Engine and hydraulic oil at top level | – | Oil Levels Engine Hydraulics (Top Level) |
 | 3 | Coolant at top mark | – | Coolant Levels (Top Mark) |
-| 4 | Air hoses not leaking or damaged | – | Air Hoses Condition (Any Signs of Leaks) |
-| 5 | Fan belts tight and in good condition | – | Fan Belts (Alternator, Cooling Fan, A/C etc.) |
+| 4 | Fan belts tight and in good condition | – | Fan Belts (Alternator, Cooling Fan, A/C etc.) |
+| 5 | No oil or water leaks | – | Oil / Water Leaks |
+| 6 | Air hoses not leaking or damaged | – | Air Hoses Condition (Any Signs of Leaks) |
+| 7 | Springs, U-bolts and bin bolts secure | – | Springs / U-Bolts / Bin Mounting Nuts and Bolts |
+| 8 | PTO working with no leaks | – | PTO (Pump, Seals, Cable, Shaft, Augers, Universal Joint) |
+| 9 | Freezer and dry box locked | – | Freezer and Dry Box Locked (Padlock / Seal #) |
+| 10 | Load floor clean and undamaged | 1 photo | Truck Floor Condition |
+| 11 | Fridge plug-in lead in truck | 1 photo | Plug Wire Available |
+| 12 | Engraved trolley in truck | 1 photo | Engraved Trolley Available |
 
-## Body and Chassis
-
-| # | Item (proposed wording) | Photo | Was |
-| -- | -- | -- | -- |
-| 1 | Springs, U-bolts and bin bolts secure | – | Springs / U-Bolts / Bin Mounting Nuts and Bolts |
-| 2 | Front and rear bumpers secure | – | Front and Rear Bumpers – Impact Absorption |
-| 3 | PTO working with no leaks | – | PTO (Pump, Seals, Cable, Shaft, Augers, Universal Joint) |
-
-## Safety
-
-| # | Item (proposed wording) | Photo | Was |
-| -- | -- | -- | -- |
-| 1 | Foot brake and park brake working | – | Service / Park Brake Condition |
-| 2 | Cones and reflector triangle in truck | – | Cones & Reflector |
-| 3 | Your PPE with you | – | Drivers PPE (All Present) |
-| 4 | Fire extinguisher in place and in date | – | Fire Extinguishers (Present / Functional) |
-| 5 | First aid box in truck and stocked | – | First Aid Box (Present and Stocked) |
-| 6 | Torch working | – | Hand Torch (Operational) |
-| 7 | Raincoat and helmet in truck | – | Rain Coat and Helmet (Present / Good Condition) |
-
-## General
+## Walk-around 2: Tyres and tools
 
 | # | Item (proposed wording) | Photo | Was |
 | -- | -- | -- | -- |
-| 1 | Wheel chocks in truck | – | Braking Angle Blocks (Present) |
-| 2 | Freezer and dry box locked | – | Freezer and Dry Box Locked (Padlock / Seal #) |
-| 3 | Money bag and lock in truck | – | Driver Money Bag and Lock (Available) |
-
-## Accessory Checks
-
-| # | Item (proposed wording) | Photo | Was |
-| -- | -- | -- | -- |
-| 1 | COF expiry date | 1 photo | COF Expiry Date |
-| 2 | Blower service due date | 1 photo | Blower Service Due Date |
-| 3 | Truck service due date | 1 photo | Truck Service Due Date |
-| 4 | Spare tyre in truck | 1 photo | Spare Tyre Availability |
-| 5 | Every tyre in good condition | 1 per tyre | Tyre Condition |
-| 6 | Fire extinguisher mounted and serviceable | 1 photo | Fire Extinguisher Mounted and Serviceable |
-| 7 | First aid kit in truck | 1 photo | First Aid Kit Available |
-| 8 | Traffic cones in truck | 1 photo | Traffic Cones Available |
-| 9 | Fuel card in truck | 1 photo | Fuel Card Available |
-| 10 | Fridge plug-in lead in truck | 1 photo | Plug Wire Available |
-| 11 | Engraved jack in truck | 1 photo | Engraved Jack Available |
-| 12 | Engraved wheel brace in truck | 1 photo | Engraved Wheel Brace Available |
-| 13 | Engraved pipe in truck | 1 photo | Engraved Pipe Available |
-| 14 | Engraved spare-tyre winder in truck | 1 photo | Engraved Spare Tyre Winder Available |
-| 15 | Engraved trolley in truck | 1 photo | Engraved Trolley Available |
-| 16 | Load floor clean and undamaged | 1 photo | Truck Floor Condition |
+| 1 | Every tyre good, no steer-wheel retreads | 1 per tyre | Tyre Condition (Any Retreads on Steer Wheels) + Accessory Check "Tyre Condition" (merged) |
+| 2 | All wheel nuts and studs present | – | Wheel Studs (All Present) |
+| 3 | Spare tyre in truck, good condition | 1 photo | Spare Tyre (In Good Condition) + Accessory Check "Spare Tyre Availability" (merged) |
+| 4 | Engraved spare-tyre winder in truck | 1 photo | Engraved Spare Tyre Winder Available |
+| 5 | Engraved jack in truck and working | 1 photo | Jack / Wheel Brace / Accessories (All Present and Functional) + Accessory Check "Engraved Jack Available" (merged) |
+| 6 | Engraved wheel brace in truck | 1 photo | Jack / Wheel Brace / Accessories (All Present and Functional) + Accessory Check "Engraved Wheel Brace Available" (merged) |
+| 7 | Engraved pipe in truck | 1 photo | Engraved Pipe Available |
 
 ## Accident Imagery
 
@@ -154,13 +136,14 @@ Drivers do not see these. A reviewer answers them when signing off a checklist; 
 
 ## Removed
 
+- Money Bag and Lock (Available)
 - Money Box Available in the Truck
-- The comment box at the end of each section (replaced by per-item comments)
+- The comment box at the end of each section (replaced by a comment on each No)
+- Items replaced by the matching Accessory Check (see "Was" above): Cones & Reflector, Fire Extinguishers (Present / Functional), First Aid Box (Present and Stocked), Jack / Wheel Brace / Accessories (All Present and Functional), Spare Tyre (In Good Condition), Tyre Condition (Any Retreads on Steer Wheels)
 
 ## Questions for Pawan / Krish
 
-1. Accessory Checks repeat five main items (spare tyre, tyre condition, fire extinguisher, first aid, cones). Keep both or drop the duplicates?
-2. Which items apply only to Frozen trucks? (Blower service due and the fridge plug-in lead are hidden on Ambient trucks for now.)
-3. COF and blower labels: please send a photo of each, so we can see whether the date can be scanned.
-4. Should the licence item also need a photo of the licence?
-5. Weekly items: does "weekly" mean Monday to Sunday, or within the last 7 days?
+1. Which items apply only to Frozen trucks? (Blower service due and the fridge plug-in lead are hidden on Ambient trucks for now.)
+2. COF and blower labels: please send a photo of each, so we can see whether the date can be scanned.
+3. Should the licence item also need a photo of the licence?
+4. Weekly items: does "weekly" mean Monday to Sunday, or within the last 7 days?

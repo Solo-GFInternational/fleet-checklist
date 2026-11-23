@@ -287,7 +287,7 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 ## Update 23 Nov 2026 (later): meeting with Pawan's team
 
 - **Checklist:**
-  - Reordered: Licence and Odometer, then Cabin, Electrical, Tyres, Leaks and Fluid Levels, and the rest.
+  - Reordered (first Licence and Odometer, Cabin, Electrical, Tyres, Leaks; then on 24 Nov by the user to follow the driver around the truck): In the cabin (licence, odometer and the Safety and General items), expiry and weight stickers, walk-around 1 for electrical, walk-around 2 for body, engine and tyres. Accessory Checks that repeated a main item replaced it; Money bag removed.
   - Reworded so each item states what the driver should see, in 7 words at most, e.g. "Battery water at top mark". There's no instruction line, by the user's decision after a first, longer draft. The wording goes to Pawan for approval (`files/Fleet Checklist - item wording for approval.md`).
   - Every item is now an explicit **Yes / No** with a comment on No. This replaces the 19 Nov rule where ticked = Yes and unticked = No.
   - Comments on No moved from one `<field>Cmt` column per item to a child list, **GF Fleet Checklist Defects** (one row per No, with the comment), by the user's decision: 60-odd mostly empty columns on Fleet Checklist, and the list doubles as a defect register.
