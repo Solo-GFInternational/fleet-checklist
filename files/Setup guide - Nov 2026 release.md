@@ -2,7 +2,7 @@
 
 Step-by-step setup for everything built after the 23 Nov 2026 meeting with Pawan's team:
 - **Checklist:** the new checklist with Yes/No answers and comments, the defects list, the Trucks list, the draft saved on the phone, and one section per page.
-- **Run sheet:** invoice photos and the invoice PDF email.
+- **Run sheet:** invoice photos, and the invoice PDF added to your existing **Run Sheet - Submission email** flow.
 - **Review:** the Daily review.
 
 Work through the steps in order. Each step links to where its background lives, but everything you need to do is in this guide.
@@ -91,6 +91,8 @@ Run these in order, each one dry run first.
 
 - Adds `NoofInvoices` ("No of invoices") to **Run Sheet Details**.
 - Adds `RunKey` and `StopKey` (text) to the **Fleet Photos** library.
+- Adds `NoofStops`, `NoofInvoicePhotos` and `RunKey` to **Run Sheets**. The app fills these in when it sends a run, so the submission email flow knows what to wait for.
+- Indexes `RunKey` on Fleet Photos and `RunSheetID` on Run Sheet Details. The flow searches on both, and Fleet Photos will pass 5,000 files.
 
 ### 1.5 Daily review list: `scripts/create_daily_reviews.js`
 
@@ -100,11 +102,8 @@ Run these in order, each one dry run first.
 
 ### 1.6 By hand in SharePoint
 
-1. **Index `RunKey` on the Fleet Photos library.** The invoice PDF flow searches on it, and the library will pass 5,000 files.
-   - Open the library → **⚙ Settings** → **Library settings** → **More library settings** → **Indexed columns** → **Create a new index**.
-   - **Primary column: RunKey** → **Create**.
-2. **Create a folder for the PDFs.** In the Fleet Photos library: **+ New → Folder** → `Run sheet PDFs` → **Create**.
-3. **Ask the office to fill in each truck's dates** in GF Fleet Trucks: COF expiry, Blower service due, Truck service due. The checklist shows them as Expired / Due within 30 days / OK. When a truck has no date, the driver types it and takes a photo instead.
+1. **Create a folder for the PDFs.** In the Fleet Photos library: **+ New → Folder** → `Run sheet PDFs` → **Create**.
+2. **Ask the office to fill in each truck's dates** in GF Fleet Trucks: COF expiry, Blower service due, Truck service due. The checklist shows them as Expired / Due within 30 days / OK. When a truck has no date, the driver types it and takes a photo instead.
 
 ---
 
@@ -125,197 +124,167 @@ The run sheet now uploads invoice photos through this flow, tagged with the run 
 
 The checklist's existing six-input call keeps working, because the new inputs are optional. You'll remove and re-add the flow in the app in Step 3.
 
-### 2.2 RunSheetSubmitted: build the invoice PDF email flow
+### 2.2 Run Sheet - Submission email: wait for everything, add the invoice PDF
 
-The app calls this once a submitted run sheet, every stop and every invoice photo are in SharePoint.
+Your existing flow, **Run Sheet - Submission email**, stays the submission email. Its trigger, its trigger conditions, its stops table with ⚠ flags and its email layout don't change.
 
-What the flow does:
-1. Answers the app straight away, so the driver isn't kept waiting.
-2. Builds one PDF of the run's invoice photos and saves it next to the photos.
-3. Emails it.
-4. Marks the run as emailed.
+Three things are added or changed:
+1. **Wait for the whole run.** The app creates the trip first, then the stops one by one, then any invoice photos still waiting. The fixed 1-minute **Delay** becomes a loop that waits until every stop and every invoice photo has arrived, using the new `NoofStops` and `NoofInvoicePhotos` columns the app now fills in.
+2. **Invoice PDF.** One PDF of the run's invoice photos is built, saved in Fleet Photos / Run sheet PDFs, attached to your email (when under about 19 MB) and linked from it.
+3. **Mark as emailed once.** Your **Update item** currently sits inside a *For each* over the stops, so it updates the same run once per stop (about 70 times). It moves out of the loop.
 
-Background: [PROJECT_HANDOVER.md §4.5](../PROJECT_HANDOVER.md#45-power-apps-flow-runsheetsubmitted-designed-23-nov-2026-not-built-yet). You already did the "Before you start" steps in 1.6.
+Background: [PROJECT_HANDOVER.md §4.5](../PROJECT_HANDOVER.md#45-run-sheet-submission-email-flow).
 
 **How to read the steps below**
 - **Click** means a button or menu in Power Automate.
 - `Code like this` is text you type or paste.
-- An **expression** is entered by clicking the field → the **fx** (Expression) tab → pasting → **Add**. Never pick the SharePoint "dynamic content" tokens for these. They add automatic *Apply to each* loops (see the 23 Nov lessons in [PROJECT_HISTORY.md](../PROJECT_HISTORY.md)).
-- **Rename every action straight after adding it**, exactly as written: click **⋯** on the action → **Rename**. The expressions refer to actions by these names.
-- Wherever a step asks for **Site Address**, pick the Fleet Operations site from the drop-down.
+- An **expression** is entered by clicking the field → the **fx** (Expression) tab → pasting → **Add**. Never pick SharePoint "dynamic content" tokens for these, because they add automatic *Apply to each* loops.
+- **Rename every new action straight after adding it**, exactly as written: **⋯** on the action → **Rename**. The expressions refer to actions by these names.
+- Wherever a step asks for **Site Address**, pick the Fleet Operations site.
 
-#### Before you start (one-off; done in 1.6 and 1.4)
+#### 0. Before you start
 
-1. **Index `RunKey` in the Fleet Photos library.** The library will pass 5,000 files, and the filter in step 9 fails on columns that aren't indexed.
-   - Open the library → **⚙ Settings** (top right) → **Library settings** → **More library settings** → **Indexed columns** → **Create a new index**.
-   - **Primary column: RunKey** → **Create**.
-2. **Agree who receives the email** (for example the Team Leaders or a shared address) with Krish.
-3. **Run `scripts/create_runsheet_v2_columns.js` first** if you haven't already. It creates `RunKey` and `StopKey`.
+1. Step 1.4 has run. Run Sheets now has `NoofStops`, `NoofInvoicePhotos` and `RunKey`, and Fleet Photos has `RunKey` (indexed) and `StopKey`.
+2. The **Run sheet PDFs** folder exists in Fleet Photos (step 1.6). Also create a folder **Run sheet PDFs** in **your OneDrive**, used for the temporary HTML file.
+3. **Keep a backup:** open the flow → **⋯ → Save As** → `Run Sheet - Submission email (backup)` → **Save**. Then turn the backup **off** (**⋯ → Turn off**) so it never sends.
+4. Open the original: **My flows** → **Run Sheet - Submission email** → **Edit**.
 
-#### Create the flow
+#### 1. Variables, at the top
 
-1. Open Power Automate → **My flows** (left) → **+ New flow** → **Instant cloud flow**.
-2. **Flow name:** `RunSheetSubmitted`. Choose the trigger **When Power Apps calls a flow (V2)** → **Create**.
-3. **Trigger inputs:** click the trigger card → **+ Add an input** → **Text**. Name it `RunSheetID`. Again **+ Add an input** → **Text**, name it `RunKey`. The order matters:
-   - `RunSheetID` = `triggerBody()['text']`
-   - `RunKey` = `triggerBody()['text_1']`
-
-#### Variables (they must sit at the top level, directly under the trigger)
-
-4. **+** under the trigger → **Add an action** → search **Initialize variable**. Add it four times, renaming each one to match its Name:
+1. Hover between the trigger and **Delay** → **+** → **Add an action** → **Initialize variable**. Add six, renaming each one as shown:
 
    | Rename to | Name | Type | Value |
    | --- | --- | --- | --- |
+   | `Init stopsFound` | `stopsFound` | Integer | `0` |
+   | `Init photosFound` | `photosFound` | Integer | `0` |
+   | `Init tries` | `tries` | Integer | `0` |
    | `Init seen` | `seen` | Array | `[]` |
    | `Init keep` | `keep` | Array | `[]` |
-   | `Init cartons` | `cartons` | Float | `0` |
-   | `Init flagged` | `flagged` | String | (leave empty) |
+   | `Init html` | `html` | String | `<html><body style="font-family:Arial,sans-serif">` |
 
-   Add a fifth, `Init html`: Name `html`, Type **String**, Value:
-   ```
-   <html><body style="font-family:Arial,sans-serif">
-   ```
+   Initialize variable only works at the top level, never inside a loop or condition, so put them all directly under the trigger.
 
-#### Guard: never send twice
+#### 2. Replace the Delay with a wait loop
 
-5. **+** → **SharePoint – Get item**. Rename it `Get run`.
-   - **Site Address:** Fleet Operations
-   - **List Name:** Run Sheets
-   - **Id:** expression `int(triggerBody()['text'])`
-6. **+** → **Condition**. Rename it `Already sent`.
-   - Left box, expression: `outputs('Get_run')?['body/SubmissionEmailSent']`
-   - Operator: **is equal to**
-   - Right box, expression: `true`
-7. In **True**, add two actions:
-   1. **Respond to a PowerApp or flow**. Click **+ Add an output** → **Yes/No**, name `ok`, value expression `true`. Then **+ Add an output** → **Text**, name `message`, value `Already emailed`.
-   2. **Control – Terminate**, Status **Succeeded**.
+2. On **Delay**: **⋯ → Delete**.
+3. Under the variables: **+** → **Control – Do until**. Rename it `Wait for the run`.
+   - **Loop until:** click **Edit in advanced mode** (or the expression editor) and paste:
+     ```
+     @or(and(greaterOrEquals(variables('stopsFound'), int(coalesce(triggerOutputs()?['body/NoofStops'], 0))), greaterOrEquals(variables('photosFound'), int(coalesce(triggerOutputs()?['body/NoofInvoicePhotos'], 0)))), greaterOrEquals(variables('tries'), 30))
+     ```
+   - **Change limits:** **Count** `40`, **Timeout** `PT2H`.
 
-   Leave **False** empty.
-
-#### Answer the app now
-
-8. Below the condition (not inside it), add **Respond to a PowerApp or flow**. Rename it `Respond to app`.
-   - `ok` (Yes/No) = expression `true`
-   - `message` (Text) = `Sending`
-   - The two outputs must have **the same names and types** as the ones in step 7. Copy that action with **⋯ → Copy to my clipboard**, then paste it here.
-
-#### Build and send (everything inside one Scope, so failures can be caught)
-
-9. **+** → **Control – Scope**. Rename it `Build and send`. Add every action below **inside** this scope.
-   1. **SharePoint – Get items.** Rename it `Get stops`.
+   It stops when every stop and every invoice photo is in, or after 30 checks (about an hour), whichever comes first. Runs from before this release have no `NoofStops`, so they don't wait at all, as today.
+4. **Inside** the Do until, in this order:
+   1. **Control – Delay**, renamed `Wait a minute`: **Count** `2`, **Unit** Minute.
+   2. **SharePoint – Get items**, renamed `Check stops`:
       - **List Name:** Run Sheet Details
-      - **Show advanced options → Filter Query:** `RunSheetID eq ` then the expression `triggerBody()['text']`
-      - **Order By:** `StopOrder`
-      - **Top Count:** `5000`
-   2. **SharePoint – Get files (properties only).** Rename it `Get invoice files`.
+      - **Filter Query:** `RunSheetID eq ` + expression `triggerOutputs()?['body/ID']`
+      - **Top Count:** `500`
+   3. **SharePoint – Get files (properties only)**, renamed `Check photos`:
       - **Library Name:** Fleet Photos
-      - **Filter Query:** `RunKey eq '` then the expression `triggerBody()['text_1']` then `'`, so it reads `RunKey eq '<key>'`
+      - **Filter Query:** `RunKey eq '` + expression `coalesce(triggerOutputs()?['body/RunKey'], 'none')` + `'`
+      - **Top Count:** `500`
+   4. **Data Operation – Select**, renamed `Photo slots`:
+      - **From:** expression `body('Check_photos')?['value']`
+      - Click **Switch Map to text mode** (the **T** icon). **Map:** expression `concat(item()?['StopKey'], '|', item()?['Item'])`
+   5. **Set variable** `stopsFound` = expression `length(body('Check_stops')?['value'])`
+   6. **Set variable** `photosFound` = expression `length(union(body('Photo_slots'), body('Photo_slots')))`. Counting each slot once means a retaken photo isn't counted twice.
+   7. **Increment variable** `tries` by `1`
+
+#### 3. Keep your stops lookup and condition
+
+5. Your **Get items** now sits below the Do until. Leave it as it is. Because it runs after the wait, it finds every stop.
+6. Your **Condition** (stops > 0) stays. Its **False** branch (Terminate) stays.
+
+#### 4. Build the invoice PDF, inside your Condition's True branch, before Send an email
+
+7. In **True**, hover above **Send an email (V2)** → **+** → add these in order:
+   1. **SharePoint – Get files (properties only)**, renamed `Get invoice files`:
+      - **Library Name:** Fleet Photos
+      - **Filter Query:** `RunKey eq '` + expression `coalesce(triggerOutputs()?['body/RunKey'], 'none')` + `'`
       - **Order By:** `Created desc`
       - **Top Count:** `500`
-   3. **Control – Apply to each.** Rename it `For each file`.
+   2. **Control – Apply to each**, renamed `For each file`:
       - **Select an output:** expression `body('Get_invoice_files')?['value']`
       - **⋯ → Settings → Concurrency control: On, Degree of parallelism: 1 → Done**
-      - Inside it, add a **Condition**, renamed `New slot`. Left box expression: `contains(variables('seen'), concat(items('For_each_file')?['StopKey'], '|', items('For_each_file')?['Item']))`. Operator **is equal to**. Right box expression: `false`.
-      - In **True**, add two actions:
-        1. **Append to array variable**: `seen`, value expression `concat(items('For_each_file')?['StopKey'], '|', items('For_each_file')?['Item'])`.
-        2. **Append to array variable**: `keep`, value expression `items('For_each_file')`.
+      - Inside it: **Condition**, renamed `New slot`. Left box expression: `contains(variables('seen'), concat(items('For_each_file')?['StopKey'], '|', items('For_each_file')?['Item']))`. Operator **is equal to**. Right box expression: `false`.
+      - In its **True**, add two actions:
+        1. **Append to array variable** `seen`, expression `concat(items('For_each_file')?['StopKey'], '|', items('For_each_file')?['Item'])`
+        2. **Append to array variable** `keep`, expression `items('For_each_file')`
 
-      Newest files come first, so a retaken invoice photo wins and the older copy is skipped.
-   4. **Control – Apply to each.** Rename it `For each stop`.
-      - **Select an output:** expression `body('Get_stops')?['value']`
-      - Concurrency **On, 1**, as above.
-      - Inside it:
-        1. **Increment variable:** `cartons` by expression `float(coalesce(items('For_each_stop')?['NoofCtns'], 0))`
-        2. **Condition**, renamed `Flagged`. Click **+ Add → Add row**, then switch the group to **Or**:
-           - Row 1: expression `float(coalesce(items('For_each_stop')?['TruckTemp'], -99))` **is greater than** `-15`.
-           - Row 2: expression `float(coalesce(items('For_each_stop')?['Duration'], 0))` **is greater than** `15`.
-        3. In **True**, add **Append to string variable**: `flagged`, value expression:
-           ```
-           concat('<tr><td style="padding:7px 12px; border-bottom:1px solid #E5E8EB; color:#5F6B76;">', items('For_each_stop')?['StopOrder'], '</td><td style="padding:7px 12px; border-bottom:1px solid #E5E8EB;">', items('For_each_stop')?['Title'], '</td><td style="padding:7px 12px; border-bottom:1px solid #E5E8EB; text-align:right;"><span style="display:inline-block; padding:2px 8px; border-radius:10px; color:#1F2933; font-weight:600; font-size:12px; background:#F8D000;">', if(greater(float(coalesce(items('For_each_stop')?['TruckTemp'], -99)), -15), concat('Temp ', items('For_each_stop')?['TruckTemp'], ' °C '), ''), if(greater(float(coalesce(items('For_each_stop')?['Duration'], 0)), 15), concat('Unload ', items('For_each_stop')?['Duration'], ' min'), ''), '</span></td></tr>')
-           ```
-   5. **Append to string variable**: `html`, value expression:
+      The newest copy of each invoice wins, so a retake replaces the first photo.
+   3. **Append to string variable** `html`, expression:
       ```
-      concat('<h2 style="color:#007070">Run sheet invoices: ', outputs('Get_run')?['body/Title'], ' · ', formatDateTime(outputs('Get_run')?['body/RunDate'], 'dd MMM yyyy'), '</h2><p>Driver: ', coalesce(outputs('Get_run')?['body/DriverName'], ''), ' · Area: ', coalesce(outputs('Get_run')?['body/Area'], ''), ' · Stops: ', length(body('Get_stops')?['value']), ' · Invoice photos: ', length(variables('keep')), '</p>')
+      concat('<h2 style="color:#007070">Run sheet invoices: ', triggerOutputs()?['body/Title'], ' · ', formatDateTime(triggerOutputs()?['body/RunDate'], 'dd MMM yyyy'), '</h2><p>Driver: ', coalesce(triggerOutputs()?['body/DriverName'], ''), ' · Area: ', coalesce(triggerOutputs()?['body/Area'], ''), ' · Stops: ', length(body('Get_items')?['value']), ' · Invoice photos: ', length(variables('keep')), '</p>')
       ```
-   6. **Control – Apply to each.** Rename it `For each invoice`.
-      - **Select an output:** expression `reverse(variables('keep'))`. This puts them oldest first, which is roughly stop order.
-      - Concurrency **On, 1**.
+   4. **Control – Apply to each**, renamed `For each invoice`:
+      - **Select an output:** expression `reverse(variables('keep'))`
+      - Concurrency **On, 1**
       - Inside it:
-        1. **SharePoint – Get file content**, renamed `Get invoice content`. **File Identifier:** expression `items('For_each_invoice')?['{Identifier}']`.
-        2. **Append to string variable**: `html`, value expression:
+        1. **SharePoint – Get file content**, renamed `Get invoice content`. **File Identifier:** expression `items('For_each_invoice')?['{Identifier}']`
+        2. **Append to string variable** `html`, expression:
            ```
            concat('<div style="page-break-before:always"><p style="font-size:14px; color:#1F2933">', items('For_each_invoice')?['Item'], '</p><img src="data:image/jpeg;base64,', body('Get_invoice_content')?['$content'], '" style="width:100%"></div>')
            ```
-   7. **Append to string variable**: `html`, value `</body></html>`
-   8. **OneDrive for Business – Create file.** Rename it `Create HTML`.
-      - **Folder Path:** `/Run sheet PDFs`. Create that folder in your OneDrive first.
-      - **File Name:** expression `concat('Run_', triggerBody()['text'], '.html')`
+   5. **Append to string variable** `html`: `</body></html>`
+   6. **OneDrive for Business – Create file**, renamed `Create HTML`:
+      - **Folder Path:** `/Run sheet PDFs`
+      - **File Name:** expression `concat('Run_', triggerOutputs()?['body/ID'], '.html')`
       - **File Content:** expression `variables('html')`
-   9. **OneDrive for Business – Convert file.** Rename it `Convert to PDF`.
+   7. **OneDrive for Business – Convert file**, renamed `Convert to PDF`:
       - **File:** expression `outputs('Create_HTML')?['body/Id']`
       - **Target type:** PDF
-   10. **SharePoint – Create file.** Rename it `Save PDF`.
-       - **Folder Path:** the Fleet Photos library, folder `Run sheet PDFs`. Make that folder in the library first: **+ New → Folder**.
-       - **File Name:** expression `concat('RunSheet_', replace(outputs('Get_run')?['body/Title'], ' ', ''), '_', formatDateTime(outputs('Get_run')?['body/RunDate'], 'yyyyMMdd'), '_', triggerBody()['text'], '.pdf')`
-       - **File Content:** expression `body('Convert_to_PDF')`
-   11. **Data Operation – Compose.** Rename it `Template`. Paste the whole of [email-templates/run-sheet-submitted.html](../email-templates/run-sheet-submitted.html) into **Inputs**.
-   12. **Data Operation – Compose.** Rename it `Email body`. **Inputs:** expression:
-       ```
-       replace(replace(replace(replace(replace(replace(replace(replace(replace(outputs('Template'), 'TRUCK', coalesce(outputs('Get_run')?['body/Title'], '')), 'DRIVER', coalesce(outputs('Get_run')?['body/DriverName'], '')), 'RUN_DATE', formatDateTime(outputs('Get_run')?['body/RunDate'], 'dd MMM yyyy')), 'AREA', coalesce(outputs('Get_run')?['body/Area'], '')), 'STOPS_COUNT', string(length(body('Get_stops')?['value']))), 'CARTONS', string(variables('cartons'))), 'INVOICE_COUNT', string(length(variables('keep')))), 'FLAGGED_STOPS', if(empty(variables('flagged')), '<tr><td colspan="3" style="padding:7px 12px; border-bottom:1px solid #E5E8EB; color:#5F6B76;">None</td></tr>', variables('flagged'))), 'LIST_LINK', concat('<your Fleet Operations site address>', outputs('Save_PDF')?['body/Path']))
-       ```
-       Type your Fleet Operations site address in place of `<your Fleet Operations site address>`. It goes in the flow only; don't save it in this repo. The button in the email then opens the saved PDF.
-   13. **Condition.** Rename it `Small enough to attach`.
-       - Left box, expression: `length(string(body('Convert_to_PDF')?['$content']))`
-       - Operator: **is less than**
-       - Right box: `26000000` (about 19 MB of PDF; Outlook rejects attachments much bigger than that)
-   14. **In True:** **Office 365 Outlook – Send an email (V2).**
-       - **To:** the agreed addresses
-       - **Subject:** expression `concat('Run sheet submitted: ', outputs('Get_run')?['body/Title'], ' ', formatDateTime(outputs('Get_run')?['body/RunDate'], 'dd MMM yyyy'))`
-       - **Body:** click **</>** (code view), then the expression `outputs('Email_body')`
-       - **Show advanced options → Attachments → + Add new item:**
-         - **Attachments Name:** expression `outputs('Save_PDF')?['body/Name']`
-         - **Attachments Content:** expression `body('Convert_to_PDF')`
-   15. **In False:** add the same **Send an email (V2)**, but with no attachment. The button in the email links to the saved PDF.
-   16. **OneDrive for Business – Delete file**, after the condition, still inside the scope. **File:** expression `outputs('Create_HTML')?['body/Id']`.
-   17. **SharePoint – Send an HTTP request to SharePoint.** Rename it `Mark email sent`.
-       - **Method:** POST
-       - **Uri:** `_api/web/lists/getbytitle('Run Sheets')/items(` then the expression `triggerBody()['text']` then `)`
-       - **Headers** (four rows):
+   8. **SharePoint – Create file**, renamed `Save PDF`:
+      - **Folder Path:** Fleet Photos → `Run sheet PDFs`
+      - **File Name:** expression `concat('RunSheet_', replace(coalesce(triggerOutputs()?['body/Title'], 'NoTruck'), ' ', ''), '_', formatDateTime(triggerOutputs()?['body/RunDate'], 'yyyyMMdd'), '_', triggerOutputs()?['body/ID'], '.pdf')`
+      - **File Content:** expression `body('Convert_to_PDF')`
+   9. **OneDrive for Business – Delete file**: **File** = expression `outputs('Create_HTML')?['body/Id']`
 
-         | Key | Value |
-         | --- | --- |
-         | `Accept` | `application/json;odata=nometadata` |
-         | `Content-Type` | `application/json;odata=nometadata` |
-         | `IF-MATCH` | `*` |
-         | `X-HTTP-Method` | `MERGE` |
+   If a run has no invoice photos, the PDF just has the summary heading.
 
-       - **Body:** `{"SubmissionEmailSent": true}`
+#### 5. Your Send an email (V2): add the PDF
 
-       This sets one column without having to resend the list's required columns, which **Update item** would demand.
+8. Open **Send an email (V2)** and leave To, Subject and the body as they are, except for two changes.
+   1. **Body:** switch to code view (**</>**). Just before the line `<p>Waiting for Team Leader verification in the Fleet Checklist app.</p>`, paste:
+      ```
+      <p><b>Invoices:</b> @{length(variables('keep'))} photos. <a href="<your Fleet Operations site address>@{outputs('Save_PDF')?['body/Path']}">Open the invoices PDF</a>@{if(less(length(string(body('Convert_to_PDF')?['$content'])), 26000000), ' (also attached)', ' (too large to attach)')}.</p>
+      ```
+      Type your Fleet Operations site address in place of `<your Fleet Operations site address>`. It goes in the flow only; don't save it in the repo.
+   2. **Show advanced options → Attachments:** click the **T** / **Switch to input entire array** icon, then the expression:
+      ```
+      if(less(length(string(body('Convert_to_PDF')?['$content'])), 26000000), createArray(addProperty(addProperty(json('{}'), 'Name', outputs('Save_PDF')?['body/Name']), 'ContentBytes', body('Convert_to_PDF')?['$content'])), createArray())
+      ```
+      This attaches the PDF when it's under about 19 MB; Outlook rejects much bigger attachments. Bigger PDFs are reached through the link.
 
-#### Tell the owner if it fails
+#### 6. Mark as emailed once
 
-10. Below the scope (outside it), add **Office 365 Outlook – Send an email (V2).** Rename it `Tell owner it failed`.
+9. Drag **Update item** out of **For each**, to just below **Send an email (V2)**, still inside True. If drag-and-drop doesn't work: **⋯ → Copy to my clipboard** on Update item → **+** below Send an email → **My clipboard** → pick it → then delete the original.
+10. Delete the now-empty **For each**.
+11. In the moved **Update item**, **Id** must still be the trigger's ID. Leave its fields (No of invoices, Start mileage, Submission Emailed = Yes) as they are.
+
+#### 7. Tell yourself if it fails (optional, recommended)
+
+12. Below the Condition (outside it): **Office 365 Outlook – Send an email (V2)**, renamed `Tell owner it failed`.
     - **To:** your address
-    - **Subject:** expression `concat('RunSheetSubmitted failed for run ', triggerBody()['text'])`
-    - **Body:** the [flow-failure](../email-templates/flow-failure.html) template, or a short note with the run ID
-    - Then **⋯ → Configure run after**: untick **is successful**, tick **has failed** and **has timed out** → **Done**.
+    - **Subject:** expression `concat('Run sheet submission email failed for run ', triggerOutputs()?['body/ID'])`
+    - **⋯ → Configure run after:** untick **is successful**, tick **has failed** and **has timed out** → **Done**.
 
-#### Save, test, add to the app
+#### 8. Save and test
 
-11. **Save** (top right).
-12. **Test → Manually → Test.** Enter the ID of a real submitted run and its LocalKey (the `RunKey` column on one of its photos in Fleet Photos) → **Run flow**. Then check:
-    - The run history shows every step green.
-    - The PDF is in Fleet Photos / Run sheet PDFs, with one page per invoice and readable images.
-    - The email arrived.
-    - The run's `SubmissionEmailSent` is now Yes.
-    - Running the test a second time stops at "Already sent".
-13. **Add it to the app:** Power Apps Studio → **Power Automate** pane (left) → **+ Add flow** → `RunSheetSubmitted`. Re-add it whenever the trigger inputs change.
-14. **Connections:** a flow called from Power Apps runs with the flow owner's connections, like SaveFleetPhoto, so drivers don't need SharePoint, OneDrive or Outlook access of their own. Add a co-owner (**Details → Owners → Edit**) so the flow survives staff changes.
+13. **Save** (top right).
+14. Submit a test run from the app with a few stops and an invoice photo on each. Or run `scripts/create_test_runsheet.js`, which creates no photos but adds stops after the trip, as the app does.
+15. Open the flow's **Run history** and check:
+    - **Wait for the run** looped until the stops (and photos) were all found.
+    - The email lists every stop and has the PDF attached and linked.
+    - The PDF is in Fleet Photos / Run sheet PDFs, with one readable page per invoice.
+    - **Submission Emailed** is Yes on the run, and it was updated once.
 
-**If the PDF comes out with blank images,** OneDrive didn't render the embedded pictures. Check the HTML file in OneDrive before it's deleted (disable step 16 while testing). If the `<img>` tags have data, try smaller photos. If they're empty, check the **Get invoice content** output.
+**If the PDF images come out blank,** OneDrive didn't render the embedded pictures. While testing, turn off the **Delete file** step and open the HTML file in OneDrive. If its `<img>` tags have data, try smaller photos. If they're empty, check the **Get invoice content** output.
 
-**Email sender:** until IT grants Send As on the shared mailbox, this sends from the flow owner's mailbox. A Teams post with the PDF (**Microsoft Teams – Post message in a chat or channel**, plus a link to the saved PDF) is the fallback.
+**Email sender:** this keeps sending from the flow owner's mailbox, as today. When IT grants Send As on the shared mailbox, switch **Send an email (V2)** to **Send an email from a shared mailbox (V2)**.
+
+The app doesn't call this flow; the SharePoint trigger starts it. So there's nothing to add in Power Apps Studio for it.
 
 ---
 
@@ -327,7 +296,8 @@ Background: [PROJECT_HANDOVER.md §4.5](../PROJECT_HANDOVER.md#45-power-apps-flo
    2. For **Fleet Checklist**, **Run Sheet Details** and the **Fleet Photos** library: **⋯** next to each → **Refresh**, so the app sees the new columns.
 3. **Flows:** left bar → **Power Automate** (flow icon).
    1. **SaveFleetPhoto:** **⋯** → **Remove from app**, then **+ Add flow** → **SaveFleetPhoto**. This re-reads its two new inputs.
-   2. **+ Add flow** → **RunSheetSubmitted**.
+
+   The submission email flow isn't added to the app; SharePoint starts it.
 4. **Screens:** paste each one in this order. After each, check that the formula checker (the ⚠ icon at the top) shows no errors before going on.
    1. `screens/scrPhotos.txt`
    2. `screens/scrPreTrip.txt`
@@ -382,7 +352,7 @@ Background: [PROJECT_HANDOVER.md §4.5](../PROJECT_HANDOVER.md#45-power-apps-flo
 | **Krish** | The truck table (number, type, tyres, dates) and which items are Frozen-only | Import the table with `create_trucks_list.js` (1.3). Set `truckType` in `checklist_items.json`, regenerate, and paste `scrPreTrip` again |
 | **Office** | Each truck's COF, blower and truck service dates | Typed straight into GF Fleet Trucks |
 | **Labels** | A photo of the COF and blower stickers, plus what your phone reads if they have a QR code or barcode | Decides whether a "Scan" button can fill the dates (free) or would need AI Builder (premium) |
-| **IT** | Send As on the shared mailbox | Switch RunSheetSubmitted's emails to the shared mailbox |
+| **IT** | Send As on the shared mailbox | Switch Run Sheet - Submission email to **Send an email from a shared mailbox (V2)** |
 
 ## Where things are documented
 

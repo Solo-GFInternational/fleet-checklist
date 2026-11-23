@@ -409,6 +409,9 @@ Screens:
                                                         TemponPlugIn: varRunSheet.PlugInTemp,
                                                         QtyonBalanceRecovery: varRunSheet.BalanceQty,
                                                         InvoiceBalanced: varRunSheet.InvoiceBalanced,
+                                                        NoofStops: CountRows(colRunStops),
+                                                        NoofInvoicePhotos: Sum(colRunStops, NoofInvoices),
+                                                        RunKey: varRunSheet.LocalKey,
                                                         Status: {Value: "Open"},
                                                         ActiveYes_x002f_No: true
                                                     })},
@@ -443,8 +446,6 @@ Screens:
                                                     Collect(colSyncErrors, {Msg: "Stop " & s.StopOrder & ": " & FirstError.Message});
                                                     false))));
                                     If(varRunSheet.PendingSubmit && !IsBlank(varRunSheet.ID) && IsEmpty(Filter(colRunStops, IsBlank(ID))) && IsEmpty(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && !Uploaded && StopKey in colRunStops.LocalKey)),
-                                        IfError('RunSheetSubmitted'.Run(Text(varRunSheet.ID), varRunSheet.LocalKey); true,
-                                            Notify("Run sheet submitted, but the summary email didn't send. Your Team Leader can still see it.", NotificationType.Warning); false);
                                         RemoveIf(colInvoicePhotos, RunKey = varRunSheet.LocalKey);
                                         IfError(SaveData(colInvoicePhotos, "fcRunPhotos"); true, false);
                                         Set(varRunSheet, Blank());

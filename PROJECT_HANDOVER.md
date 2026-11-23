@@ -298,21 +298,22 @@ Removing access keeps the person's past records (Created By doesn't change) and 
 
 Setup: run `scripts/setup_app_permissions.js` (groups, permission levels, list permissions) once before the flow is used. In the app: Power Automate pane → Add flow → SyncAppUser, and Add data → **Office 365 Users** (the people search on scrUsers).
 
-### 4.5 Power Apps flow: RunSheetSubmitted (designed 23 Nov 2026, not built yet)
+### 4.5 Run sheet submission email flow
 
-Called by `btnRunSync` on scrRunSheet once the trip and every stop are in SharePoint and no invoice photo is still waiting to upload. The app calls it directly because a SharePoint trigger would fire before the stops exist. If the call fails, the app shows a warning and still clears the run.
+**Run Sheet - Submission email** is an automated flow, built by the user before this release. It isn't called by the app.
 
-The flow:
-1. Checks that the email hasn't been sent already.
-2. Answers the app straight away, so the driver isn't kept waiting.
-3. Builds one PDF of the run's invoice photos.
-4. Saves the PDF next to the photos.
-5. Emails the Team Leaders.
-6. Marks the run as emailed.
+**What it does today:**
+- **Trigger:** SharePoint *When an item is created or modified* on Run Sheets. Trigger conditions: Status = Open, Time returned and End mileage filled in, and Submission Emailed not yet true.
+- **Email:** gets the run's stops (`RunSheetID eq` the run's ID, by StopOrder) and emails a header table plus a stops table. Temperatures above −15 °C and unloading over 15 minutes get a ⚠. It goes to the fleet team from the flow owner's mailbox.
+- **Mark as sent:** an *Update item* sets Submission Emailed (it also re-writes No of invoices and Start mileage, which are required columns).
 
-If anything fails after the app has been answered, the flow owner gets an email.
+**Changes for the Nov 2026 release (not built yet):**
+- **Wait for the whole run.** Drivers are add-only, so the app creates the trip already Open, then its stops, then any invoice photos still waiting. The fixed 1-minute Delay becomes a *Do until* that checks every 2 minutes, for up to about an hour, until the run's stops reach `NoofStops` and its distinct invoice photos (Fleet Photos, `RunKey`) reach `NoofInvoicePhotos`. The app writes `NoofStops`, `NoofInvoicePhotos` and `RunKey` onto the trip when it creates it.
+- **Invoice PDF.** The flow builds one HTML page of the run's invoice photos (newest copy per stop and slot), converts it to PDF with OneDrive *Convert file*, and saves it in Fleet Photos / Run sheet PDFs. It attaches the PDF to the email when it's under about 19 MB, and links it either way.
+- **Update item** moves out of the *For each* over the stops. Today it updates the same run once per stop.
+- **Optional failure email** to the flow owner.
 
-`'RunSheetSubmitted'.Run(RunSheetID, RunKey)` → returns `ok` (Yes/No) and `message` (text). Both inputs are text.
+The app no longer calls a flow for this, so it works even if the driver closes the app straight after submitting.
 
 **Build steps:** click-by-click in [files/Setup guide - Nov 2026 release.md](<files/Setup guide - Nov 2026 release.md>), Step 2.2.
 
@@ -397,7 +398,7 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 - Stop order: Arrive time first, "Time left the premises" (`TimeOut`) last.
 - New per-stop **No. of invoices** (`NoofInvoices` on Run Sheet Details), with one in-app camera photo per invoice. There's no gallery access, so drivers can't upload old pictures.
 - The truck number is locked when it came from Home.
-- Invoice photos are queued on the phone and uploaded on every sync (see CLAUDE.md, Offline). The **RunSheetSubmitted** flow (4.5) emails a PDF of all of a run's invoices.
+- Invoice photos are queued on the phone and uploaded on every sync (see CLAUDE.md, Offline). The trip also records `NoofStops`, `NoofInvoicePhotos` and `RunKey`, so the existing **Run Sheet - Submission email** flow (4.5) can wait for the whole run and attach a PDF of its invoices.
 
 **Checklist improvements (23 Nov 2026, approved by the user):**
 - **Due dates from the truck.** COF expiry, Blower service due and Truck service due (`"truckDate"` in the JSON) show the truck's date read-only with **Expired** (red), **Due within 30 days** (amber) or **OK** (teal); no date picker or photo, and the date is saved on the checklist as a snapshot. If the truck isn't listed or the date is blank, the old date picker + required photo come back.
@@ -512,4 +513,4 @@ Email preview   open email-templates/preview.html in a browser
 
 ## 8. Setting up the Nov 2026 release
 
-The step-by-step setup (SharePoint scripts, flow changes, the RunSheetSubmitted build, Studio, testing and what's still waiting on others) is in its own document: **[files/Setup guide - Nov 2026 release.md](<files/Setup guide - Nov 2026 release.md>)**.
+The step-by-step setup (SharePoint scripts, flow changes, the submission email flow changes, Studio, testing and what's still waiting on others) is in its own document: **[files/Setup guide - Nov 2026 release.md](<files/Setup guide - Nov 2026 release.md>)**.

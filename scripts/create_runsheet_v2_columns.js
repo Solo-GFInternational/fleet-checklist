@@ -6,6 +6,14 @@
     Run Sheet Details / NoofInvoices   number of invoices at the stop (one invoice photo each)
     Fleet Photos      / RunKey         the run's LocalKey, so photos can upload before the run row exists
     Fleet Photos      / StopKey        the stop's LocalKey, so each photo is linked to its stop
+    Run Sheets        / NoofStops      how many stops the run has, so the submission email flow can
+                                       wait until all of them have arrived
+    Run Sheets        / NoofInvoicePhotos  how many invoice photos the run has (sum of the stops' invoices),
+                                       so the flow can wait until all of them have uploaded
+    Run Sheets        / RunKey         the run's LocalKey, so the flow can find its invoice photos
+
+  It also indexes RunKey on Fleet Photos (the flow filters on it, and the library passes 5,000 files)
+  and RunSheetID on Run Sheet Details.
 
   After running it, add RunKey and StopKey as optional text inputs to the SaveFleetPhoto flow
   (see PROJECT_HANDOVER.md), then remove and re-add the flow in the app.
@@ -28,7 +36,12 @@
     ['Run Sheet Details', 'NoofInvoices', 'No of invoices', 'number'],
     ['Fleet Photos', 'RunKey', 'Run key', 'text'],
     ['Fleet Photos', 'StopKey', 'Stop key', 'text'],
+    ['Run Sheets', 'NoofStops', 'No of stops', 'number'],
+    ['Run Sheets', 'NoofInvoicePhotos', 'No of invoice photos', 'number'],
+    ['Run Sheets', 'RunKey', 'Run key', 'text'],
   ];
+  // [list or library, internal name] to index
+  const INDEXES = [['Fleet Photos', 'RunKey'], ['Run Sheet Details', 'RunSheetID']];
 
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const schema = (name, title, kind) => {
@@ -73,6 +86,18 @@
     out.push(`${ok ? 'created' : 'CHECK  '} ${list} / ${f.InternalName}  "${f.Title}"  ${f.TypeAsString}` +
       (ok ? '' : `   <-- expected internal name ${name}`));
     if (ok) created++; else failed++;
+  }
+  for (const [list, name] of INDEXES) {
+    const r = await fetch(`${listUrl(list)}/fields/getbyinternalnameortitle('${name}')?$select=Indexed`, { headers: { Accept: JSON_V } });
+    if (!r.ok) { out.push(`${DRY_RUN ? 'note   ' : 'FAILED '} index ${list} / ${name}: column not found (${r.status})`); if (!DRY_RUN) failed++; continue; }
+    if ((await r.json()).d.Indexed) { out.push(`skip    index ${list} / ${name}  (already indexed)`); continue; }
+    if (DRY_RUN) { out.push(`would index   ${list} / ${name}`); continue; }
+    const m = await fetch(`${listUrl(list)}/fields/getbyinternalnameortitle('${name}')`, {
+      method: 'POST',
+      headers: { Accept: JSON_V, 'Content-Type': JSON_V, 'X-RequestDigest': digest, 'X-HTTP-Method': 'MERGE', 'IF-MATCH': '*' },
+      body: JSON.stringify({ __metadata: { type: 'SP.Field' }, Indexed: true }),
+    });
+    if (m.ok) out.push(`indexed ${list} / ${name}`); else { out.push(`FAILED  index ${list} / ${name} (${m.status})`); failed++; }
   }
   out.push('', `created ${created}, skipped ${skipped}, problems ${failed}`);
   console.log('=====\n' + out.join('\n') + '\n=====');

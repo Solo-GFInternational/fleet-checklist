@@ -303,7 +303,7 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
   - Arrive time first, "time left the premises" last.
   - Invoices per stop, each with an in-app photo. No gallery, by the user's decision.
   - Photos upload whenever there's signal.
-  - A planned **RunSheetSubmitted** flow emails a PDF of all invoices.
+  - The invoice PDF is added to the user's existing **Run Sheet - Submission email** flow (user's choice over a separate Power Apps-called flow, 24 Nov 2026). The flow waits for every stop and photo using `NoofStops` / `NoofInvoicePhotos` / `RunKey`, which the app writes on the trip.
 - **Daily review:** reviewers give each driver 1–5 stars a day, with an optional comment. The driver sees it on Home on their next shift (named "Daily review" by the user).
 - **Deferred:**
   - Reading COF and blower dates by scanning (needs label samples; printed text would need AI Builder).
@@ -322,7 +322,7 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 2. Add the new lists as data sources and refresh Fleet Checklist, Run Sheet Details and the photo library.
 3. Add the two SaveFleetPhoto inputs, then re-add the flow in the app.
 4. Paste every screen and test on a phone, including airplane mode for the run sheet.
-5. Build the RunSheetSubmitted flow.
+5. Update the Run Sheet - Submission email flow: wait loop, invoice PDF, and Update item moved out of the loop (setup guide step 2.2).
 6. Send the wording document to Pawan. Once approved, run the column script in rename mode.
 7. Get the truck table from Krish, and photos of the COF and blower labels.
 8. Confirm roles with Krish, then share and publish (see the access guide).
