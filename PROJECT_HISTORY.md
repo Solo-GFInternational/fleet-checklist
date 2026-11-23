@@ -274,7 +274,15 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 | Run Sheets | Status choices: Open, Closed, In Progress |
 | Run Sheet Details | Lookup `RunSheet` + number `RunSheetID` (used by the app) |
 | Driver Declarations | field_3–field_16 = 14 statements ("Yes"/"No" text) |
-| GF Fleet Checklist App Users | Roles; only list with unique permissions. Don't break permissions on the others (see 2 Nov) |
+| GF Fleet Checklist App Users | Roles. Both Fleet App groups have Read; only the SyncAppUser flow writes to it |
+
+## Update 23 Nov 2026: app-managed access, drivers add-only
+
+- **Why:** a colleague's phone couldn't open screens until they were given list access. Power Apps opens SharePoint as the signed-in user, so every driver needs list access. The decision was to let drivers **add** records but not see others' records, and **not edit or delete** (user's decision).
+- **Groups and permissions** (`scripts/setup_app_permissions.js`, run 23 Nov): permission levels **Fleet App Driver** (view + add, no edit/delete) and **Fleet App Reviewer** (view, add, edit + Override List Behaviors, no delete). Groups **Fleet App Drivers** / **Fleet App Reviewers**, granted on Fleet Checklist, Run Sheets, Run Sheet Details and Driver Declarations, with existing permissions **copied** first. Item-level permissions "read own items" on those four. Both groups have Read on App Users. Existing app users were put in the groups.
+- **Manage users screen** (`scrUsers`, Admin only, button on scrHome) calls the **SyncAppUser** flow. The flow checks the caller is an active Admin, creates or updates the App Users row, and moves the person into the right group through the SharePoint REST API, so **no email is sent**. Tested 23 Nov: a colleague was added as Driver.
+- **Run sheet is add-only:** nothing is written until Submit; then the trip (Status Open) and its stops are created as new rows. Sent stops can't be edited in the app. "In Progress" is no longer written, so Team Leaders don't see a run until it's submitted.
+- **Lessons from building the flow:** rename actions before referencing them; fill fields from the Expression tab only (SharePoint tokens add Apply to each loops); make both Respond steps identical by copying; a flow created from Studio's pane keeps an automatic `PowerAppV2->…` name in the app (fixed with Save As + re-add); one-line YAML values containing `: ` break the paste (PA1001).
 
 ## Suggested next steps
 

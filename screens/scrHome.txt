@@ -374,31 +374,28 @@ Screens:
                           If(!IsEmpty(colLocalRun),
                               Set(varRunSheet, First(colLocalRun)),
                               Clear(colRunStops);
-                              If(Connection.Connected,
-                                  With({r: First(Sort(Filter('Run Sheets', DriverName = User().FullName && Status.Value = "In Progress"), ID, SortOrder.Descending))},
-                                      Set(varRunSheet, If(IsBlank(r), Blank(), {
-                                          LocalKey: "sp-" & r.ID,
-                                          ID: r.ID,
-                                          Synced: true,
-                                          PendingSubmit: false,
-                                          RunDate: DateValue(Text(r.RunDate, "yyyy-mm-dd")),
-                                          DateofDrive: DateValue(Text(r.DateofDrive, "yyyy-mm-dd")),
-                                          DriverName: r.DriverName,
-                                          Title: r.Title,
-                                          Partner: r.Partner,
-                                          Area: r.Area,
-                                          NoofInvoices: r.NoofInvoices,
-                                          StartMileage: r.StartMileage,
-                                          ExpectedDeparture: r.ExpectedDeparture,
-                                          ExpectedArrival: r.ExpectedArrival,
-                                          TimeReturned: "",
-                                          EndMileage: Value(""),
-                                          BalanceInvoice: "",
-                                          AnalogTemp: Value(""),
-                                          PlugInTemp: Value(""),
-                                          BalanceQty: Value(""),
-                                          InvoiceBalanced: false}))),
-                                  Set(varRunSheet, Blank())));
+                              Set(varRunSheet, If(false, {
+                                  LocalKey: "",
+                                  ID: Value(""),
+                                  Synced: false,
+                                  PendingSubmit: false,
+                                  RunDate: Today(),
+                                  DateofDrive: Today(),
+                                  DriverName: "",
+                                  Title: "",
+                                  Partner: "",
+                                  Area: "",
+                                  NoofInvoices: Value(""),
+                                  StartMileage: Value(""),
+                                  ExpectedDeparture: "",
+                                  ExpectedArrival: "",
+                                  TimeReturned: "",
+                                  EndMileage: Value(""),
+                                  BalanceInvoice: "",
+                                  AnalogTemp: Value(""),
+                                  PlugInTemp: Value(""),
+                                  BalanceQty: Value(""),
+                                  InvoiceBalanced: false}, Blank())));
                           If(!IsBlank(varRunSheet), Notify("Carrying on with your run for " & varRunSheet.Title, NotificationType.Information));
                           Navigate(scrRunSheet)
                         PressedBorderColor: =RGBA(0, 112, 112, 1)
@@ -438,3 +435,32 @@ Screens:
                         RadiusTopRight: =10
                         Size: =15
                         Text: ="Review and sign-off"
+                  - btnManageUsers:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        Visible: =varRole = "Admin"
+                        DisplayMode: =If(Connection.Connected, DisplayMode.Edit, DisplayMode.Disabled)
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =RGBA(0, 112, 112, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        OnSelect: =Navigate(scrUsers)
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: ="Manage users"

@@ -1,0 +1,732 @@
+Screens:
+  scrUsers:
+    Properties:
+      Fill: =RGBA(243, 246, 246, 1)
+      LoadingSpinnerColor: =RGBA(8, 144, 144, 1)
+      OnVisible: |-
+        =UpdateContext({ctxPerson: Blank(), ctxEdit: Blank(), ctxBusy: false});
+        Reset(txtUsersSearch);
+        Reset(drpUsersRole);
+        Refresh('GF Fleet Checklist App Users')
+    Children:
+      - conUsers:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            Visible: =varRole = "Admin"
+            Fill: =RGBA(243, 246, 246, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =0
+            Width: =Parent.Width
+          Children:
+            - conUsersHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =84
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =84
+                  LayoutMinWidth: =16
+                  PaddingBottom: =14
+                  PaddingLeft: =12
+                  PaddingRight: =16
+                  PaddingTop: =14
+                Children:
+                  - icoUsersBack:
+                      Control: Classic/Icon@2.5.0
+                      Properties:
+                        AccessibleLabel: ="Go back"
+                        Color: =RGBA(0, 112, 112, 1)
+                        Height: =40
+                        Icon: =Icon.ChevronLeft
+                        OnSelect: |-
+                          =If(IsBlank(ctxEdit), Navigate(scrHome), UpdateContext({ctxEdit: Blank()}))
+                        PaddingBottom: =8
+                        PaddingLeft: =8
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        Tooltip: ="Go back"
+                        Width: =40
+                  - imgUsersLogo:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="GF logo"
+                        Height: =48
+                        Image: ='gf-logo'
+                        ImagePosition: =ImagePosition.Fit
+                        Width: =48
+                  - conUsersTitles:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Height: =58
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =2
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                      Children:
+                        - lblUsersTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 112, 112, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              PaddingLeft: =0
+                              Size: =18
+                              Text: ="Manage users"
+                        - lblUsersSubtitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Normal
+                              Height: =22
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: =If(IsBlank(ctxEdit), "Add people and set their role", "Change role or remove access")
+            - conUsersStripe:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =6
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =0
+                  LayoutMinHeight: =6
+                  LayoutMinWidth: =16
+                Children:
+                  - recUsersStripe1:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recUsersStripe2:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(0, 184, 216, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recUsersStripe3:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(248, 208, 0, 1)
+                        FillPortions: =1
+                        Height: =6
+                  - recUsersStripe4:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(160, 200, 80, 1)
+                        FillPortions: =1
+                        Height: =6
+            - conUsersBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Visible: =IsBlank(ctxEdit)
+                  Fill: =RGBA(243, 246, 246, 1)
+                  FillPortions: =1
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =10
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =24
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - lblUsersAddHeading:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(8, 144, 144, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        PaddingLeft: =0
+                        Size: =16
+                        Text: ="Add a person"
+                  - lblUsersAddHint:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(96, 108, 118, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =40
+                        PaddingLeft: =0
+                        Size: =12
+                        Text: ="Search for them by name, pick a role and tap Add person. They get access to the app's lists straight away. No email is sent."
+                        Wrap: =true
+                  - txtUsersSearch:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(208, 216, 218, 1)
+                        BorderThickness: =1
+                        Color: =RGBA(31, 41, 51, 1)
+                        Default: =""
+                        DelayOutput: =true
+                        DisplayMode: =If(IsBlank(ctxPerson), DisplayMode.Edit, DisplayMode.Disabled)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FocusedBorderColor: =RGBA(8, 144, 144, 1)
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =52
+                        HintText: ="Type a name (at least 3 letters)"
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        PaddingLeft: =12
+                        PressedBorderColor: =RGBA(8, 144, 144, 1)
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Size: =15
+                        Visible: =IsBlank(ctxPerson)
+                  - galUsersPeople:
+                      Control: Gallery@2.15.0
+                      Variant: BrowseLayout_Vertical_TwoTextVariant_ver5.0
+                      Properties:
+                        BorderColor: =RGBA(208, 216, 218, 1)
+                        BorderThickness: =1
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =Max(1, Min(CountRows(Self.AllItems), 5)) * 68
+                        Items: |-
+                          =If(Len(Trim(txtUsersSearch.Text)) >= 3,
+                              Filter(
+                                  Office365Users.SearchUserV2({searchTerm: Trim(txtUsersSearch.Text), top: 10, isSearchTermRequired: true}).value,
+                                  AccountEnabled && !IsBlank(UserPrincipalName)))
+                        OnSelect: |-
+                          =UpdateContext({ctxPerson: {Name: ThisItem.DisplayName, Email: Lower(ThisItem.UserPrincipalName)}})
+                        TemplatePadding: =0
+                        TemplateSize: =68
+                        Visible: =IsBlank(ctxPerson) && Len(Trim(txtUsersSearch.Text)) >= 3
+                      Children:
+                        - lblUsersPersonName:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(31, 41, 51, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =26
+                              OnSelect: =Select(Parent)
+                              PaddingLeft: =0
+                              Size: =15
+                              Text: =ThisItem.DisplayName
+                              Width: =Parent.TemplateWidth - 32
+                              X: =16
+                              Y: =8
+                        - lblUsersPersonDetail:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(96, 108, 118, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =24
+                              OnSelect: =Select(Parent)
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: =Coalesce(ThisItem.JobTitle, "") & If(IsBlank(ThisItem.JobTitle), "", "  ·  ") & Lower(ThisItem.UserPrincipalName)
+                              Width: =Parent.TemplateWidth - 32
+                              X: =16
+                              Y: =36
+                        - recUsersPeopleSeparator:
+                            Control: Rectangle@2.3.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(208, 216, 218, 1)
+                              Height: =1
+                              OnSelect: =Select(Parent)
+                              Width: =Parent.TemplateWidth
+                              Y: =Parent.TemplateHeight - 1
+                  - lblUsersNoMatch:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(96, 108, 118, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        PaddingLeft: =0
+                        Size: =13
+                        Text: ="No one found. Check the spelling, or try their surname."
+                        Visible: =IsBlank(ctxPerson) && Len(Trim(txtUsersSearch.Text)) >= 3 && IsEmpty(galUsersPeople.AllItems)
+                  - conUsersPicked:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderThickness: =2
+                        Fill: =RGBA(226, 243, 242, 1)
+                        FillPortions: =0
+                        Height: =72
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =8
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingLeft: =14
+                        PaddingRight: =4
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Visible: =!IsBlank(ctxPerson)
+                      Children:
+                        - lblUsersPicked:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(31, 41, 51, 1)
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =60
+                              PaddingLeft: =0
+                              Size: =14
+                              Text: =ctxPerson.Name & Char(10) & ctxPerson.Email
+                              Wrap: =true
+                        - icoUsersClearPick:
+                            Control: Classic/Icon@2.5.0
+                            Properties:
+                              AccessibleLabel: ="Choose someone else"
+                              Color: =RGBA(0, 112, 112, 1)
+                              Height: =48
+                              Icon: =Icon.Cancel
+                              OnSelect: |-
+                                =UpdateContext({ctxPerson: Blank()}); Reset(txtUsersSearch)
+                              PaddingBottom: =14
+                              PaddingLeft: =14
+                              PaddingRight: =14
+                              PaddingTop: =14
+                              Tooltip: ="Choose someone else"
+                              Width: =48
+                  - lblUsersAlready:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        Fill: =RGBA(254, 246, 204, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =52
+                        PaddingBottom: =10
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        PaddingTop: =10
+                        Size: =13
+                        Text: |-
+                          =With({u: LookUp('GF Fleet Checklist App Users', UserEmail = ctxPerson.Email)},
+                              "Already in the list as " & u.AppRole.Value & If(u.ActiveYN, ".", " (access removed).") & " Adding them again sets the role below and gives access back.")
+                        Visible: =!IsBlank(ctxPerson) && !IsBlank(LookUp('GF Fleet Checklist App Users', UserEmail = ctxPerson.Email))
+                        Wrap: =true
+                  - lblUsersRoleLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =28
+                        PaddingLeft: =0
+                        Size: =14
+                        Text: ="Role"
+                  - drpUsersRole:
+                      Control: Classic/DropDown@2.3.1
+                      Properties:
+                        AllowEmptySelection: =true
+                        BorderColor: =RGBA(208, 216, 218, 1)
+                        BorderThickness: =1
+                        ChevronBackground: =RGBA(8, 144, 144, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =RGBA(0, 112, 112, 1)
+                        ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                        Color: =RGBA(31, 41, 51, 1)
+                        Default: =""
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =52
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(31, 41, 51, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        Items: =Choices([@'GF Fleet Checklist App Users'].AppRole)
+                        Items.Value: =Value
+                        PaddingLeft: =12
+                        PressedBorderColor: =RGBA(8, 144, 144, 1)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(8, 144, 144, 1)
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(8, 144, 144, 1)
+                        Size: =15
+                  - lblUsersRoleHint:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(96, 108, 118, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =40
+                        PaddingLeft: =0
+                        Size: =12
+                        Text: |-
+                          ="Driver: fills in checklists, declarations and run sheets. Can't change them once sent, and sees only their own. Reviewer: also reviews and signs off everyone's. Admin: also manages users."
+                        Wrap: =true
+                  - lblUsersListHeading:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(8, 144, 144, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =40
+                        PaddingLeft: =0
+                        PaddingTop: =12
+                        Size: =16
+                        Text: ="People with access (" & CountRows(Filter(galUsers.AllItems, ActiveYN)) & ")"
+                  - galUsers:
+                      Control: Gallery@2.15.0
+                      Variant: BrowseLayout_Vertical_TwoTextVariant_ver5.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =Max(1, CountRows(Self.AllItems)) * 76
+                        Items: =SortByColumns('GF Fleet Checklist App Users', "ActiveYN", SortOrder.Descending, "Title", SortOrder.Ascending)
+                        OnSelect: |-
+                          =UpdateContext({ctxEdit: ThisItem})
+                        TemplatePadding: =0
+                        TemplateSize: =76
+                      Children:
+                        - lblUsersRowName:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =If(ThisItem.ActiveYN, RGBA(31, 41, 51, 1), RGBA(96, 108, 118, 1))
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =26
+                              OnSelect: =Select(Parent)
+                              PaddingLeft: =0
+                              Size: =15
+                              Text: =ThisItem.Title
+                              Width: =Parent.TemplateWidth - 76
+                              X: =16
+                              Y: =12
+                        - lblUsersRowDetail:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =If(ThisItem.ActiveYN, RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                              Font: =Font.'Segoe UI'
+                              Height: =24
+                              OnSelect: =Select(Parent)
+                              PaddingLeft: =0
+                              Size: =12
+                              Text: =ThisItem.AppRole.Value & If(ThisItem.ActiveYN, "", "  ·  Access removed") & "  ·  " & ThisItem.UserEmail
+                              Width: =Parent.TemplateWidth - 76
+                              X: =16
+                              Y: =40
+                        - icoUsersRowOpen:
+                            Control: Classic/Icon@2.5.0
+                            Properties:
+                              AccessibleLabel: ="Change " & ThisItem.Title
+                              Color: =RGBA(8, 144, 144, 1)
+                              Height: =48
+                              Icon: =Icon.ChevronRight
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =12
+                              PaddingLeft: =12
+                              PaddingRight: =12
+                              PaddingTop: =12
+                              Width: =48
+                              X: =Parent.TemplateWidth - 60
+                              Y: =(76 - 48) / 2
+                        - recUsersRowSeparator:
+                            Control: Rectangle@2.3.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(208, 216, 218, 1)
+                              Height: =1
+                              OnSelect: =Select(Parent)
+                              Width: =Parent.TemplateWidth
+                              Y: =Parent.TemplateHeight - 1
+            - conUsersEditBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Visible: =!IsBlank(ctxEdit)
+                  Fill: =RGBA(243, 246, 246, 1)
+                  FillPortions: =1
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =10
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =24
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - lblUsersEditName:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(0, 112, 112, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =32
+                        PaddingLeft: =0
+                        Size: =18
+                        Text: =ctxEdit.Title
+                        Wrap: =true
+                  - lblUsersEditEmail:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(96, 108, 118, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        PaddingLeft: =0
+                        Size: =13
+                        Text: =ctxEdit.UserEmail
+                  - lblUsersEditStatus:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =If(ctxEdit.ActiveYN, RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Fill: =If(ctxEdit.ActiveYN, RGBA(226, 243, 242, 1), RGBA(250, 228, 232, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =44
+                        PaddingBottom: =10
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        PaddingTop: =10
+                        Size: =13
+                        Text: =If(ctxEdit.ActiveYN, "Has access as " & ctxEdit.AppRole.Value, "Access removed. Their past records are kept.")
+                        Wrap: =true
+                  - lblUsersEditRoleLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(31, 41, 51, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        PaddingLeft: =0
+                        PaddingTop: =8
+                        Size: =14
+                        Text: ="Role"
+                  - drpUsersEditRole:
+                      Control: Classic/DropDown@2.3.1
+                      Properties:
+                        AllowEmptySelection: =false
+                        BorderColor: =RGBA(208, 216, 218, 1)
+                        BorderThickness: =1
+                        ChevronBackground: =RGBA(8, 144, 144, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =RGBA(0, 112, 112, 1)
+                        ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                        Color: =RGBA(31, 41, 51, 1)
+                        Default: =ctxEdit.AppRole.Value
+                        DisplayMode: =If(Lower(ctxEdit.UserEmail) = Lower(User().Email), DisplayMode.Disabled, DisplayMode.Edit)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =52
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(31, 41, 51, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        Items: =Choices([@'GF Fleet Checklist App Users'].AppRole)
+                        Items.Value: =Value
+                        PaddingLeft: =12
+                        PressedBorderColor: =RGBA(8, 144, 144, 1)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(8, 144, 144, 1)
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(8, 144, 144, 1)
+                        Size: =15
+                  - lblUsersEditSelf:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(96, 108, 118, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =40
+                        PaddingLeft: =0
+                        Size: =12
+                        Text: ="This is you. Another admin has to change your own role or access, so you can't lock yourself out."
+                        Visible: =Lower(ctxEdit.UserEmail) = Lower(User().Email)
+                        Wrap: =true
+                  - btnUsersToggleAccess:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =If(ctxEdit.ActiveYN, RGBA(196, 49, 75, 1), RGBA(8, 144, 144, 1))
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =If(ctxEdit.ActiveYN, RGBA(196, 49, 75, 1), RGBA(0, 112, 112, 1))
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        DisplayMode: =If(!ctxBusy && Connection.Connected && Lower(ctxEdit.UserEmail) <> Lower(User().Email), DisplayMode.Edit, DisplayMode.Disabled)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =If(ctxEdit.ActiveYN, RGBA(196, 49, 75, 1), RGBA(8, 144, 144, 1))
+                        HoverColor: =If(ctxEdit.ActiveYN, RGBA(196, 49, 75, 1), RGBA(0, 112, 112, 1))
+                        HoverFill: =If(ctxEdit.ActiveYN, RGBA(250, 228, 232, 1), RGBA(226, 243, 242, 1))
+                        OnSelect: |-
+                          =UpdateContext({ctxBusy: true});
+                          UpdateContext({ctxResult: IfError(
+                              SyncAppUser.Run(ctxEdit.UserEmail, ctxEdit.Title, ctxEdit.AppRole.Value, !ctxEdit.ActiveYN),
+                              {ok: false, message: FirstError.Message})});
+                          UpdateContext({ctxBusy: false});
+                          If(ctxResult.ok,
+                              Notify(ctxEdit.Title & If(ctxEdit.ActiveYN, ": access removed", ": access given back"), NotificationType.Success);
+                              Refresh('GF Fleet Checklist App Users');
+                              UpdateContext({ctxEdit: Blank()}),
+                              Notify("Not changed: " & ctxResult.message, NotificationType.Error, 0))
+                        PressedBorderColor: =If(ctxEdit.ActiveYN, RGBA(196, 49, 75, 1), RGBA(0, 112, 112, 1))
+                        PressedColor: =If(ctxEdit.ActiveYN, RGBA(196, 49, 75, 1), RGBA(0, 112, 112, 1))
+                        PressedFill: =If(ctxEdit.ActiveYN, RGBA(250, 228, 232, 1), RGBA(226, 243, 242, 1))
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: =If(ctxBusy, "Working…", If(ctxEdit.ActiveYN, "Remove access", "Give access back"))
+            - conUsersFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.Light
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                Children:
+                  - btnUsersAdd:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        DisplayMode: =If(!IsBlank(ctxPerson) && !IsBlank(drpUsersRole.Selected.Value) && !ctxBusy && Connection.Connected, DisplayMode.Edit, DisplayMode.Disabled)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        OnSelect: |-
+                          =UpdateContext({ctxBusy: true});
+                          UpdateContext({ctxResult: IfError(
+                              SyncAppUser.Run(ctxPerson.Email, ctxPerson.Name, drpUsersRole.Selected.Value, true),
+                              {ok: false, message: FirstError.Message})});
+                          UpdateContext({ctxBusy: false});
+                          If(ctxResult.ok,
+                              Notify(ctxPerson.Name & " added as " & drpUsersRole.Selected.Value & ". No email was sent.", NotificationType.Success);
+                              UpdateContext({ctxPerson: Blank()});
+                              Reset(txtUsersSearch);
+                              Reset(drpUsersRole);
+                              Refresh('GF Fleet Checklist App Users'),
+                              Notify("Not added: " & ctxResult.message, NotificationType.Error, 0))
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: =If(ctxBusy, "Adding…", If(!Connection.Connected, "Needs signal", If(IsBlank(ctxPerson), "Pick a person first", If(IsBlank(drpUsersRole.Selected.Value), "Pick a role", "Add person"))))
+                        Visible: =IsBlank(ctxEdit)
+                  - btnUsersSaveRole:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledColor: =RGBA(255, 255, 255, 1)
+                        DisabledFill: =RGBA(186, 198, 200, 1)
+                        DisplayMode: =If(!ctxBusy && Connection.Connected && ctxEdit.ActiveYN && drpUsersEditRole.Selected.Value <> ctxEdit.AppRole.Value, DisplayMode.Edit, DisplayMode.Disabled)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        OnSelect: |-
+                          =UpdateContext({ctxBusy: true});
+                          UpdateContext({ctxResult: IfError(
+                              SyncAppUser.Run(ctxEdit.UserEmail, ctxEdit.Title, drpUsersEditRole.Selected.Value, true),
+                              {ok: false, message: FirstError.Message})});
+                          UpdateContext({ctxBusy: false});
+                          If(ctxResult.ok,
+                              Notify(ctxEdit.Title & " is now " & drpUsersEditRole.Selected.Value, NotificationType.Success);
+                              Refresh('GF Fleet Checklist App Users');
+                              UpdateContext({ctxEdit: Blank()}),
+                              Notify("Not changed: " & ctxResult.message, NotificationType.Error, 0))
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: =If(ctxBusy, "Saving…", "Save role")
+                        Visible: =!IsBlank(ctxEdit)
+      - lblUsersNoAccess:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(31, 41, 51, 1)
+            Fill: =RGBA(243, 246, 246, 1)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =Parent.Height
+            OnSelect: =Navigate(scrHome)
+            PaddingLeft: =24
+            PaddingRight: =24
+            Size: =15
+            Text: ="Only admins can manage users." & Char(10) & Char(10) & "Tap anywhere to go back."
+            Visible: =varRole <> "Admin"
+            Width: =Parent.Width

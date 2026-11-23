@@ -49,6 +49,7 @@ The paper forms come from SOP **DC/16.0 Driver Responsibilities & Customer Servi
 | `scrRunSheet` | Trip details, unlimited delivery stops, return to CD. Works offline | Driver |
 | `scrDecl` | Fitness for Driving declaration (14 statements) | Driver |
 | `scrReview` | Review and sign-off of checklists, run sheets and declarations | Reviewer, Admin |
+| `scrUsers` | Manage users: add a person, change their role, remove access (calls the `SyncAppUser` flow) | Admin |
 | `scrTest` | Scratch screen for testing controls | Developer |
 
 ---
@@ -69,7 +70,7 @@ The paper forms come from SOP **DC/16.0 Driver Responsibilities & Customer Servi
 3. **Return to CD** tab: time returned, end mileage, balance invoice, temperatures, quantity on balance delivery, invoice balanced with cashier. Then submit.
 4. Without signal, everything is saved on the phone. **Upload** (or the next save once there is signal) sends the trip, then its stops, then the submission.
 
-Run sheet status: **In Progress** (open on the phone) → **Open** (submitted, waiting for the team leader) → **Closed** (verified).
+The run sheet stays on the phone until the driver submits it. Then the trip and its stops are sent to SharePoint as new rows. Drivers can only add records, never change them, so a sent stop can't be edited in the app. Run sheet status: **Open** (submitted, waiting for the team leader) → **Closed** (verified).
 
 ### 3. Review and sign-off: office
 
@@ -104,9 +105,14 @@ Set in the **GF Fleet Checklist App Users** list (Name, `UserEmail` in lower cas
 | --- | --- |
 | **Driver** | Declaration, pre-trip checklist and photos, run sheet |
 | **Reviewer** | Everything a Driver can, plus the Review screen: approve checklists, verify run sheets, sign off declarations |
-| **Admin** | Everything a Reviewer can. Admins also own the app and manage users in the App Users list (in SharePoint; there is no admin screen yet) |
+| **Admin** | Everything a Reviewer can. Admins also own the app and manage users on the **Manage users** screen |
 
-Hiding buttons in the app is not security. **SharePoint list permissions are the real access boundary.** The App Users list has its own permissions (site groups read, owners edit). Don't break permissions on the other lists, because the flows write to them.
+Hiding buttons in the app is not security. **SharePoint list permissions are the real access boundary.**
+
+- App users get list access through two SharePoint groups: **Fleet App Drivers** (role Driver) and **Fleet App Reviewers** (Reviewer and Admin). The `SyncAppUser` flow adds and removes people when an Admin uses the Manage users screen. No email is sent. Don't add app users to the site's Members group.
+- The four record lists (Fleet Checklist, Run Sheets, Run Sheet Details, Driver Declarations) have their own permissions, set up by `scripts/setup_app_permissions.js`. Existing permissions were copied when they stopped inheriting, so the flows and site owners keep access. Drivers can **add** records but not edit or delete them. They can see only the records they created, because SharePoint won't allow adding without some view access, and item-level permissions limit it to their own. Reviewers (Edit + *Override List Behaviors*) see and sign off everything.
+- The App Users list gives both groups Read. Only the flow writes to it.
+- The photo library is written by the `SaveFleetPhoto` flow, so app users don't need access to it.
 
 ### Business roles
 
