@@ -89,7 +89,7 @@
     ['field_42', "Raincoat and helmet in truck", false],
     ['field_43', "Safety comments", false],
     ['field_44', "Underneath greasing done", false],
-    ['field_45', "Wheel chocks in truck", false],
+    ['field_45', "Braking Angle Blocks (Present)", false],
     ['field_46', "Freezer and dry box locked", false],
     ['field_47', "Money bag and lock in truck", false],
     ['field_48', "Money box in the truck?", false],

@@ -553,7 +553,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Braking Angle Blocks (Present)",
-      "proposedName": "Wheel chocks in truck",
+      "proposedName": "Braking Angle Blocks (Present)",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",

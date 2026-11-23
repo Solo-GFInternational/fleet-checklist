@@ -52,7 +52,7 @@ Other changes:
 | 19 | Torch working | – | Hand Torch (Operational) |
 | 20 | Raincoat and helmet in truck | – | Rain Coat and Helmet (Present / Good Condition) |
 | 21 | Cones and reflector triangle in truck | 1 photo | Cones & Reflector + Accessory Check "Traffic Cones Available" (merged) |
-| 22 | Wheel chocks in truck | – | Braking Angle Blocks (Present) |
+| 22 | Braking Angle Blocks (Present) | – | Braking Angle Blocks (Present) |
 
 ## Expiry and weight stickers
 
