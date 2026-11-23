@@ -158,6 +158,44 @@ Three things are added or changed:
 
 Background: [PROJECT_HANDOVER.md §4.5](../PROJECT_HANDOVER.md#45-run-sheet-submission-email-flow).
 
+#### Option A (recommended): build it with the script and import it
+
+`scripts/build_submission_email_flow.py` takes the package you exported from your flow and writes a new package with every change in this section already built in. Your trigger, its conditions, the stops table and your email layout are copied over unchanged.
+
+**Inputs to fill in.** Open `scripts/build_submission_email_flow.py` and check the **INPUTS** block at the top:
+
+| Input | Default | What to check |
+| --- | --- | --- |
+| `FLOW_NAME` | `Run Sheet - Submission email v2` | Any name; the import creates it next to your current flow |
+| `PHOTOS_LIBRARY` | `Fleet Photos` | The photo library's name exactly as SharePoint shows it |
+| `PDF_FOLDER` | `/Fleet Photos/Run sheet PDFs` | Open the library and look at the address bar. The part after the site name is the library's URL name (spaces show as `%20`). Use that, plus `/Run sheet PDFs`. The folder must exist (step 1.6) |
+| `ONEDRIVE_FOLDER` | `/Run sheet PDFs` | A folder in **your** OneDrive for the temporary HTML file. Create it first |
+| `FAILURE_EMAIL` | empty (off) | Your email address, if you want to be told when the flow fails |
+| `WAIT_MINUTES`, `MAX_CHECKS`, `ATTACH_LIMIT_MB` | 2, 30, 19 | Leave as they are unless you want a shorter or longer wait |
+
+You don't need to fill in the site address, list IDs or email recipients. The script reads them from your export.
+
+- [ ] **A1.** Run it (from the repo folder, in a terminal):
+  ```
+  py -3 -I scripts/build_submission_email_flow.py files "files/Solo_20261123212614.zip"
+  ```
+  It writes `files/Run Sheet - Submission email v2 - import package.zip`. Zip files in `files/` are git-ignored, because they contain your site address and list IDs.
+- [ ] **A2.** Power Automate → **My flows** → **Import** → **Import Package (Legacy)** → **Upload** → pick the new .zip.
+- [ ] **A3.** On the import page:
+  - Next to the flow, click **Update** under *Import setup* → **Create as new** → **Save**.
+  - For each connection (SharePoint, Office 365 Outlook, **OneDrive for Business**), click **Select during import** → pick yours → **Save**. If OneDrive has no connection yet, use **+ New connection** there.
+  - Then click **Import**.
+- [ ] **A4.** Open the new flow → **Edit** and check that no action shows a red error.
+  - If **Check photos** or **Get invoice files** complains about the library, pick **Fleet Photos** from its **Library Name** drop-down.
+  - If **Save PDF** complains about the folder, pick **Run sheet PDFs** with the folder icon.
+  - Then **Save**.
+- [ ] **A5.** Turn the **new** flow **on** and your **old** "Run Sheet - Submission email" **off** (**⋯ → Turn off**). If both are on, both send.
+- [ ] **A6.** Test as in step 8 below. If anything is wrong, turn the new flow off and the old one back on while it's fixed.
+
+Steps 0–8 below are the same changes done by hand. You only need them if the import fails, or to understand what the script built.
+
+#### Option B: make the changes by hand
+
 **How to read the steps below**
 - **Click** means a button or menu in Power Automate.
 - `Code like this` is text you type or paste.
