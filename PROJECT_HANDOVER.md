@@ -17,6 +17,7 @@ Onboarding notes for a Claude Code session picking this project up cold. Read th
 5. [Power Apps + SharePoint alternative](#5-power-apps--sharepoint-alternative)
 6. [Current state](#6-current-state)
 7. [Gotchas and quick reference](#7-gotchas-and-quick-reference)
+8. [Setting up the 23–24 Nov 2026 release](#8-setting-up-the-2324-nov-2026-release)
 
 ---
 
@@ -519,3 +520,77 @@ Email preview   open email-templates/preview.html in a browser
 ### Related folder: `fleet-checklist-org`
 
 `C:\Users\Solomone.Tuilagivou\Documents\GitHub\fleet-checklist-org` is an **older snapshot (19 Oct 2026)**: the same SOP PDF plus first-generation import files. Its Pre-Trip .docx has the original 20-question checkbox layout (one checkbox + comments per section, Driver Declaration, office-use Site Engineer section); its Run Sheet .docx has 197 questions under the old title "Vehicle Run Sheet Checklist" with answer lines. No scripts, lists or flows. Treat it as superseded and don't edit it; this folder is the working copy.
+
+---
+
+## 8. Setting up the 23–24 Nov 2026 release
+
+Do these in order. They cover everything from the meeting with Pawan's team: checklist v2, defects list, Trucks list, run sheet invoices, Daily review, draft and paging. Every script runs in the **browser console (F12) on the Fleet Operations site** while signed in as a site owner.
+
+For each script:
+- Run it once with `DRY_RUN = true` and read the summary.
+- Then set `DRY_RUN = false` and run it again.
+- Every script can be run again safely.
+
+`scripts/setup_app_permissions.js` must already have run, because the new lists reuse its groups and permission levels.
+
+### Step 1: SharePoint
+
+| # | Script | What it does |
+| --- | --- | --- |
+| 1 | `scripts/create_checklist_v2_columns.js` (`MODE = 'create'`) | New Yes/No columns on Fleet Checklist (licence, 4 glass, cabin tilt, accident); index on Truck No |
+| 2 | `scripts/create_checklist_defects.js` | **GF Fleet Checklist Defects** list (one row per item answered No), drivers add-only, own items |
+| 3 | `scripts/create_trucks_list.js` | **GF Fleet Trucks** list: type, tyres, due dates, last odometer. Paste Krish's truck table into `CSV_TEXT` if you have it, or add trucks later |
+| 4 | `scripts/create_runsheet_v2_columns.js` | `NoofInvoices` on Run Sheet Details; `RunKey` / `StopKey` on the Fleet Photos library |
+| 5 | `scripts/create_daily_reviews.js` | **GF Fleet Daily Reviews** list |
+
+Then have the office fill in each truck's **COF expiry, blower service due and truck service due** dates in GF Fleet Trucks.
+
+### Step 2: Power Automate
+
+1. **SaveFleetPhoto**: add two optional text inputs at the end, `RunKey` and `StopKey`. Map them in *Update file properties* (section 4.3).
+2. **RunSheetSubmitted**: build it (section 4.5). It sends from your own mailbox until IT grants Send As on the shared mailbox.
+3. **UpdateTruckOdometer**: build it (section 4.6). The flow owner needs edit rights on GF Fleet Trucks.
+
+### Step 3: Power Apps Studio
+
+1. **Data sources:**
+   - Add GF Fleet Checklist Defects, GF Fleet Trucks and GF Fleet Daily Reviews.
+   - Refresh Fleet Checklist, Run Sheet Details and the photo library.
+2. **Flows:** in the Power Automate pane, remove and re-add SaveFleetPhoto, then add RunSheetSubmitted.
+3. **Screens:** paste each one over the old screen, checking the formula checker after each:
+   1. `scrPhotos`
+   2. `scrPreTrip`
+   3. `scrRunSheet`
+   4. `scrReview`
+   5. `scrHome`
+   6. `scrUsers`
+
+   `scrPreTrip` is generated, so if a paste fails, fix `scripts/build_pretrip_screen.py` and regenerate. Don't hand-edit it.
+4. **Optional, for testing in a browser:** Settings → turn on SaveData/LoadData for web players.
+5. **Save**, then **Publish this version**.
+
+### Step 4: Test
+
+1. **Checklist, as a driver:**
+   - Pages, Back and Next.
+   - A No needs a comment.
+   - The number of tyre photos matches the truck.
+   - The due-date status shows.
+   - The odometer warning appears.
+   - Close the app halfway, then **Carry on** from Home.
+   - Submit, then check the Fleet Checklist row, its defect rows and the photos.
+2. **Run sheet, as a driver, in airplane mode:**
+   - Add stops with invoice photos.
+   - Turn signal back on, submit, and check the rows, the photos and the PDF email.
+3. **As a reviewer:**
+   - Sign off a checklist, including the weekly cabin tilt and greasing items. A second checklist for the same truck that week should show "conducted on … by …".
+   - Verify a run sheet.
+   - Give a driver a Daily review.
+4. **As that driver the next day:** the Daily review banner shows on Home.
+
+### Step 5: Waiting on others
+
+- **Pawan:** approve [files/Fleet Checklist - item wording for approval.md](<files/Fleet Checklist - item wording for approval.md>), then run `create_checklist_v2_columns.js` with `MODE = 'rename'`. No app change is needed.
+- **Krish:** the truck table, and which items apply only to Frozen trucks. Truck types are set in `scripts/checklist_items.json` (`truckType`); regenerate the screen after changing it.
+- **COF and blower labels:** a photo of each, and the text your phone reads if they carry a QR code or barcode.

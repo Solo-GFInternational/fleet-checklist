@@ -36,7 +36,7 @@ The paper forms come from SOP **DC/16.0 Driver Responsibilities & Customer Servi
 | [files/](files/) | Source and reference documents: the SOP, paper forms, Forms import files, list templates, test-data generator |
 | [email-templates/](email-templates/) | HTML email bodies for the flows (`preview.html` shows them all) |
 | [CLAUDE.md](CLAUDE.md) | Project conventions: naming, layout, brand palette, roles, offline rules |
-| [PROJECT_HANDOVER.md](PROJECT_HANDOVER.md) | Detailed technical handover |
+| [PROJECT_HANDOVER.md](PROJECT_HANDOVER.md) | Detailed technical handover. **Section 8 has the step-by-step setup for the latest release** |
 | [PROJECT_HISTORY.md](PROJECT_HISTORY.md) | Day-by-day decision log |
 
 ### Screens
