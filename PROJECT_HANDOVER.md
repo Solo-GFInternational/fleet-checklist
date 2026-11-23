@@ -267,7 +267,33 @@ Alerts:
 - Use a **Teams Flow bot post** if email stays blocked.
 - Suggested: move manager approval out of the driver's form into a Power Automate **Approval** to the Fleet Controller.
 
-### 4.3 Licensing, ownership, service account
+### 4.4 Power Apps flow: SyncAppUser (designed 23 Nov 2026, not built yet)
+
+Called from `scrUsers` (Add person, Save role, Remove access / Give access back). It's the only thing that writes to the App Users list or changes group membership, and it runs under the flow owner's connections, so Admins don't need SharePoint rights of their own. Adding someone to a SharePoint group through the REST API sends **no email**.
+
+`SyncAppUser.Run(Email, Name, Role, Active)` → returns `ok` (Yes/No) and `message` (text).
+
+| # | Trigger input (When Power Apps calls a flow, V2) | Type | Example |
+| --- | --- | --- | --- |
+| 1 | Email | Email (`triggerBody()['email']`) | the person's sign-in address, lower case |
+| 2 | Name | Text (`['text']`) | `Krish Kumar` |
+| 3 | Role | Text (`['text_1']`) | `Driver`, `Reviewer`, `Admin` |
+| 4 | Active | Yes/No (`['boolean']`) | `true` = has access, `false` = remove access |
+
+Steps:
+1. **Caller check.** Get items on App Users, filter `UserEmail eq '@{toLower(triggerOutputs()?['headers']?['x-ms-user-email'])}' and AppRole eq 'Admin' and ActiveYN eq 1`, top 1. If none, respond `ok = false`, "Only admins can manage users", and Terminate. This check is what stops a non-admin from calling the flow directly.
+2. **Upsert the App Users row.** Get items filter `UserEmail eq '<email>'`, top 1. If found, Update item (Title = Name, AppRole = Role, ActiveYN = Active); otherwise Create item.
+3. **Ensure user.** *Send an HTTP request to SharePoint*, POST `_api/web/ensureuser`, headers `Accept` and `Content-Type` = `application/json;odata=verbose`, body `{"logonName":"<email>"}`. Keep `body('Ensure_user')?['d']?['Id']` and `?['LoginName']`.
+4. **Remove from both groups.** Two HTTP POSTs: `_api/web/sitegroups/getbyname('Fleet App Drivers')/users/removebyid(<Id>)`, then the same for `Fleet App Reviewers`. Set each one's *Configure run after* to continue on failure (it fails when the person wasn't in that group).
+5. **If Active:** HTTP POST `_api/web/sitegroups/getbyname('<group>')/users`, body `{"__metadata":{"type":"SP.User"},"LoginName":"<LoginName>"}`. Use group `Fleet App Drivers` for Driver and `Fleet App Reviewers` for Reviewer/Admin.
+6. **Optional: share the app.** *Power Apps for Makers → Edit App Role Assignment* (the flow owner must own the app), role CanView. Not tested here: check on the first run whether an invitation email arrives. Otherwise share the app by hand or with a security group from IT.
+7. **Respond to a PowerApp or flow:** `ok = true`, `message` = for example "Added to Fleet App Drivers".
+
+Removing access keeps the person's past records (Created By doesn't change) and keeps the App Users row with Active = No.
+
+Setup: run `scripts/setup_app_permissions.js` (groups, permission levels, list permissions) once before the flow is used. In the app: Power Automate pane → Add flow → SyncAppUser, and Add data → **Office 365 Users** (the people search on scrUsers).
+
+### 4.5 Licensing, ownership, service account
 
 - **Drivers ideally have Microsoft 365 accounts** (Frontline F1/F3 are cheaper): Forms then records who submitted and when, and file upload (photos) works only on organisation-only forms. Confirm with IT.
 - Forms + standard SharePoint/Outlook/Teams connectors run on standard M365 licences. Anything premium (Dataverse, premium connectors, Power Apps offline-first on Dataverse) needs Power Apps/Automate premium licences: check before designing for it.
@@ -297,9 +323,9 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 
 - One screen, [screens/scrRunSheet.txt](screens/scrRunSheet.txt), with three tabs: **Trip** (creates/updates the parent row in `Run Sheets`) → **Stops** (each stop saved straight to `Run Sheet Details`, linked by the `RunSheet` lookup, numbered by `StopOrder`; no limit, runs are typically ~70 stops) → **Return to CD** (footer fields, then submit).
 - Column names come from the live lists (dumped 18 Nov with [scripts/list_columns.js](scripts/list_columns.js)), not the Excel templates in `files/`. Odd internal names: `NoofInvoices`, `AnalogTemp_x002e_`, `TemponPlugIn`, `QtyonBalanceRecovery` (shown as "Qty on Balance Delivery"), `ActiveYes_x002f_No`, `NoofCtns`. Truck number is `Title` on Run Sheets; destination is `Title` on Run Sheet Details. `InvoiceBalanced` is Yes/No (Boolean).
-- Status: the app writes **In Progress** while the run is open, **Open** on submit (same as Forms submissions: waiting for the Team Leader), and the office sets **Closed**. "In Progress" was added to the Status choices (capital P).
+- Status: the app writes **Open** on submit (same as Forms submissions: waiting for the Team Leader), and the office sets **Closed**. Since 23 Nov 2026 nothing is written before submit (drivers are add-only), so **In Progress** is no longer used; it stays in the Status choices for older rows.
 - End Mileage, Analog Temp., Temp on Plug In and Qty on Balance Delivery must **not** be Required in SharePoint, or the run can't be saved at the start. The app enforces them on the Return to CD tab instead.
-- Home's Run sheet button reopens the driver's latest "In Progress" run (matched on `DriverName` = signed-in user's full name).
+- Home's Run sheet button reopens the run saved on the phone. It no longer reopens an "In Progress" run from SharePoint, because finishing it would mean editing that row. Finish or clear any run started on the old version before switching.
 - Team Leader verification (`TeamLeader`, `DateVerified`, review/approval columns) is still to be built on a review screen.
 
 
@@ -380,7 +406,8 @@ Update `build_forms.py` / `build_lists.py` before any re-import.
 | "Send an email from a shared mailbox" → Unauthorized | Needs Send As from IT |
 | Mail connector "Send an email notification (V3)" → 401 for new tenants | Don't use it; use Outlook "Send an email (V2)" or Teams |
 | SharePoint internal names are fixed at creation | Short, no-space names; spaces become `_x0020_` |
-| Breaking list permissions | Caused the Run Sheet Stops rebuild; avoid unique permissions on lists the flows write to |
+| Breaking list permissions | Caused the Run Sheet Stops rebuild. Only stop inheriting with existing permissions **copied** (`setup_app_permissions.js` does this), so the flow owner and site owners keep access |
+| Flow created from Studio's Power Automate pane ("Create from blank") | The app keeps the automatic name (`PowerAppV2->…`) even after renaming, so `<Flow>.Run` shows "'Run' is unknown". Remove from app, then Add flow again once it's named and saved |
 | Long pre-filled links fail sign-in (AADSTS90015) | Keep under ~2,250 chars |
 | Forms can't submit offline | Online only, or Power Apps offline |
 | `npm install` / `pip install` fail (corporate SSL inspection) | Use stdlib Python; Playwright unavailable |

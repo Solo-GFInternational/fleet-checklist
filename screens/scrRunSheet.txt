@@ -320,7 +320,7 @@ Screens:
                         RadiusBottomRight: =12
                         RadiusTopLeft: =12
                         RadiusTopRight: =12
-                        Visible: =!IsBlank(varRunSheet) && (!Connection.Connected || varRunSheet.PendingSubmit || (CountRows(Filter(colRunStops, !Synced)) + If(!IsBlank(varRunSheet) && !varRunSheet.Synced, 1, 0)) > 0)
+                        Visible: =!IsBlank(varRunSheet) && varRunSheet.PendingSubmit
                       Children:
                         - lblRunSyncStatus:
                             Control: Label@2.5.1
@@ -335,12 +335,9 @@ Screens:
                               PaddingLeft: =0
                               Size: =13
                               Text: |-
-                                =With({n: CountRows(Filter(colRunStops, !Synced)) + If(!IsBlank(varRunSheet) && !varRunSheet.Synced, 1, 0)},
-                                    If(!Connection.Connected,
-                                        "You're offline. " & If(n = 0, "Everything so far is uploaded.", n & If(n = 1, " change is", " changes are") & " saved on this phone and will upload when you have signal."),
-                                        ctxSyncing, "Uploading…",
-                                        varRunSheet.PendingSubmit && n = 0, "Run sheet waiting to submit. Tap Upload now.",
-                                        n & If(n = 1, " change hasn't", " changes haven't") & " uploaded yet." & If(IsBlank(ctxSyncError), "", " " & ctxSyncError)))
+                                =If(!Connection.Connected, "You're offline. Your run sheet is saved on this phone. Tap Upload now when you have signal.",
+                                    ctxSyncing, "Uploading…",
+                                    "Your run sheet hasn't been sent yet. Tap Upload now." & If(IsBlank(ctxSyncError), "", " " & ctxSyncError))
                               Wrap: =true
                         - btnRunSync:
                             Control: Classic/Button@2.2.0
@@ -361,78 +358,69 @@ Screens:
                               HoverColor: =RGBA(255, 255, 255, 1)
                               HoverFill: =RGBA(0, 112, 112, 1)
                               OnSelect: |-
-                                =If(Connection.Connected && !IsBlank(varRunSheet) && !ctxSyncing,
+                                =If(Connection.Connected && !IsBlank(varRunSheet) && varRunSheet.PendingSubmit && !ctxSyncing,
                                     UpdateContext({ctxSyncing: true, ctxSyncError: ""});
                                     Clear(colSyncErrors);
-                                    If(!varRunSheet.Synced,
+                                    If(IsBlank(varRunSheet.ID),
                                         IfError(
-                                            With({r: Patch('Run Sheets',
-                                                    If(IsBlank(varRunSheet.ID), Defaults('Run Sheets'), LookUp('Run Sheets', ID = varRunSheet.ID)),
-                                                    {
-                                                        Title: varRunSheet.Title,
-                                                        RunDate: varRunSheet.RunDate,
-                                                        DateofDrive: varRunSheet.DateofDrive,
-                                                        Driver: varRunSheet.DriverName,
-                                                        DriverName: varRunSheet.DriverName,
-                                                        Partner: varRunSheet.Partner,
-                                                        Area: varRunSheet.Area,
-                                                        NoofInvoices: varRunSheet.NoofInvoices,
-                                                        StartMileage: varRunSheet.StartMileage,
-                                                        ExpectedDeparture: varRunSheet.ExpectedDeparture,
-                                                        ExpectedArrival: varRunSheet.ExpectedArrival,
-                                                        Status: {Value: "In Progress"},
-                                                        ActiveYes_x002f_No: true
-                                                    })},
+                                            With({r: Patch('Run Sheets', Defaults('Run Sheets'), {
+                                                    Title: varRunSheet.Title,
+                                                    RunDate: varRunSheet.RunDate,
+                                                    DateofDrive: varRunSheet.DateofDrive,
+                                                    Driver: varRunSheet.DriverName,
+                                                    DriverName: varRunSheet.DriverName,
+                                                    Partner: varRunSheet.Partner,
+                                                    Area: varRunSheet.Area,
+                                                    NoofInvoices: varRunSheet.NoofInvoices,
+                                                    StartMileage: varRunSheet.StartMileage,
+                                                    ExpectedDeparture: varRunSheet.ExpectedDeparture,
+                                                    ExpectedArrival: varRunSheet.ExpectedArrival,
+                                                    TimeReturned: varRunSheet.TimeReturned,
+                                                    EndMileage: varRunSheet.EndMileage,
+                                                    BalanceInvoice: varRunSheet.BalanceInvoice,
+                                                    AnalogTemp_x002e_: varRunSheet.AnalogTemp,
+                                                    TemponPlugIn: varRunSheet.PlugInTemp,
+                                                    QtyonBalanceRecovery: varRunSheet.BalanceQty,
+                                                    InvoiceBalanced: varRunSheet.InvoiceBalanced,
+                                                    Status: {Value: "Open"},
+                                                    ActiveYes_x002f_No: true
+                                                })},
                                                 Set(varRunSheet, Patch(varRunSheet, {ID: r.ID, Synced: true})));
+                                            ClearCollect(colLocalRun, varRunSheet);
+                                            IfError(SaveData(colLocalRun, "fcRunHeader"); true, false);
                                             true,
                                             Collect(colSyncErrors, {Msg: "Trip: " & FirstError.Message});
                                             false));
                                     If(!IsBlank(varRunSheet.ID),
-                                        ClearCollect(colStopsToSync, Filter(colRunStops, !Synced));
+                                        ClearCollect(colStopsToSync, Filter(colRunStops, IsBlank(ID)));
                                         ForAll(colStopsToSync As s,
                                             IfError(
-                                                With({r: Patch('Run Sheet Details',
-                                                        If(IsBlank(s.ID), Defaults('Run Sheet Details'), LookUp('Run Sheet Details', ID = s.ID)),
-                                                        {
-                                                            Title: s.Title,
-                                                            RunSheet: {Id: varRunSheet.ID, Value: Text(varRunSheet.ID)},
-                                                            RunSheetID: varRunSheet.ID,
-                                                            StopOrder: s.StopOrder,
-                                                            TimeOut: s.TimeOut,
-                                                            NoofCtns: s.NoofCtns,
-                                                            ArriveTime: s.ArriveTime,
-                                                            TruckTemp: s.TruckTemp,
-                                                            StartOpTime: s.StartOpTime,
-                                                            CompleteOpTime: s.CompleteOpTime,
-                                                            Duration: s.Duration,
-                                                            HSEQComments: s.HSEQComments,
-                                                            Active: true
-                                                        })},
+                                                With({r: Patch('Run Sheet Details', Defaults('Run Sheet Details'), {
+                                                        Title: s.Title,
+                                                        RunSheet: {Id: varRunSheet.ID, Value: Text(varRunSheet.ID)},
+                                                        RunSheetID: varRunSheet.ID,
+                                                        StopOrder: s.StopOrder,
+                                                        TimeOut: s.TimeOut,
+                                                        NoofCtns: s.NoofCtns,
+                                                        ArriveTime: s.ArriveTime,
+                                                        TruckTemp: s.TruckTemp,
+                                                        StartOpTime: s.StartOpTime,
+                                                        CompleteOpTime: s.CompleteOpTime,
+                                                        Duration: s.Duration,
+                                                        HSEQComments: s.HSEQComments,
+                                                        Active: true
+                                                    })},
                                                     Patch(colRunStops, LookUp(colRunStops, LocalKey = s.LocalKey), {ID: r.ID, Synced: true}));
                                                 true,
                                                 Collect(colSyncErrors, {Msg: "Stop " & s.StopOrder & ": " & FirstError.Message});
                                                 false)));
-                                    If(varRunSheet.PendingSubmit && !IsBlank(varRunSheet.ID) && IsEmpty(Filter(colRunStops, !Synced)),
-                                        IfError(
-                                            Patch('Run Sheets', LookUp('Run Sheets', ID = varRunSheet.ID), {
-                                                TimeReturned: varRunSheet.TimeReturned,
-                                                EndMileage: varRunSheet.EndMileage,
-                                                BalanceInvoice: varRunSheet.BalanceInvoice,
-                                                AnalogTemp_x002e_: varRunSheet.AnalogTemp,
-                                                TemponPlugIn: varRunSheet.PlugInTemp,
-                                                QtyonBalanceRecovery: varRunSheet.BalanceQty,
-                                                InvoiceBalanced: varRunSheet.InvoiceBalanced,
-                                                Status: {Value: "Open"}
-                                            });
-                                            Set(varRunSheet, Blank());
-                                            Clear(colRunStops);
-                                            Clear(colLocalRun);
-                                            IfError(SaveData(colLocalRun, "fcRunHeader"); SaveData(colRunStops, "fcRunStops"); true, false);
-                                            Notify("Run sheet submitted. Thank you.", NotificationType.Success);
-                                            Navigate(scrHome);
-                                            true,
-                                            Collect(colSyncErrors, {Msg: "Submit: " & FirstError.Message});
-                                            false));
+                                    If(!IsBlank(varRunSheet.ID) && IsEmpty(Filter(colRunStops, IsBlank(ID))),
+                                        Set(varRunSheet, Blank());
+                                        Clear(colRunStops);
+                                        Clear(colLocalRun);
+                                        IfError(SaveData(colLocalRun, "fcRunHeader"); SaveData(colRunStops, "fcRunStops"); true, false);
+                                        Notify("Run sheet submitted. Thank you.", NotificationType.Success);
+                                        Navigate(scrHome));
                                     If(!IsBlank(varRunSheet),
                                         ClearCollect(colLocalRun, varRunSheet);
                                         IfError(SaveData(colLocalRun, "fcRunHeader"); true, false);
@@ -1361,7 +1349,9 @@ Screens:
                         Height: =CountRows(colRunStops) * 104
                         Items: =Sort(colRunStops, StopOrder, SortOrder.Descending)
                         OnSelect: |-
-                          =UpdateContext({
+                          =If(!IsBlank(ThisItem.ID),
+                              Notify("This stop has already been sent and can't be changed. Tell your Team Leader if it's wrong.", NotificationType.Warning),
+                          UpdateContext({
                               ctxEdit: ThisItem,
                               ctxTimeOut: ThisItem.TimeOut,
                               ctxArrive: ThisItem.ArriveTime,
@@ -1374,7 +1364,7 @@ Screens:
                           Reset(txtStopTruckTemp);
                           Reset(txtStopStartOp);
                           Reset(txtStopCompleteOp);
-                          Reset(txtStopComments)
+                          Reset(txtStopComments))
                         ShowScrollbar: =false
                         TemplateFill: =If(!IsBlank(ctxEdit) && ThisItem.LocalKey = ctxEdit.LocalKey, RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         TemplatePadding: =0
@@ -1408,7 +1398,7 @@ Screens:
                               OnSelect: =Select(Parent)
                               PaddingLeft: =0
                               Size: =12
-                              Text: ="Arrived " & Coalesce(ThisItem.ArriveTime, "–") & "  ·  " & Coalesce(Text(ThisItem.NoofCtns), "0") & " ctns  ·  " & ThisItem.TruckTemp & " °C" & If(IsBlank(ThisItem.Duration), "", "  ·  " & ThisItem.Duration & " min") & If(ThisItem.Synced, "", "  ·  not uploaded yet")
+                              Text: ="Arrived " & Coalesce(ThisItem.ArriveTime, "–") & "  ·  " & Coalesce(Text(ThisItem.NoofCtns), "0") & " ctns  ·  " & ThisItem.TruckTemp & " °C" & If(IsBlank(ThisItem.Duration), "", "  ·  " & ThisItem.Duration & " min") & If(IsBlank(ThisItem.ID), "", "  ·  sent")
                               Width: =Parent.TemplateWidth - 80
                               X: =16
                               Y: =56
@@ -1999,7 +1989,7 @@ Screens:
                           Set(varTruck, varRunSheet.Title);
                           ClearCollect(colLocalRun, varRunSheet);
                           IfError(SaveData(colLocalRun, "fcRunHeader"); true, false);
-                          Notify(If(ctxNewRun, "Run started. Add your first stop.", "Trip details saved.") & If(Connection.Connected, "", " Saved on this phone; it uploads when you have signal."), NotificationType.Success);
+                          Notify(If(ctxNewRun, "Run started. Add your first stop.", "Trip details saved.") & " It stays on this phone until you submit.", NotificationType.Success);
                           UpdateContext({ctxTab: "Stops"});
                           Select(btnRunSync)
                         PressedBorderColor: =RGBA(0, 0, 0, 0)
