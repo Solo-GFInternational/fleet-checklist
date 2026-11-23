@@ -12,8 +12,10 @@ What it builds:
   - One section heading card per section.
   - Yes/No items: two checkboxes, Yes (the card's DataCardValueN) and No (chk<Card>No).
     Exclusive via Reset: ticking one resets the other to its Default (blank on a new checklist).
-    A separate comment card (crd<Card>Cmt) for the <field>Cmt column shows when the "problem"
-    answer is ticked and is then required.
+    A multi-line comment box (txt<Card>Cmt) inside the item's card shows when the "problem"
+    answer (commentOn) is ticked and is then required. Comments are not columns: frmPreTrip.OnSuccess
+    adds one row per problem answer to the GF Fleet Checklist Defects list (weekly reviewer items:
+    btnSaveSignoff). When reviewing, the box shows that row's comment (colCheckDefects, OnVisible).
   - Photo buttons per item: one / perTyre (Tyre 1..N, N from the Trucks list, 6 if not found)
     / fourSides (Front, Rear, Left, Right) / multi (accident photos).
   - Weekly reviewer-only items (cabin tilting, greasing): only when reviewing; replaced by
@@ -318,7 +320,8 @@ class Builder:
         self.next_n = FIRST_NEW_NUMBER
         self.cards = []           # list of line lists
         self.missing = []         # Submit gate: (condition, message expr)
-        self.weekly = []          # (field, var, yes box, no box, key n, cmt n)
+        self.weekly = []          # (field, var, yes box, no box, key n, comment box or None)
+        self.defects = []         # driver items with a comment box: (field, key n, problem box, comment box, truck rule)
 
     def new_n(self):
         n = self.next_n
@@ -431,9 +434,14 @@ class Builder:
                 ('X', '30'), ('Y', box_y),
             ], KID))
             err_y = f'{box_y} + If(IsBlank({week_var}), {yes_box}.Height, {done}.Height)'
+        problem_box = yes_box if it.get('commentOn') == 'Yes' else no_box
+        cmt = None
+        if it.get('commentOn'):
+            cmt = f'txt{sfx}Cmt'
+            kids.append(self.comment_box(it, cmt, problem_box, yes_box, reviewer, week_var if reviewer else None))
+            err_y = f'If({cmt}.Visible, {cmt}.Y + {cmt}.Height, {err_y})'
         kids.append(error_label(n, err_y))
         kids.append(star_label(n))
-        problem_box = yes_box if it.get('commentOn') == 'Yes' else no_box
         photo_missing_list = []
         if it['photo'] != 'none':
             pc, miss = photo_controls(it, sfx, f'ErrorMessage{n}.Y + ErrorMessage{n}.Height - 4', problem_box)
@@ -453,53 +461,46 @@ class Builder:
             self.missing.append((self.wrap(truck_vis, f'!{yes_box}.Value && !{no_box}.Value'),
                                  f'"Answer: " & DataCardKey{n}.Text'))
 
-        cmt_n = None
-        if it.get('commentField'):
-            cmt_n = self.add_comment(it, sfx, problem_box, dm, truck_vis, reviewer, n)
+        if cmt and not reviewer:
+            self.missing.append((self.wrap(truck_vis, f'{problem_box}.Value && IsBlank({cmt}.Text)'),
+                                 f'"Comment needed: " & DataCardKey{n}.Text'))
+            self.defects.append((f, n, problem_box, cmt, truck_vis))
         self.missing += photo_missing_list
         if reviewer:
-            self.weekly.append((f, it.get('commentField'), week_var, yes_box, no_box, n, cmt_n))
+            self.weekly.append((f, week_var, yes_box, no_box, n, cmt))
 
     @staticmethod
     def wrap(vis, cond):
         return f'{vis} && {cond}' if vis else cond
 
-    def add_comment(self, it, sfx, problem_box, dm, truck_vis, reviewer, item_n):
-        cf = it['commentField']
-        n = self.new_n()
+    @staticmethod
+    def comment_box(it, name, problem_box, yes_box, reviewer, week_var):
+        """Multi-line comment inside the item's card, below the Yes/No boxes. Saved to the defects list,
+        not to a column. Reviewing: shows the saved defect comment, view-only (weekly reviewer items
+        stay editable until a defect row exists)."""
+        defect = f'LookUp(colCheckDefects, ItemField = {fx_str(it["field"])})'
         if reviewer:
-            vis = f'varReviewing && IsBlank({WEEKLY.get(it["field"], ("varWeek" + sfx,))[0]}) && {problem_box}.Value'
-            required = 'false'
+            default = f'{defect}.Comment'
+            dm = f'If(IsBlank({defect}), DisplayMode.Edit, DisplayMode.View)'
+            vis = f'IsBlank({week_var}) && {problem_box}.Value'
         else:
-            vis = self.wrap(truck_vis, f'{problem_box}.Value')
-            required = f'{problem_box}.Value && !varReviewing'
+            default = f'If(varReviewing, {defect}.Comment, "")'
+            dm = 'Parent.DisplayMode'
+            vis = f'{problem_box}.Value'
         hint = 'Describe the damage' if it.get('commentOn') == 'Yes' else 'Say what is wrong'
-        value = control(f'DataCardValue{n}', 'Classic/TextInput@2.3.2', [
+        return control(name, 'Classic/TextInput@2.3.2', [
             ('Mode', 'TextMode.MultiLine'),
-            ('BorderColor', 'If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)'), ('Color', INK),
-            ('Height', '80'), ('Size', '15'), ('Default', 'Parent.Default'), ('DelayOutput', 'true'),
+            ('BorderColor', f'If(IsBlank(Self.Text) && Self.DisplayMode = DisplayMode.Edit, {RED}, {LINE})'),
+            ('Color', INK), ('Default', default), ('DelayOutput', 'true'),
             ('DisabledBorderColor', CLEAR), ('DisabledColor', 'RGBA(161, 159, 157, 1)'),
-            ('DisabledFill', 'RGBA(242, 242, 241, 0)'), ('DisplayMode', 'Parent.DisplayMode'),
-            ('Font', "Font.'Segoe UI'"), ('HintText', fx_str(hint)), ('HoverBorderColor', TEAL),
-            ('HoverColor', 'RGBA(50, 49, 48, 1)'), ('HoverFill', WHITE), ('MaxLength', 'Parent.MaxLength'),
-            ('PaddingLeft', '5'), ('PressedBorderColor', TEAL), ('PressedColor', 'RGBA(50, 49, 48, 1)'),
-            ('PressedFill', WHITE), ('RadiusBottomLeft', '8'), ('RadiusBottomRight', '8'),
-            ('RadiusTopLeft', '8'), ('RadiusTopRight', '8'), ('Tooltip', 'Parent.DisplayName'),
-            ('Width', 'Parent.Width - 60'), ('X', '30'), ('Y', f'DataCardKey{n}.Y + DataCardKey{n}.Height + 5'),
-        ], KID, metadata='FieldValue')
-        kids = [key_label(n), value, error_label(n, f'DataCardValue{n}.Y + DataCardValue{n}.Height'), star_label(n)]
-        props = card_frame(self.take_row(), [
-            ('DataField', fx_str(cf)), ('Default', f'ThisItem.{cf}'), ('DisplayMode', dm),
-            ('DisplayName', f"DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'{cf}')"),
-            ('MaxLength', f"DataSourceInfo([@'Fleet Checklist'], DataSourceInfo.MaxLength, '{cf}')"),
-            ('Required', required), ('Update', f'If({problem_box}.Value, DataCardValue{n}.Text, "")'),
-        ], vis)
-        self.cards.append(control(f'crd{sfx}Cmt', 'TypedDataCard@1.0.7', props, CARD,
-                                  variant='ClassicTextualEdit', children=kids))
-        if not reviewer:
-            self.missing.append((self.wrap(truck_vis, f'{problem_box}.Value && IsBlank(DataCardValue{n}.Text)'),
-                                 f'"Comment needed: " & DataCardKey{item_n}.Text'))
-        return n
+            ('DisabledFill', 'RGBA(242, 242, 241, 0)'), ('DisplayMode', dm), ('Font', "Font.'Segoe UI'"),
+            ('Height', '80'), ('HintText', fx_str(hint)), ('HoverBorderColor', TEAL),
+            ('HoverColor', 'RGBA(50, 49, 48, 1)'), ('HoverFill', WHITE), ('PaddingLeft', '5'),
+            ('PressedBorderColor', TEAL), ('PressedColor', 'RGBA(50, 49, 48, 1)'), ('PressedFill', WHITE),
+            ('RadiusBottomLeft', '8'), ('RadiusBottomRight', '8'), ('RadiusTopLeft', '8'),
+            ('RadiusTopRight', '8'), ('Size', '15'), ('Tooltip', fx_str(hint)), ('Visible', vis),
+            ('Width', 'Parent.Width - 60'), ('X', '30'), ('Y', f'{yes_box}.Y + {yes_box}.Height + 4'),
+        ], KID)
 
     def add_photo_only(self, it):
         card = 'crd' + it['field']
@@ -620,14 +621,16 @@ class Builder:
         lines = [
             "Set(varTruckInfo, LookUp('GF Fleet Trucks', Title = If(varReviewing, varCheck.field_1, varTruck) && ActiveYN = true));",
             f'Set(varTyreCount, Min(Coalesce(varTruckInfo.NoOfTyres, 6), {MAX_TYRES}));',
+            "If(varReviewing, ClearCollect(colCheckDefects, Filter('GF Fleet Checklist Defects', "
+            "ChecklistID = varCheck.ID && ActiveYN = true)), Clear(colCheckDefects));",
         ]
         if self.weekly:
             sets = []
-            for f, _cf, var, *_ in self.weekly:
+            for f, var, *_ in self.weekly:
                 sets.append(
                     f"        Set({var}, First(Sort(Filter('Fleet Checklist', field_1 = varCheck.field_1 && "
                     f'Created >= wkStart && Created < wkEnd && {f}.Value = "Yes"), Created, SortOrder.Descending)))')
-            blanks = [f'Set({w[2]}, Blank())' for w in self.weekly]
+            blanks = [f'Set({w[1]}, Blank())' for w in self.weekly]
             lines += [
                 'If(varReviewing,',
                 '    With({wkDay: Date(Year(varCheck.Created), Month(varCheck.Created), Day(varCheck.Created))},',
@@ -638,6 +641,14 @@ class Builder:
             ]
         return '\n'.join(lines)
 
+    def defect_rows(self):
+        """Rows for frmPreTrip.OnSuccess: {f, name, no, c} per driver item with a comment box."""
+        rows = []
+        for f, n, box, cmt, truck_vis in self.defects:
+            rows.append(f'{" " * 30}{{f: {fx_str(f)}, name: DataCardKey{n}.Text, '
+                        f'no: {self.wrap(truck_vis, box + ".Value")}, c: {cmt}.Text}}')
+        return ',\n'.join(rows)
+
     def submit_text(self):
         parts = []
         for cond, msg in self.missing:
@@ -646,15 +657,20 @@ class Builder:
 
     def signoff_onselect(self):
         checks, patches = [], []
-        for f, cf, var, yes, no, key_n, cmt_n in self.weekly:
+        for f, var, yes, no, key_n, cmt in self.weekly:
             checks.append(f'    IsBlank({var}) && !{yes}.Value && !{no}.Value,\n'
                           f'    Notify("Answer " & DataCardKey{key_n}.Text & " first.", NotificationType.Warning),')
             rec = f'{f}: {{Value: If({yes}.Value, "Yes", "No")}}'
-            if cmt_n:
-                checks.append(f'    IsBlank({var}) && {no}.Value && IsBlank(DataCardValue{cmt_n}.Text),\n'
-                              f'    Notify("Add a comment for " & DataCardKey{key_n}.Text & ".", NotificationType.Warning),')
-                rec += f', {cf}: If({no}.Value, DataCardValue{cmt_n}.Text, "")'
             patches.append(f"        If(IsBlank({var}), Patch('Fleet Checklist', LookUp('Fleet Checklist', ID = varCheck.ID), {{{rec}}}));")
+            if cmt:
+                checks.append(f'    IsBlank({var}) && {no}.Value && IsBlank({cmt}.Text),\n'
+                              f'    Notify("Add a comment for " & DataCardKey{key_n}.Text & ".", NotificationType.Warning),')
+                # a No adds one defect row (the comment box is view-only once the row exists)
+                patches.append(
+                    f"        If(IsBlank({var}) && {no}.Value && IsBlank(LookUp(colCheckDefects, ItemField = {fx_str(f)})),\n"
+                    f"            Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {{\n"
+                    f'                Title: DataCardKey{key_n}.Text, ChecklistID: varCheck.ID, Truck: varCheck.field_1,\n'
+                    f'                ItemField: {fx_str(f)}, Comment: {cmt}.Text, ActiveYN: true}}));')
         return '\n'.join([
             'If(IsBlank(DataCardValue1.Selected.Value) || IsBlank(DataCardValue2.Selected.Value),',
             '    Notify("Choose Approval For Delivery and Send For Repairs first.", NotificationType.Warning),',
@@ -678,7 +694,7 @@ class Builder:
                '      Fill: =RGBA(243, 246, 246, 1)', '      ImagePosition: =ImagePosition.Fill',
                '      LoadingSpinnerColor: =RGBA(8, 144, 144, 1)']
         out += prop_lines('OnVisible', self.on_visible(), 6)
-        out += T_CHROME.rstrip('\n').split('\n')
+        out += T_CHROME.replace('@@DEFECT_ROWS@@', self.defect_rows()).rstrip('\n').split('\n')
         for c in self.cards:
             out += c
         footer = T_FOOTER
@@ -831,7 +847,18 @@ T_CHROME = r'''    Children:
               =If(varReviewing,
                   Notify("Sign-off saved", NotificationType.Success);
                   Navigate(scrReview),
-                  With({recId: frmPreTrip.LastSubmit.ID},
+                  With({recId: frmPreTrip.LastSubmit.ID,
+                        defects: Filter(
+                          Table(
+@@DEFECT_ROWS@@
+                          ), no)},
+                      Set(varDefectsSaved, IfError(
+                          ForAll(defects,
+                              Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
+                                  Title: name, ChecklistID: recId, Truck: varTruck, ItemField: f,
+                                  Comment: c, ActiveYN: true}));
+                          true,
+                          false));
                       IfError(
                           ForAll(colPhotos,
                               'SaveFleetPhoto'.Run(
@@ -841,7 +868,9 @@ T_CHROME = r'''    Children:
                                   recId,
                                   "Fleet Checklist",
                                   {file: {name: "photo.jpg", contentBytes: ThisRecord.Img}}));
-                          Notify("Checklist saved", NotificationType.Success),
+                          If(varDefectsSaved,
+                              Notify("Checklist saved", NotificationType.Success),
+                              Notify("Checklist saved, but some defect comments did not save", NotificationType.Warning, 0)),
                           Notify("Checklist saved, but the photos did not upload: " & FirstError.Message, NotificationType.Warning, 0)));
                   Clear(colPhotos);
                   ResetForm(frmPreTrip);

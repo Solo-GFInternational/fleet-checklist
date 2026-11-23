@@ -97,6 +97,7 @@ Everything is stored in SharePoint lists on the Fleet Operations site:
 | GF Fleet Checklist App Users | App user and role |
 | GF Fleet Trucks | Truck (type Ambient/Frozen, number of tyres) |
 | GF Fleet Daily Reviews | Driver's star score for a day |
+| GF Fleet Checklist Defects | Checklist item answered No, with its comment (Open/Fixed) |
 | Photo library | Checklist and invoice photo |
 
 ---

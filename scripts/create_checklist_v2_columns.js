@@ -5,20 +5,20 @@
     - creates the new Yes/No choice columns: LicenceValid, CabGlassFront, CabGlassRear, CabGlassDriver,
       CabGlassPassenger, CabTilt, AccidentDamage (same type as the existing field_N choice columns:
       Choice, choices Yes / No, no default)
-    - creates one multi-line plain-text comment column <field>Cmt per Yes/No item
-      (display name "<item wording> – comment")
     - indexes field_1 (Truck No) if it isn't indexed yet; the weekly cabin-tilt / greasing check
       filters on it
-    Photo-only items (NetGrossWeight, ProfilePhotos) need no column. Columns that already exist
+    Comments on items answered No are not columns: they go in the GF Fleet Checklist Defects list
+    (scripts/create_checklist_defects.js). Photo-only items (NetGrossWeight, ProfilePhotos) need no
+    column. Columns that already exist
     (same internal name) are skipped, so it is safe to run again.
 
   MODE = 'rename' (run once Pawan has approved the wording):
-    - sets every item's display name to the wording in ITEMS below, and each comment column to
-      "<wording> – comment". The app reads display names through DataSourceInfo, so no app change.
+    - sets every item's display name to the wording in ITEMS below. The app reads display names
+      through DataSourceInfo, so no app change.
       Columns whose display name already matches are skipped.
 
-  ITEMS is generated from scripts/checklist_items.json (field, proposed wording, new Yes/No column?,
-  comment column). If the JSON changes, update ITEMS to match.
+  ITEMS is generated from scripts/checklist_items.json (field, proposed wording, new Yes/No column?).
+  If the JSON changes, update ITEMS to match.
 
   How to run:
     1. Open the Fleet Operations SharePoint site in Edge or Chrome (any page of the site),
@@ -35,94 +35,92 @@
   const MODE = 'create';   // 'create' | 'rename'
   const DRY_RUN = true;
 
-  // [internal name, proposed display name, new Yes/No column to create?, comment column or null]
+  // [internal name, proposed display name, new Yes/No column to create?]
   const ITEMS = [
-    ['field_1', "Truck number", false, null],
-    ['field_2', "Driver name", false, null],
-    ['field_3', "Site", false, null],
-    ['LicenceValid', "Valid driver's licence with you", true, 'LicenceValidCmt'],
-    ['field_50', "Odometer reading (km)", false, null],
-    ['NextServiceDue', "Next service due (km)", false, null],
-    ['field_23', "Cabin doors open, close and lock", false, 'field_23Cmt'],
-    ['field_24', "Front / rear windscreens free of cracks", false, null],
-    ['CabGlassFront', "Front windscreen free of cracks and chips", true, 'CabGlassFrontCmt'],
-    ['CabGlassRear', "Rear cabin window free of cracks", true, 'CabGlassRearCmt'],
-    ['CabGlassDriver', "Driver's window uncracked and winds freely", true, 'CabGlassDriverCmt'],
-    ['CabGlassPassenger', "Passenger's window uncracked and winds freely", true, 'CabGlassPassengerCmt'],
-    ['field_25', "Mirrors clean, uncracked and adjusted", false, 'field_25Cmt'],
-    ['field_26', "Both seat belts lock and release", false, 'field_26Cmt'],
-    ['field_21', "Dashboard gauges and warning lights working", false, 'field_21Cmt'],
-    ['AccCabinClean', "Cabin clean and tidy", false, 'AccCabinCleanCmt'],
-    ['AccMats', "Floor mats in cabin", false, 'AccMatsCmt'],
-    ['CabTilt', "Cabin tilt inspection done", true, 'CabTiltCmt'],
-    ['field_10', "Battery water at top mark", false, 'field_10Cmt'],
-    ['field_11', "Battery terminals tight and clean", false, 'field_11Cmt'],
-    ['field_12', "Battery isolator switch working", false, 'field_12Cmt'],
-    ['field_13', "Headlights and fog lights working", false, 'field_13Cmt'],
-    ['field_14', "All indicators working", false, 'field_14Cmt'],
-    ['field_15', "Brake lights working", false, 'field_15Cmt'],
-    ['field_16', "Reverse alarm and lights working", false, 'field_16Cmt'],
-    ['field_17', "Cabin interior light working", false, 'field_17Cmt'],
-    ['field_18', "Rear spotlight working", false, 'field_18Cmt'],
-    ['field_19', "Horn working", false, 'field_19Cmt'],
-    ['field_20', "Truck and bin cables undamaged", false, 'field_20Cmt'],
-    ['field_22', "Electrical comments", false, null],
-    ['field_32', "Tyres good, no steer-wheel retreads", false, 'field_32Cmt'],
-    ['field_33', "All wheel nuts and studs present", false, 'field_33Cmt'],
-    ['field_34', "Spare tyre in good condition", false, 'field_34Cmt'],
-    ['field_35', "Jack and wheel brace present and working", false, 'field_35Cmt'],
-    ['field_36', "Brakes and tyres comments", false, null],
-    ['field_7', "No oil or water leaks", false, 'field_7Cmt'],
-    ['field_4', "Engine and hydraulic oil at top level", false, 'field_4Cmt'],
-    ['field_5', "Coolant at top mark", false, 'field_5Cmt'],
-    ['field_31', "Air hoses not leaking or damaged", false, 'field_31Cmt'],
-    ['field_6', "Fan belts tight and in good condition", false, 'field_6Cmt'],
-    ['field_9', "Engine comments", false, null],
-    ['field_27', "Springs, U-bolts and bin bolts secure", false, 'field_27Cmt'],
-    ['field_28', "Front and rear bumpers secure", false, 'field_28Cmt'],
-    ['field_8', "PTO working with no leaks", false, 'field_8Cmt'],
-    ['field_29', "Body comments", false, null],
-    ['field_30', "Foot brake and park brake working", false, 'field_30Cmt'],
-    ['field_37', "Cones and reflector triangle in truck", false, 'field_37Cmt'],
-    ['field_38', "Your PPE with you", false, 'field_38Cmt'],
-    ['field_39', "Fire extinguisher in place and in date", false, 'field_39Cmt'],
-    ['field_40', "First aid box in truck and stocked", false, 'field_40Cmt'],
-    ['field_41', "Torch working", false, 'field_41Cmt'],
-    ['field_42', "Raincoat and helmet in truck", false, 'field_42Cmt'],
-    ['field_43', "Safety comments", false, null],
-    ['field_44', "Underneath greasing done", false, 'field_44Cmt'],
-    ['field_45', "Wheel chocks in truck", false, 'field_45Cmt'],
-    ['field_46', "Freezer and dry box locked", false, 'field_46Cmt'],
-    ['field_47', "Money bag and lock in truck", false, 'field_47Cmt'],
-    ['field_48', "Money box in the truck?", false, null],
-    ['field_49', "General comments", false, null],
-    ['AccCOFExpiry', "COF expiry date", false, null],
-    ['AccBlowerServiceDue', "Blower service due date", false, null],
-    ['AccTruckServiceDue', "Truck service due date", false, null],
-    ['AccSpareTyre', "Spare tyre in truck", false, 'AccSpareTyreCmt'],
-    ['AccTyreCondition', "Every tyre in good condition", false, 'AccTyreConditionCmt'],
-    ['AccFireExtinguisher', "Fire extinguisher mounted and serviceable", false, 'AccFireExtinguisherCmt'],
-    ['AccFirstAidKit', "First aid kit in truck", false, 'AccFirstAidKitCmt'],
-    ['AccTrafficCones', "Traffic cones in truck", false, 'AccTrafficConesCmt'],
-    ['AccFuelCard', "Fuel card in truck", false, 'AccFuelCardCmt'],
-    ['AccPlugWire', "Fridge plug-in lead in truck", false, 'AccPlugWireCmt'],
-    ['AccEngJack', "Engraved jack in truck", false, 'AccEngJackCmt'],
-    ['AccEngWheelBrace', "Engraved wheel brace in truck", false, 'AccEngWheelBraceCmt'],
-    ['AccEngPipe', "Engraved pipe in truck", false, 'AccEngPipeCmt'],
-    ['AccEngTyreWinder', "Engraved spare-tyre winder in truck", false, 'AccEngTyreWinderCmt'],
-    ['AccEngTrolley', "Engraved trolley in truck", false, 'AccEngTrolleyCmt'],
-    ['AccTruckFloor', "Load floor clean and undamaged", false, 'AccTruckFloorCmt'],
-    ['AccComments', "Accessory comments", false, null],
-    ['AccidentDamage', "No new dents or cracks", true, 'AccidentDamageCmt'],
-    ['field_51', "Other comments", false, null],
+    ['field_1', "Truck number", false],
+    ['field_2', "Driver name", false],
+    ['field_3', "Site", false],
+    ['LicenceValid', "Valid driver's licence with you", true],
+    ['field_50', "Odometer reading (km)", false],
+    ['NextServiceDue', "Next service due (km)", false],
+    ['field_23', "Cabin doors open, close and lock", false],
+    ['field_24', "Front / rear windscreens free of cracks", false],
+    ['CabGlassFront', "Front windscreen free of cracks and chips", true],
+    ['CabGlassRear', "Rear cabin window free of cracks", true],
+    ['CabGlassDriver', "Driver's window uncracked and winds freely", true],
+    ['CabGlassPassenger', "Passenger's window uncracked and winds freely", true],
+    ['field_25', "Mirrors clean, uncracked and adjusted", false],
+    ['field_26', "Both seat belts lock and release", false],
+    ['field_21', "Dashboard gauges and warning lights working", false],
+    ['AccCabinClean', "Cabin clean and tidy", false],
+    ['AccMats', "Floor mats in cabin", false],
+    ['CabTilt', "Cabin tilt inspection done", true],
+    ['field_10', "Battery water at top mark", false],
+    ['field_11', "Battery terminals tight and clean", false],
+    ['field_12', "Battery isolator switch working", false],
+    ['field_13', "Headlights and fog lights working", false],
+    ['field_14', "All indicators working", false],
+    ['field_15', "Brake lights working", false],
+    ['field_16', "Reverse alarm and lights working", false],
+    ['field_17', "Cabin interior light working", false],
+    ['field_18', "Rear spotlight working", false],
+    ['field_19', "Horn working", false],
+    ['field_20', "Truck and bin cables undamaged", false],
+    ['field_22', "Electrical comments", false],
+    ['field_32', "Tyres good, no steer-wheel retreads", false],
+    ['field_33', "All wheel nuts and studs present", false],
+    ['field_34', "Spare tyre in good condition", false],
+    ['field_35', "Jack and wheel brace present and working", false],
+    ['field_36', "Brakes and tyres comments", false],
+    ['field_7', "No oil or water leaks", false],
+    ['field_4', "Engine and hydraulic oil at top level", false],
+    ['field_5', "Coolant at top mark", false],
+    ['field_31', "Air hoses not leaking or damaged", false],
+    ['field_6', "Fan belts tight and in good condition", false],
+    ['field_9', "Engine comments", false],
+    ['field_27', "Springs, U-bolts and bin bolts secure", false],
+    ['field_28', "Front and rear bumpers secure", false],
+    ['field_8', "PTO working with no leaks", false],
+    ['field_29', "Body comments", false],
+    ['field_30', "Foot brake and park brake working", false],
+    ['field_37', "Cones and reflector triangle in truck", false],
+    ['field_38', "Your PPE with you", false],
+    ['field_39', "Fire extinguisher in place and in date", false],
+    ['field_40', "First aid box in truck and stocked", false],
+    ['field_41', "Torch working", false],
+    ['field_42', "Raincoat and helmet in truck", false],
+    ['field_43', "Safety comments", false],
+    ['field_44', "Underneath greasing done", false],
+    ['field_45', "Wheel chocks in truck", false],
+    ['field_46', "Freezer and dry box locked", false],
+    ['field_47', "Money bag and lock in truck", false],
+    ['field_48', "Money box in the truck?", false],
+    ['field_49', "General comments", false],
+    ['AccCOFExpiry', "COF expiry date", false],
+    ['AccBlowerServiceDue', "Blower service due date", false],
+    ['AccTruckServiceDue', "Truck service due date", false],
+    ['AccSpareTyre', "Spare tyre in truck", false],
+    ['AccTyreCondition', "Every tyre in good condition", false],
+    ['AccFireExtinguisher', "Fire extinguisher mounted and serviceable", false],
+    ['AccFirstAidKit', "First aid kit in truck", false],
+    ['AccTrafficCones', "Traffic cones in truck", false],
+    ['AccFuelCard', "Fuel card in truck", false],
+    ['AccPlugWire', "Fridge plug-in lead in truck", false],
+    ['AccEngJack', "Engraved jack in truck", false],
+    ['AccEngWheelBrace', "Engraved wheel brace in truck", false],
+    ['AccEngPipe', "Engraved pipe in truck", false],
+    ['AccEngTyreWinder', "Engraved spare-tyre winder in truck", false],
+    ['AccEngTrolley', "Engraved trolley in truck", false],
+    ['AccTruckFloor', "Load floor clean and undamaged", false],
+    ['AccComments', "Accessory comments", false],
+    ['AccidentDamage', "No new dents or cracks", true],
+    ['field_51', "Other comments", false],
   ];
   const INDEX_FIELDS = ['field_1'];
-  const cmtTitle = name => `${name} – comment`;
 
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const schema = (name, title, kind) => {
     const common = `Name="${name}" StaticName="${name}" DisplayName="${esc(title)}" Required="FALSE"`;
-    if (kind === 'note') return `<Field Type="Note" ${common} NumLines="6" RichText="FALSE" AppendOnly="FALSE" />`;
     // Yes/No choice: no default, single select, no fill-in values (same as the field_N columns)
     return `<Field Type="Choice" ${common} Format="Dropdown" FillInChoice="FALSE">` +
       '<CHOICES><CHOICE>Yes</CHOICE><CHOICE>No</CHOICE></CHOICES></Field>';
@@ -152,9 +150,8 @@
 
   if (MODE === 'create') {
     const wanted = [];
-    for (const [name, title, isNewChoice, cmt] of ITEMS) {
+    for (const [name, title, isNewChoice] of ITEMS) {
       if (isNewChoice) wanted.push([name, title, 'yesno']);
-      if (cmt) wanted.push([cmt, cmtTitle(title), 'note']);
     }
     for (const [name, title, kind] of wanted) {
       if (existing.has(name)) { out.push(`skip    ${name}  (already exists as "${existing.get(name).Title}")`); skipped++; continue; }
@@ -183,12 +180,7 @@
       if (!r.ok) failed++;
     }
   } else if (MODE === 'rename') {
-    const wanted = [];
-    for (const [name, title, , cmt] of ITEMS) {
-      wanted.push([name, title]);
-      if (cmt) wanted.push([cmt, cmtTitle(title)]);
-    }
-    for (const [name, title] of wanted) {
+    for (const [name, title] of ITEMS) {
       const f = existing.get(name);
       if (!f) { out.push(`MISSING ${name}  (run MODE = 'create' first)`); failed++; continue; }
       if (f.Title === title) { out.push(`skip    ${name}  (already "${title}")`); skipped++; continue; }
