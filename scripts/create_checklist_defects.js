@@ -9,8 +9,7 @@
     1. Creates the list (Title is relabelled "Item": the item's wording) with columns:
          ChecklistID (number: ID of the Fleet Checklist row), Truck (text), ItemField (text: the item's
          internal column name on Fleet Checklist, e.g. field_13), Comment (multi-line plain text),
-         Status (choice Open / Fixed, default Open), ActionedBy (text), DateFixed (date only),
-         ActiveYN (Yes/No, default Yes)
+         Status (choice Open / Fixed, default Open)
     2. Indexes ChecklistID and Truck (the app filters on ChecklistID; reports by truck).
     3. Stops inheriting site permissions, COPYING every existing permission first, then grants
          Fleet App Drivers   -> Fleet App Driver   (add and view own; no edit, no delete)
@@ -44,9 +43,6 @@
     ['Comment', '<Field Type="Note" Name="Comment" StaticName="Comment" DisplayName="Comment" NumLines="6" RichText="FALSE" />'],
     ['Status', '<Field Type="Choice" Name="Status" StaticName="Status" DisplayName="Status" Format="Dropdown" FillInChoice="FALSE">' +
       '<Default>Open</Default><CHOICES><CHOICE>Open</CHOICE><CHOICE>Fixed</CHOICE></CHOICES></Field>'],
-    ['ActionedBy', '<Field Type="Text" Name="ActionedBy" StaticName="ActionedBy" DisplayName="Actioned by" MaxLength="255" />'],
-    ['DateFixed', '<Field Type="DateTime" Name="DateFixed" StaticName="DateFixed" DisplayName="Date fixed" Format="DateOnly" />'],
-    ['ActiveYN', '<Field Type="Boolean" Name="ActiveYN" StaticName="ActiveYN" DisplayName="Active"><Default>1</Default></Field>'],
   ];
   const INDEXED = ['ChecklistID', 'Truck'];
 
@@ -79,7 +75,7 @@
     }
     const r = await post(`${web}/_api/web/lists`, {
       __metadata: { type: 'SP.List' }, BaseTemplate: 100, Title: LIST,
-      Description: 'Fleet Checklist app: one row per checklist item answered No (defect register). Deactivate rows instead of deleting them.',
+      Description: 'Fleet Checklist app: one row per checklist item answered No (defect register).',
     });
     if (!r.ok) { await fail(`create list "${LIST}"`, r); done(); return; }
     out.push(`created list "${LIST}"`);

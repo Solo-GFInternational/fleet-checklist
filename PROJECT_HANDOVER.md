@@ -393,7 +393,7 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 - **Photos:** a retake replaces the earlier photo. There is one photo per tyre (count from the Trucks list, 6 if the truck isn't listed), four profile photos and any number of accident photos.
 
 **GF Fleet Checklist Defects list** (`scripts/create_checklist_defects.js`):
-- One row per checklist item answered No: Title = item wording, `ChecklistID` (the Fleet Checklist row's ID, indexed), `Truck` (indexed), `ItemField` (the item's internal column name), `Comment`, `Status` (Open/Fixed, default Open), `ActionedBy`, `DateFixed`, `ActiveYN`. It is the defect register: the workshop marks a row Fixed.
+- One row per checklist item answered No: Title = item wording, `ChecklistID` (the Fleet Checklist row's ID, indexed), `Truck` (indexed), `ItemField` (the item's internal column name), `Comment`, `Status` (Open/Fixed, default Open). Created / Modified / Modified By record who fixed it and when. It is the defect register: the workshop marks a row Fixed.
 - Drivers add only (Fleet App Driver level, own items); Reviewers view, add and edit everyone's (Fleet App Reviewer).
 - The driver's rows are written in `frmPreTrip.OnSuccess` after the checklist row exists (two-step save). Any row or photo that fails is queued on the phone and resent from Home (see Checklist improvements below). The weekly reviewer items add their row from Save sign-off.
 - When a reviewer opens a checklist, `OnVisible` loads its rows into `colCheckDefects` and each comment box shows its row's comment, view-only.

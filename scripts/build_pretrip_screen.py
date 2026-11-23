@@ -765,7 +765,7 @@ class Builder:
             "Set(varTruckInfo, LookUp('GF Fleet Trucks', Title = If(varReviewing, varCheck.field_1, varTruck) && ActiveYN = true));",
             f'Set(varTyreCount, Min(Coalesce(varTruckInfo.NoOfTyres, 6), {MAX_TYRES}));',
             "If(varReviewing, ClearCollect(colCheckDefects, Filter('GF Fleet Checklist Defects', "
-            "ChecklistID = varCheck.ID && ActiveYN = true)), Clear(colCheckDefects));",
+            "ChecklistID = varCheck.ID)), Clear(colCheckDefects));",
             self.pages_formula() + ';',
             f'If(IsBlank(ctxSec), UpdateContext({{ctxPage: 1, ctxSec: {fx_str(FIRST_PAGE)}}}));',
         ]
@@ -840,7 +840,7 @@ class Builder:
                     f"        If(IsBlank({var}) && {no}.Value && IsBlank(LookUp(colCheckDefects, ItemField = {fx_str(f)})),\n"
                     f"            Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {{\n"
                     f'                Title: DataCardKey{key_n}.Text, ChecklistID: varCheck.ID, Truck: varCheck.field_1,\n'
-                    f'                ItemField: {fx_str(f)}, Comment: {cmt}.Text, ActiveYN: true}}));')
+                    f'                ItemField: {fx_str(f)}, Comment: {cmt}.Text}}));')
         return '\n'.join([
             'If(IsBlank(DataCardValue1.Selected.Value) || IsBlank(DataCardValue2.Selected.Value),',
             '    Notify("Choose Approval For Delivery and Send For Repairs first.", NotificationType.Warning),',
@@ -1030,7 +1030,7 @@ T_CHROME = r'''    Children:
                           IfError(
                               Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
                                   Title: name, ChecklistID: recId, Truck: varTruck, ItemField: f,
-                                  Comment: c, ActiveYN: true}),
+                                  Comment: c}),
                               Collect(colPendingDefects, {RecId: recId, Truck: varTruck, Title: name, ItemField: f, Comment: c})));
                       ForAll(colPhotos,
                           IfError(

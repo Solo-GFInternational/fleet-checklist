@@ -32,7 +32,7 @@ Screens:
                 IfError(
                     Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
                         Title: d.Title, ChecklistID: d.RecId, Truck: d.Truck, ItemField: d.ItemField,
-                        Comment: d.Comment, ActiveYN: true}),
+                        Comment: d.Comment}),
                     Collect(colPendingDefects, d)));
             ForAll(colRetryPhotos As p,
                 IfError(

@@ -7,7 +7,7 @@ Screens:
       OnVisible: |-
         =Set(varTruckInfo, LookUp('GF Fleet Trucks', Title = If(varReviewing, varCheck.field_1, varTruck) && ActiveYN = true));
         Set(varTyreCount, Min(Coalesce(varTruckInfo.NoOfTyres, 6), 12));
-        If(varReviewing, ClearCollect(colCheckDefects, Filter('GF Fleet Checklist Defects', ChecklistID = varCheck.ID && ActiveYN = true)), Clear(colCheckDefects));
+        If(varReviewing, ClearCollect(colCheckDefects, Filter('GF Fleet Checklist Defects', ChecklistID = varCheck.ID)), Clear(colCheckDefects));
         ClearCollect(colPages, If(varReviewing,
             Table(
                 {PageNo: 1, SecKey: "licence", SecTitle: "Truck and driver"},
@@ -248,7 +248,7 @@ Screens:
                           IfError(
                               Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
                                   Title: name, ChecklistID: recId, Truck: varTruck, ItemField: f,
-                                  Comment: c, ActiveYN: true}),
+                                  Comment: c}),
                               Collect(colPendingDefects, {RecId: recId, Truck: varTruck, Title: name, ItemField: f, Comment: c})));
                       ForAll(colPhotos,
                           IfError(
@@ -16563,12 +16563,12 @@ Screens:
                                   If(IsBlank(varWeekTilt) && chkCabTiltNo.Value && IsBlank(LookUp(colCheckDefects, ItemField = "CabTilt")),
                                       Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
                                           Title: DataCardKey109.Text, ChecklistID: varCheck.ID, Truck: varCheck.field_1,
-                                          ItemField: "CabTilt", Comment: txtCabTiltCmt.Text, ActiveYN: true}));
+                                          ItemField: "CabTilt", Comment: txtCabTiltCmt.Text}));
                                   If(IsBlank(varWeekGrease), Patch('Fleet Checklist', LookUp('Fleet Checklist', ID = varCheck.ID), {field_44: {Value: If(DataCardValue49.Value, "Yes", "No")}}));
                                   If(IsBlank(varWeekGrease) && chkGreasingNo.Value && IsBlank(LookUp(colCheckDefects, ItemField = "field_44")),
                                       Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
                                           Title: DataCardKey49.Text, ChecklistID: varCheck.ID, Truck: varCheck.field_1,
-                                          ItemField: "field_44", Comment: txtGreasingCmt.Text, ActiveYN: true}));
+                                          ItemField: "field_44", Comment: txtGreasingCmt.Text}));
                                   Notify("Sign-off saved", NotificationType.Success);
                                   Navigate(scrReview),
                                   Notify("Sign-off not saved: " & FirstError.Message, NotificationType.Error, 0)))
