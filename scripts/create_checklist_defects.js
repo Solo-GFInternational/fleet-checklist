@@ -1,15 +1,13 @@
 /*
   Creates the "GF Fleet Checklist Defects" list: one row per checklist item answered No, with the driver's
-  comment. Replaces the <field>Cmt comment columns on Fleet Checklist (user's decision, Nov 2026), and is
-  the defect register: the workshop marks each row Fixed when it is repaired.
+  comment. Replaces the <field>Cmt comment columns on Fleet Checklist (user's decision, Nov 2026).
 
   Safe to run again: an existing list, column, index or permission is skipped, never changed.
 
   What it does:
     1. Creates the list (Title is relabelled "Item": the item's wording) with columns:
          ChecklistID (number: ID of the Fleet Checklist row), Truck (text), ItemField (text: the item's
-         internal column name on Fleet Checklist, e.g. field_13), Comment (multi-line plain text),
-         Status (choice Open / Fixed, default Open)
+         internal column name on Fleet Checklist, e.g. field_13), Comment (multi-line plain text)
     2. Indexes ChecklistID and Truck (the app filters on ChecklistID; reports by truck).
     3. Stops inheriting site permissions, COPYING every existing permission first, then grants
          Fleet App Drivers   -> Fleet App Driver   (add and view own; no edit, no delete)
@@ -41,8 +39,6 @@
     ['Truck', '<Field Type="Text" Name="Truck" StaticName="Truck" DisplayName="Truck" MaxLength="255" />'],
     ['ItemField', '<Field Type="Text" Name="ItemField" StaticName="ItemField" DisplayName="Item field" MaxLength="255" />'],
     ['Comment', '<Field Type="Note" Name="Comment" StaticName="Comment" DisplayName="Comment" NumLines="6" RichText="FALSE" />'],
-    ['Status', '<Field Type="Choice" Name="Status" StaticName="Status" DisplayName="Status" Format="Dropdown" FillInChoice="FALSE">' +
-      '<Default>Open</Default><CHOICES><CHOICE>Open</CHOICE><CHOICE>Fixed</CHOICE></CHOICES></Field>'],
   ];
   const INDEXED = ['ChecklistID', 'Truck'];
 
@@ -75,7 +71,7 @@
     }
     const r = await post(`${web}/_api/web/lists`, {
       __metadata: { type: 'SP.List' }, BaseTemplate: 100, Title: LIST,
-      Description: 'Fleet Checklist app: one row per checklist item answered No (defect register).',
+      Description: 'Fleet Checklist app: one row per checklist item answered No.',
     });
     if (!r.ok) { await fail(`create list "${LIST}"`, r); done(); return; }
     out.push(`created list "${LIST}"`);
