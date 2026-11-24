@@ -113,7 +113,7 @@ Screens:
                         PaddingLeft: =0
                         Size: =12
                         Text: |-
-                          ="Truck: " & If(varReviewing, varCheck.'Truck No', Coalesce(varTruck, "not selected"))
+                          ="Truck: " & If(varReviewing, varCheck.field_1, Coalesce(varTruck, "not selected"))
       - conPreTripStripe:
           Control: GroupContainer@1.5.0
           Variant: AutoLayout
@@ -292,7 +292,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_1"
-                  Default: =If(varReviewing, ThisItem.'Truck No', varTruck)
+                  Default: =If(varReviewing, ThisItem.field_1, varTruck)
                   DisplayMode: =DisplayMode.View
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_1')
                   MaxLength: =DataSourceInfo([@'Fleet Checklist'], DataSourceInfo.MaxLength, 'field_1')
@@ -410,7 +410,7 @@ Screens:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_2"
                   Default: |+
-                    =If(varReviewing, ThisItem.'Driver Name', User().FullName)
+                    =If(varReviewing, ThisItem.field_2, User().FullName)
                   DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_2')
                   MaxLength: =DataSourceInfo([@'Fleet Checklist'], DataSourceInfo.MaxLength, 'field_2')
@@ -527,7 +527,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_3"
-                  Default: =ThisItem.Site
+                  Default: =ThisItem.field_3
                   DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_3')
                   MaxLength: =DataSourceInfo([@'Fleet Checklist'], DataSourceInfo.MaxLength, 'field_3')
@@ -879,7 +879,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_50"
-                  Default: =ThisItem.'Truck odometer reading before delivery (km)'
+                  Default: =ThisItem.field_50
                   DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_50')
                   Required: =(!varReviewing) && Self.Visible
@@ -11740,7 +11740,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_51"
-                  Default: =ThisItem.Remarks
+                  Default: =ThisItem.field_51
                   DisplayMode: =If(varReviewing, DisplayMode.View, DisplayMode.Edit)
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_51')
                   MaxLength: =DataSourceInfo([@'Fleet Checklist'], DataSourceInfo.MaxLength, 'field_51')
@@ -11864,7 +11864,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_52"
-                  Default: =ThisItem.'Approval For Delivery'
+                  Default: =ThisItem.field_52
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_52')
                   Required: =varReviewing
                   Update: =DataCardValue1.Selected
@@ -12024,7 +12024,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_53"
-                  Default: =ThisItem.'Send For Repairs'
+                  Default: =ThisItem.field_53
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_53')
                   Required: =varReviewing
                   Update: =DataCardValue2.Selected
@@ -12145,7 +12145,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_55"
-                  Default: =If(varReviewing, Coalesce(ThisItem.'Date Of Declaration', Today()), Blank())
+                  Default: =If(varReviewing, Coalesce(ThisItem.field_55, Today()), Blank())
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_55')
                   Required: =false
                   Update: =DataCardValue4.SelectedDate
@@ -12255,7 +12255,7 @@ Screens:
                 Properties:
                   BorderColor: =RGBA(208, 216, 218, 1)
                   DataField: ="field_54"
-                  Default: =If(varReviewing, Coalesce(ThisItem.'Manager Name', User().FullName), Blank())
+                  Default: =If(varReviewing, Coalesce(ThisItem.field_54, User().FullName), Blank())
                   DisplayMode: =DisplayMode.View
                   DisplayName: =DataSourceInfo([@'Fleet Checklist'],DataSourceInfo.DisplayName,'field_54')
                   Height: =91
