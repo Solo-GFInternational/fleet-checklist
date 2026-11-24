@@ -376,7 +376,7 @@ Screens:
                                     ForAll(colPhotosToSync As p,
                                         With({s: LookUp(colRunStops, LocalKey = p.StopKey)},
                                             IfError(
-                                                'SaveFleetPhoto'.Run(
+                                                'SaveFleetPhotos'.Run(
                                                     varRunSheet.Title,
                                                     "Invoice",
                                                     "Stop " & s.StopOrder & " · Invoice " & p.Slot,

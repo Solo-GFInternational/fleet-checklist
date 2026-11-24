@@ -8,13 +8,13 @@
        filled in, plus NoofStops, NoofInvoicePhotos and RunKey. This starts the flow straight away.
     2. The stops in Run Sheet Details, linked by the RunSheet lookup AND the RunSheetID number.
     3. Invoice photos in Fleet Photos: generated JPEGs (a coloured "TEST INVOICE" page per photo),
-       tagged like SaveFleetPhoto tags them (Truck, PhotoType "Invoice", Item "Stop N · Invoice k",
+       tagged like SaveFleetPhotos tags them (Truck, PhotoType "Invoice", Item "Stop N · Invoice k",
        RecordID = stop ID, SourceList "Run Sheet Details", RunKey, StopKey).
        PHOTOS_FIRST = true uploads them before the trip, as the app does when it has signal (RecordID 0).
        PHOTOS_FIRST = false uploads them PHOTO_DELAY_SECONDS after the stops, so the flow has to wait.
        RETAKE = true adds a second, newer copy of stop 1's first photo: the email must attach only the retake.
 
-  The photos go straight into the library, so this tests the submission email flow, not SaveFleetPhoto.
+  The photos go straight into the library, so this tests the submission email flow, not SaveFleetPhotos.
 
   The stops include one of each case the emails flag:
     - a stop warmer than -15 °C              (⚠ in the submission email)
@@ -135,7 +135,7 @@
     }
     const photoCount = stops.length * PHOTOS_PER_STOP;
 
-    // ---- photo upload: file named like SaveFleetPhoto's, then its columns filled in
+    // ---- photo upload: file named like SaveFleetPhotos's, then its columns filled in
     const upload = async (s, slot, retake) => {
       const label = `photo stop ${s.no} · invoice ${slot}${retake ? ' (retake)' : ''}`;
       if (DRY_RUN) { out.push(label); return; }

@@ -18,7 +18,7 @@ The paper forms come from SOP **DC/16.0 Driver Responsibilities & Customer Servi
 | --- | --- |
 | Front end | **Microsoft Power Apps** canvas app (phone layout), written as paste-in YAML / Power Fx screen files in [screens/](screens/) |
 | Data | **SharePoint Online lists** on the Fleet Operations site |
-| Automation | **Power Automate** cloud flows (for example `SaveFleetPhoto`, which saves the checklist photos to a SharePoint library) |
+| Automation | **Power Automate** cloud flows (for example `SaveFleetPhotos`, which saves the checklist photos to a SharePoint library) |
 | Offline | Power Apps `SaveData` / `LoadData` on the device (run sheet only, Power Apps mobile app) |
 | Access control | SharePoint list **GF Fleet Checklist App Users** plus SharePoint list permissions |
 | Build and setup scripts | **Python 3** (standard library only) for generating the Forms import files and list templates. **JavaScript** run in the browser console on the SharePoint site to create columns, lists and test data |
@@ -64,7 +64,7 @@ The paper forms come from SOP **DC/16.0 Driver Responsibilities & Customer Servi
 3. Complete the **Pre-Trip Checklist**, one section per page (**Back** / **Next**, with "Section 3 of 8" and a progress bar), in the order a driver walks the truck: **In the cabin** (licence, odometer, controls, glass, safety gear), **Expiry and weight stickers**, **Walk-around 1: Electrical**, **Walk-around 2: Body and engine**, then **Tyres and tools**, and finally the accident and truck profile photos. Each item says what the driver should see (for example "Battery water at top mark"), with a **Yes / No**. A **No** needs a comment. The truck number is locked to the truck chosen on Home, and Site is required. The footer shows how many items on the page are still to do; on the last page, **Go to it** jumps to the first missing one.
    - COF expiry, blower service and truck service dates come from the Trucks list, marked **Expired**, **Due within 30 days** or **OK**. The driver only enters a date (with a photo) when the truck has none on file.
    - Answers and photos are saved on the phone as the driver goes. If the app closes, Home offers **Carry on** or **Discard**; a new checklist can't be started until that one is finished or discarded.
-4. Take the required **photos**: odometer, accessory items, one per tyre, net/gross weight plate, four truck profiles (Front, Rear, Left, Right), and accident photos if there's new damage. Submit stays locked until everything is answered and photographed. Photos upload through the `SaveFleetPhoto` flow after the checklist is saved.
+4. Take the required **photos**: odometer, accessory items, one per tyre, net/gross weight plate, four truck profiles (Front, Rear, Left, Right), and accident photos if there's new damage. Submit stays locked until everything is answered and photographed. Photos upload through the `SaveFleetPhotos` flow after the checklist is saved.
 5. If they were reviewed yesterday, Home shows their **Daily review** (stars and comment) until they tap "Got it".
 
 ### 2. During the run: driver
@@ -122,7 +122,7 @@ Hiding buttons in the app is not security. **SharePoint list permissions are the
 - App users get list access through two SharePoint groups: **Fleet App Drivers** (role Driver) and **Fleet App Reviewers** (Reviewer and Admin). The `SyncAppUser` flow adds and removes people when an Admin uses the Manage users screen. No email is sent. Don't add app users to the site's Members group.
 - The four record lists (Fleet Checklist, Run Sheets, Run Sheet Details, Driver Declarations) have their own permissions, set up by `scripts/setup_app_permissions.js`. Existing permissions were copied when they stopped inheriting, so the flows and site owners keep access. Drivers can **add** records but not edit or delete them. They can see only the records they created, because SharePoint won't allow adding without some view access, and item-level permissions limit it to their own. Reviewers (Edit + *Override List Behaviors*) see and sign off everything.
 - The App Users list gives both groups Read. Only the flow writes to it.
-- The photo library is written by the `SaveFleetPhoto` flow, so app users don't need access to it.
+- The photo library is written by the `SaveFleetPhotos` flow, so app users don't need access to it.
 
 ### Business roles
 
@@ -172,7 +172,7 @@ Hiding buttons in the app is not security. **SharePoint list permissions are the
 
 ### Next steps
 
-1. Run the new setup scripts, add the new lists as data sources, update `SaveFleetPhoto`, paste the screens, and test on a phone (including airplane mode for the run sheet).
+1. Run the new setup scripts, add the new lists as data sources, update `SaveFleetPhotos`, paste the screens, and test on a phone (including airplane mode for the run sheet).
 2. Update the **Run Sheet - Submission email** flow to wait for the whole run and attach the invoice photos (setup guide step 2.2).
 3. Send the checklist wording to Pawan for approval; get the truck table from Krish and samples of the COF and blower labels.
 4. Confirm reviewer roles with Krish, then share and publish the app.

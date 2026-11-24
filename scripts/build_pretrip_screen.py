@@ -740,15 +740,18 @@ class Builder:
             f'If(IsBlank(ctxSec), UpdateContext({{ctxPage: 1, ctxSec: {fx_str(FIRST_PAGE)}}}));',
         ]
         if self.weekly:
+            # The truck's latest 50 checklists come from SharePoint (truck filter + sort by ID are
+            # delegable); the week's dates are checked in the app, so there's no delegation warning.
             sets = []
             for f, var, *_ in self.weekly:
                 sets.append(
-                    f"        Set({var}, First(Sort(Filter('Fleet Checklist', field_1 = varCheck.field_1 && "
+                    f"        Set({var}, First(Sort(Filter(wkRows, "
                     f'Created >= wkStart && Created < wkEnd && {f}.Value = "Yes"), Created, SortOrder.Descending)))')
             blanks = [f'Set({w[1]}, Blank())' for w in self.weekly]
             lines += [
                 'If(varReviewing,',
-                '    With({wkDay: Date(Year(varCheck.Created), Month(varCheck.Created), Day(varCheck.Created))},',
+                '    With({wkDay: Date(Year(varCheck.Created), Month(varCheck.Created), Day(varCheck.Created)),',
+                "          wkRows: FirstN(Sort(Filter('Fleet Checklist', field_1 = varCheck.field_1), ID, SortOrder.Descending), 50)},",
                 '    With({wkStart: DateAdd(wkDay, 1 - Weekday(wkDay, StartOfWeek.Monday), TimeUnit.Days),',
                 '          wkEnd: DateAdd(wkDay, 8 - Weekday(wkDay, StartOfWeek.Monday), TimeUnit.Days)},',
                 ';\n'.join(sets) + ')),',
@@ -1003,7 +1006,7 @@ T_CHROME = r'''    Children:
                               Collect(colPendingDefects, {RecId: recId, Truck: varTruck, Title: name, ItemField: f, Comment: c}); false));
                       ForAll(colPhotos,
                           IfError(
-                              'SaveFleetPhoto'.Run(
+                              'SaveFleetPhotos'.Run(
                                   Coalesce(varTruck, "Unknown"),
                                   Coalesce(ThisRecord.Type, "Photo"),
                                   Coalesce(ThisRecord.Item, ThisRecord.Type, "Photo"),

@@ -696,9 +696,9 @@ Screens:
                                         With({
                                             rev: Filter('GF Fleet Daily Reviews', ReviewDate = d && ActiveYN = true),
                                             all: Ungroup(Table(
-                                                {t: ForAll(Filter('Fleet Checklist', Created >= d && Created < d1), {Name: field_2, Email: Lower('Created By'.Email), Kind: "Checklist"})},
-                                                {t: ForAll(Filter('Run Sheets', RunDate >= d && RunDate < d1), {Name: Coalesce(DriverName, Driver), Email: Lower('Created By'.Email), Kind: "Run sheet"})},
-                                                {t: ForAll(Filter('Driver Declarations', field_0 >= d && field_0 < d1), {Name: Title, Email: Lower('Created By'.Email), Kind: "Declaration"})}),
+                                                {t: ForAll(Filter(FirstN(Sort('Fleet Checklist', ID, SortOrder.Descending), 500), Created >= d && Created < d1), {Name: field_2, Email: Lower('Created By'.Email), Kind: "Checklist"})},
+                                                {t: ForAll(Filter(FirstN(Sort('Run Sheets', ID, SortOrder.Descending), 500), RunDate >= d && RunDate < d1), {Name: Coalesce(DriverName, Driver), Email: Lower('Created By'.Email), Kind: "Run sheet"})},
+                                                {t: ForAll(Filter(FirstN(Sort('Driver Declarations', ID, SortOrder.Descending), 500), field_0 >= d && field_0 < d1), {Name: Title, Email: Lower('Created By'.Email), Kind: "Declaration"})}),
                                                 t)},
                                             Sort(
                                                 ForAll(GroupBy(AddColumns(all, Key, Coalesce(Email, Lower(Trim(Name)))), Key, Rows),

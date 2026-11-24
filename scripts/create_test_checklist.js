@@ -8,7 +8,7 @@
 
   How to run:
     1. Open the Fleet Operations SharePoint site in Edge or Chrome (any page of the site).
-    2. Set the SETTINGS below (at least PHOTO_LIBRARY: the library the SaveFleetPhoto flow saves to).
+    2. Set the SETTINGS below (at least PHOTO_LIBRARY: the library the SaveFleetPhotos flow saves to).
     3. Press F12 → Console, paste this whole file, press Enter. (Type "allow pasting" first if asked.)
     4. Leave DRY_RUN = true the first time: it only prints what it would create.
     5. Set DRY_RUN = false and run again. Copy the text between the ===== lines if anything fails.
@@ -21,7 +21,7 @@
   const DRY_RUN = true;
   const SIGN_OFF = false;                 // true = also act as the manager signing it off
   const LIST = 'Fleet Checklist';
-  const PHOTO_LIBRARY = 'Fleet Photos';   // the document library SaveFleetPhoto writes to
+  const PHOTO_LIBRARY = 'Fleet Photos';   // the document library SaveFleetPhotos writes to
   const PHOTO_FOLDER = '';                // sub-folder inside it, e.g. 'Checklist photos' ('' = top level)
   // Test registrations from files/Fiji Number Plate QR Codes samples.docx; one is picked at random each run.
   const TRUCKS = ['FJ 101', 'CA 203', 'KI 123', 'LA 456', 'HX 789', 'GV 312', 'EF 645', 'JK 908', 'BN 274'];

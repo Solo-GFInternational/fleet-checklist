@@ -44,7 +44,7 @@ Choice columns: type `Yes` and `No` on separate lines, **Default value: (none)**
 
 ## Photos
 
-No SharePoint columns are needed for the photos. Each item's photo is uploaded by the existing **SaveFleetPhoto** flow, the same way as the odometer photo, with PhotoType = `Accessory`, Item = the column's display name, and RecordID = the checklist row ID.
+No SharePoint columns are needed for the photos. Each item's photo is uploaded by the existing **SaveFleetPhotos** flow, the same way as the odometer photo, with PhotoType = `Accessory`, Item = the column's display name, and RecordID = the checklist row ID.
 
 ## Check
 

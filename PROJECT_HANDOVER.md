@@ -234,11 +234,11 @@ Design rules:
 | **Run Sheet → SharePoint** | Part A: Trigger → Get response details → Create item (Run Sheets). Part B: one block per stop: Condition `empty(Destination (Sn))` is equal to `false` → Create item (Run Sheet Details) with `Run Sheet ID = outputs('Create_item')?['body/ID']` | **Done** (confirmed 26 Oct; rebuilt 2 Nov for Run Sheet Details) |
 | **Pre-Trip → SharePoint** | Trigger → Get response details → Create item (Pre-Trip Checks) | All fields mapped; **full test not run** |
 
-### 4.3 Power Apps flow: SaveFleetPhoto
+### 4.3 Power Apps flow: SaveFleetPhotos
 
 Called from `scrPreTrip` (`frmPreTrip.OnSuccess`) once per photo in `colPhotos` (odometer, 18 accessory photos, any defect photos), after the checklist row is saved:
 
-`'SaveFleetPhoto'.Run(Truck, PhotoType, Item, RecordID, SourceList, {file: {name: "photo.jpg", contentBytes: <image>}})`
+`'SaveFleetPhotos'.Run(Truck, PhotoType, Item, RecordID, SourceList, {file: {name: "photo.jpg", contentBytes: <image>}})`
 
 | # | Trigger input (When Power Apps calls a flow, V2) | Type | Example |
 | --- | --- | --- | --- |
@@ -255,8 +255,8 @@ Inputs 7–8 need two text columns, `RunKey` and `StopKey`, on the library (`scr
 
 Setup (not documented before 20 Nov 2026; confirm whether the live flow matches):
 - **Library:** a document library on Fleet Operations (planned as "Defect Photos"; "Fleet Photos" fits better now) with columns `Truck` (text), `PhotoType` (text), `Item` (text), `RecordID` (number), `SourceList` (text), internal names typed first.
-- **Flow:** instant cloud flow named exactly **SaveFleetPhoto**, trigger *When Power Apps calls a flow (V2)* with the six inputs above **in that order** → SharePoint **Create file** (folder = the library; name e.g. `concat(replace(triggerBody()['text'],' ',''),'_',triggerBody()['number'],'_',triggerBody()['text_1'],'_',formatDateTime(utcNow(),'yyyyMMddHHmmssfff'),'.jpg')`; content = the `file` input's content) → SharePoint **Update file properties** (ItemId from Create file) filling the five columns.
-- **In the app:** Studio → Power Automate pane → *Add flow* → SaveFleetPhoto. Re-add it whenever the trigger inputs change.
+- **Flow:** instant cloud flow named exactly **SaveFleetPhotos**, trigger *When Power Apps calls a flow (V2)* with the six inputs above **in that order** → SharePoint **Create file** (folder = the library; name e.g. `concat(replace(triggerBody()['text'],' ',''),'_',triggerBody()['number'],'_',triggerBody()['text_1'],'_',formatDateTime(utcNow(),'yyyyMMddHHmmssfff'),'.jpg')`; content = the `file` input's content) → SharePoint **Update file properties** (ItemId from Create file) filling the five columns.
+- **In the app:** Studio → Power Automate pane → *Add flow* → SaveFleetPhotos. Re-add it whenever the trigger inputs change.
 - Runs with the flow owner's SharePoint connection, so drivers don't need access to the library. Add a co-owner, as for the other flows.
 - A checklist with all photos makes ~19 calls; on failure the app shows "Checklist saved, but the photos did not upload" and the checklist itself is kept.
 
@@ -408,7 +408,7 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 
 **Daily review:**
 - List **GF Fleet Daily Reviews** (`scripts/create_daily_reviews.js`): Title = driver, `DriverEmail`, `ReviewDate`, `Stars` 1–5, `Comment`, `ReviewerName`, `ActiveYN`. Reviewers add and edit; Drivers read.
-- scrReview has a 4th tab, **Daily review**. It lists drivers who submitted anything on the chosen date, matched by Created By email. The reviewer picks 1–5 stars and an optional comment, and Save creates the driver's row for that date or updates it.
+- scrReview has a 4th tab, **Daily review**. It lists drivers who submitted anything on the chosen date, matched by Created By email. To avoid delegation warnings it looks within the newest 500 rows of each list (checklists, run sheets, declarations), so very old dates may show fewer drivers. scrPreTrip's weekly cabin-tilt / greasing lookup likewise reads the truck's newest 50 checklists. The reviewer picks 1–5 stars and an optional comment, and Save creates the driver's row for that date or updates it.
 - scrHome shows the driver their latest review from the last 7 days (not today) until they tap "Got it". Dismissals are saved on the phone ("fcSeenReview").
 - A driver could read other drivers' reviews by opening the list in SharePoint. Per-item permissions would need a flow.
 

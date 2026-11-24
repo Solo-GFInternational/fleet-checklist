@@ -15,7 +15,7 @@
   It also indexes RunKey on Fleet Photos (the flow filters on it, and the library passes 5,000 files)
   and RunSheetID on Run Sheet Details.
 
-  After running it, add RunKey and StopKey as optional text inputs to the SaveFleetPhoto flow
+  After running it, add RunKey and StopKey as optional text inputs to the SaveFleetPhotos flow
   (see PROJECT_HANDOVER.md), then remove and re-add the flow in the app.
 
   How to run:

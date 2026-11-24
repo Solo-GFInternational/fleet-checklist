@@ -36,7 +36,7 @@ Screens:
                     Collect(colPendingDefects, d); false));
             ForAll(colRetryPhotos As p,
                 IfError(
-                    'SaveFleetPhoto'.Run(p.Truck, p.Type, p.Item, p.RecId, "Fleet Checklist",
+                    'SaveFleetPhotos'.Run(p.Truck, p.Type, p.Item, p.RecId, "Fleet Checklist",
                         {file: {name: "photo.jpg", contentBytes: p.Img}}); true,
                     Collect(colPendingPhotos, p); false));
             Clear(colRetryDefects);

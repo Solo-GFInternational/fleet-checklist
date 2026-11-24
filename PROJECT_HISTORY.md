@@ -329,6 +329,10 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 - **Decision (user):** no PDF. The email attaches the run's invoice photos as JPEGs (newest copy of each, as many as fit in about 19 MB) and links to Fleet Photos filtered by the run's `RunKey`. Only the SharePoint and Outlook connections are used.
 - `scripts/create_test_runsheet.js` now sends a run the way the app does (trip once as Open, then stops, then generated JPEG "TEST INVOICE" photos, plus a retake), so the whole flow can be tested without a phone.
 
+## Update 24 Nov 2026: photo flow renamed to SaveFleetPhotos
+
+- After the RunKey / StopKey inputs were added, Power Apps Studio kept seeing the old 6-input SaveFleetPhoto ("Invalid number of arguments: received 8, expected 5-6") even after removing and re-adding the flow. The user cloned it as **SaveFleetPhotos**; scrRunSheet, scrHome and scrPreTrip (generator) now call that, and the docs use the new name. The old SaveFleetPhoto can be turned off once the new one is confirmed working.
+
 ## Suggested next steps
 
 1. Run the new scripts:

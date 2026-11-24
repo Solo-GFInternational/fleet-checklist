@@ -28,11 +28,12 @@ Screens:
                 {PageNo: 8, SecKey: "remarks", SecTitle: "Other comments"})));
         If(IsBlank(ctxSec), UpdateContext({ctxPage: 1, ctxSec: "cabin"}));
         If(varReviewing,
-            With({wkDay: Date(Year(varCheck.Created), Month(varCheck.Created), Day(varCheck.Created))},
+            With({wkDay: Date(Year(varCheck.Created), Month(varCheck.Created), Day(varCheck.Created)),
+                  wkRows: FirstN(Sort(Filter('Fleet Checklist', field_1 = varCheck.field_1), ID, SortOrder.Descending), 50)},
             With({wkStart: DateAdd(wkDay, 1 - Weekday(wkDay, StartOfWeek.Monday), TimeUnit.Days),
                   wkEnd: DateAdd(wkDay, 8 - Weekday(wkDay, StartOfWeek.Monday), TimeUnit.Days)},
-                Set(varWeekTilt, First(Sort(Filter('Fleet Checklist', field_1 = varCheck.field_1 && Created >= wkStart && Created < wkEnd && CabTilt.Value = "Yes"), Created, SortOrder.Descending)));
-                Set(varWeekGrease, First(Sort(Filter('Fleet Checklist', field_1 = varCheck.field_1 && Created >= wkStart && Created < wkEnd && field_44.Value = "Yes"), Created, SortOrder.Descending))))),
+                Set(varWeekTilt, First(Sort(Filter(wkRows, Created >= wkStart && Created < wkEnd && CabTilt.Value = "Yes"), Created, SortOrder.Descending)));
+                Set(varWeekGrease, First(Sort(Filter(wkRows, Created >= wkStart && Created < wkEnd && field_44.Value = "Yes"), Created, SortOrder.Descending))))),
             Set(varWeekTilt, Blank());
             Set(varWeekGrease, Blank()))
     Children:
@@ -233,7 +234,7 @@ Screens:
                               Collect(colPendingDefects, {RecId: recId, Truck: varTruck, Title: name, ItemField: f, Comment: c}); false));
                       ForAll(colPhotos,
                           IfError(
-                              'SaveFleetPhoto'.Run(
+                              'SaveFleetPhotos'.Run(
                                   Coalesce(varTruck, "Unknown"),
                                   Coalesce(ThisRecord.Type, "Photo"),
                                   Coalesce(ThisRecord.Item, ThisRecord.Type, "Photo"),

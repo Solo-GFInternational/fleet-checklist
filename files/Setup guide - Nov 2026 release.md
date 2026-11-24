@@ -133,11 +133,11 @@ Run these in order, each one dry run first.
 
 ## Step 2: Power Automate
 
-### 2.1 SaveFleetPhoto: add two inputs
+### 2.1 SaveFleetPhotos: add two inputs
 
 The run sheet now uploads invoice photos through this flow, tagged with the run and the stop. Background: [PROJECT_HANDOVER.md §4.3](../PROJECT_HANDOVER.md#43-power-apps-flow-savefleetphoto).
 
-- [ ] **1.** Power Automate → **My flows** → **SaveFleetPhoto** → **Edit**.
+- [ ] **1.** Power Automate → **My flows** → **SaveFleetPhotos** → **Edit**.
 - [ ] **2.** Click the trigger card, **When Power Apps calls a flow (V2)**.
 - [ ] **3.** **+ Add an input** → **Text** → name it `RunKey`. Then **⋯** on that input → **Make the field optional**.
 - [ ] **4.** **+ Add an input** → **Text** → name it `StopKey` → **⋯** → **Make the field optional**.
@@ -336,7 +336,7 @@ Steps 0–8 below are the same changes done by hand. You only need them if the i
   - The link opens Fleet Photos showing only that run's photos.
   - **Submission Emailed** is Yes on the run, and it was updated once.
 
-**If fewer photos are attached than taken,** they didn't fit in about 19 MB together; the link shows them all. **If none are attached,** check **Get invoice files**: an empty result means the photos have no `RunKey` (SaveFleetPhoto step 2.1 not done, or the app not re-published).
+**If fewer photos are attached than taken,** they didn't fit in about 19 MB together; the link shows them all. **If none are attached,** check **Get invoice files**: an empty result means the photos have no `RunKey` (SaveFleetPhotos step 2.1 not done, or the app not re-published).
 
 **Email sender:** this keeps sending from the flow owner's mailbox, as today. When IT grants Send As on the shared mailbox, switch **Send an email (V2)** to **Send an email from a shared mailbox (V2)**.
 
@@ -353,7 +353,7 @@ The app doesn't call this flow; the SharePoint trigger starts it. So there's not
   - [ ] **2.** For **Fleet Checklist**, **Run Sheets**, **Run Sheet Details** and the **Fleet Photos** library: **⋯** next to each → **Refresh**, so the app sees the new columns. If **Run Sheets** isn't refreshed, scrRunSheet shows "The specified column 'NoofInvoicePhotos' does not exist".
 - [ ] **3.** **Flows:** left bar → **Power Automate** (flow icon).
 
-  - [ ] **1.** **SaveFleetPhoto:** first make sure step 2.1 is done and saved (the flow has the `RunKey` and `StopKey` inputs). Then **⋯** → **Remove from app**, then **+ Add flow** → **SaveFleetPhoto**. This re-reads its two new inputs. If the app still has the old version, scrRunSheet shows "Invalid number of arguments: received 8, expected 5-6".
+  - [ ] **1.** **SaveFleetPhotos:** first make sure step 2.1 is done and saved (the flow has the `RunKey` and `StopKey` inputs). Then **⋯** → **Remove from app**, then **+ Add flow** → **SaveFleetPhotos**. This re-reads its two new inputs. If the app still has the old version, scrRunSheet shows "Invalid number of arguments: received 8, expected 5-6".
 
   The submission email flow isn't added to the app; SharePoint starts it.
 - [ ] **4.** **Screens:** paste each one in this order. After each, check that the formula checker (the ⚠ icon at the top) shows no errors before going on.
