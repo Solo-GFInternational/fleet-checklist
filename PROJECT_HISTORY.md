@@ -318,6 +318,17 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 - He sent the truck list (Truck Details.xlsx) for the GF Fleet Trucks import.
 - He'll sit with Solomone to review and edit the wording before the checklist is finalised, so the wording isn't final yet.
 
+## Update 24 Nov 2026: no invoice PDF, photos attached instead
+
+- The submission email flow is built from the user's export by `scripts/build_submission_email_flow.py` and imported as a package, instead of edited by hand.
+- Three ways of making the invoice PDF were tried, and none works in this tenant:
+  - OneDrive *Convert file*: the flow owner's OneDrive for Business connection wouldn't work.
+  - SharePoint `?format=pdf` through *Send an HTTP request to SharePoint*: the test run stopped with a 302 redirect, and the connector hides the redirect address, so it can't be followed.
+  - Word Online (Business) *Convert to PDF*: not included in the company's M365 licence.
+  - The remaining converters are premium or third-party connectors.
+- **Decision (user):** no PDF. The email attaches the run's invoice photos as JPEGs (newest copy of each, as many as fit in about 19 MB) and links to Fleet Photos filtered by the run's `RunKey`. Only the SharePoint and Outlook connections are used.
+- `scripts/create_test_runsheet.js` now sends a run the way the app does (trip once as Open, then stops, then generated JPEG "TEST INVOICE" photos, plus a retake), so the whole flow can be tested without a phone.
+
 ## Suggested next steps
 
 1. Run the new scripts:
@@ -328,7 +339,7 @@ Work moved to a **Power Apps canvas app** over the SharePoint lists on the Fleet
 2. Add the new lists as data sources and refresh Fleet Checklist, Run Sheet Details and the photo library.
 3. Add the two SaveFleetPhoto inputs, then re-add the flow in the app.
 4. Paste every screen and test on a phone, including airplane mode for the run sheet.
-5. Update the Run Sheet - Submission email flow: wait loop, invoice PDF, and Update item moved out of the loop (setup guide step 2.2).
+5. Update the Run Sheet - Submission email flow: wait loop, invoice photos attached, and Update item moved out of the loop (setup guide step 2.2).
 6. Send the wording document to Pawan. Once approved, run the column script in rename mode.
 7. Get the truck table from Krish, and photos of the COF and blower labels.
 8. Confirm roles with Krish, then share and publish (see the access guide).

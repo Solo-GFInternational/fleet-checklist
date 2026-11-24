@@ -173,7 +173,7 @@ Hiding buttons in the app is not security. **SharePoint list permissions are the
 ### Next steps
 
 1. Run the new setup scripts, add the new lists as data sources, update `SaveFleetPhoto`, paste the screens, and test on a phone (including airplane mode for the run sheet).
-2. Update the **Run Sheet - Submission email** flow to wait for the whole run and attach the invoice PDF (setup guide step 2.2).
+2. Update the **Run Sheet - Submission email** flow to wait for the whole run and attach the invoice photos (setup guide step 2.2).
 3. Send the checklist wording to Pawan for approval; get the truck table from Krish and samples of the COF and blower labels.
 4. Confirm reviewer roles with Krish, then share and publish the app.
 5. Outstanding reporting emails: Trade Issue, Fleet Checklist export to Excel/MEX.

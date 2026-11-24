@@ -3,7 +3,7 @@
 Step-by-step setup for everything built after the 23 Nov 2026 meeting with Pawan's team:
 
 - **Checklist:** the new checklist with Yes/No answers and comments, the defects list, the Trucks list, the draft saved on the phone, and one section per page.
-- **Run sheet:** invoice photos, and the invoice PDF added to your existing **Run Sheet - Submission email** flow.
+- **Run sheet:** invoice photos, attached to the email from your existing **Run Sheet - Submission email** flow.
 - **Review:** the Daily review.
 
 Work through the steps in order. Each step links to where its background lives, but everything you need to do is in this guide.
@@ -127,8 +127,7 @@ Run these in order, each one dry run first.
 
 ### 1.6 By hand in SharePoint
 
-- [ ] **1.** **Create a folder for the PDFs.** In the Fleet Photos library: **+ New → Folder** → `Run sheet PDFs` → **Create**.
-- [ ] **2.** **Ask the office to fill in each truck's dates** in GF Fleet Trucks: COF expiry, Blower service due, Truck service due. The checklist shows them as Expired / Due within 30 days / OK. When a truck has no date, the driver types it and takes a photo instead.
+- [ ] **1.** **Ask the office to fill in each truck's dates** in GF Fleet Trucks: COF expiry, Blower service due, Truck service due. The checklist shows them as Expired / Due within 30 days / OK. When a truck has no date, the driver types it and takes a photo instead.
 
 ---
 
@@ -149,19 +148,19 @@ The run sheet now uploads invoice photos through this flow, tagged with the run 
 
 The checklist's existing six-input call keeps working, because the new inputs are optional. You'll remove and re-add the flow in the app in Step 3.
 
-### 2.2 Run Sheet - Submission email: wait for everything, add the invoice PDF
+### 2.2 Run Sheet - Submission email: wait for everything, attach the invoice photos
 
 Your existing flow, **Run Sheet - Submission email**, stays the submission email. Its trigger, its trigger conditions, its stops table with ⚠ flags and its email layout don't change.
 
 Three things are added or changed:
 
 - [ ] **1.** **Wait for the whole run.** The app creates the trip first, then the stops one by one, then any invoice photos still waiting. The fixed 1-minute **Delay** becomes a loop that waits until every stop and every invoice photo has arrived, using the new `NoofStops` and `NoofInvoicePhotos` columns the app now fills in.
-- [ ] **2.** **Invoice PDF.** One PDF of the run's invoice photos is built, saved in Fleet Photos / Run sheet PDFs, attached to your email (when under about 19 MB) and linked from it.
+- [ ] **2.** **Invoice photos on the email.** The run's invoice photos (the newest copy of each) are attached as JPEGs, as many as fit in about 19 MB. The email says how many there are and how many are attached, and links to Fleet Photos filtered to that run, so every photo can be opened.
 - [ ] **3.** **Mark as emailed once.** Your **Update item** currently sits inside a *For each* over the stops, so it updates the same run once per stop (about 70 times). It moves out of the loop.
 
 Background: [PROJECT_HANDOVER.md §4.5](../PROJECT_HANDOVER.md#45-run-sheet-submission-email-flow).
 
-The PDF is converted inside SharePoint (**Send an HTTP request to SharePoint**), so the flow needs only the SharePoint and Outlook connections it already has. No OneDrive connection or folder is needed.
+The flow uses only the SharePoint and Office 365 Outlook connections it already has. **There's no invoice PDF:** every standard way to make one needs something this tenant doesn't have. OneDrive *Convert file* needs a working OneDrive connection, Word Online *Convert to PDF* isn't in the M365 licence, and SharePoint's own `?format=pdf` replies with a redirect the connector can't follow (all tried 24 Nov 2026). The others are premium connectors.
 
 #### Option A (recommended): build it with the script and import it
 
@@ -169,13 +168,13 @@ The PDF is converted inside SharePoint (**Send an HTTP request to SharePoint**),
 
 **Inputs to fill in.** Open `scripts/build_submission_email_flow.py` and check the **INPUTS** block at the top:
 
-| Input                                                 | Default                             | What to check                                                                                                                                                                                                |
-| ----------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `FLOW_NAME`                                         | `Run Sheet - Submission email v2` | Any name; the import creates it next to your current flow                                                                                                                                                    |
-| `PHOTOS_LIBRARY`                                    | `Fleet Photos`                    | The photo library's name exactly as SharePoint shows it                                                                                                                                                      |
-| `PDF_FOLDER`                                        | `/Fleet Photos/Run sheet PDFs`    | Open the library and look at the address bar. The part after the site name is the library's URL name (spaces show as `%20`). Use that, plus `/Run sheet PDFs`. The folder must exist (step 1.6). The temporary HTML file is made here too, then deleted |
-| `FAILURE_EMAIL`                                     | empty (off)                         | Your email address, if you want to be told when the flow fails                                                                                                                                               |
-| `WAIT_MINUTES`, `MAX_CHECKS`, `ATTACH_LIMIT_MB` | 2, 30, 19                           | Leave as they are unless you want a shorter or longer wait                                                                                                                                                   |
+| Input                                           | Default                           | What to check                                                                                                         |
+| ----------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `FLOW_NAME`                                     | `Run Sheet - Submission email v2` | Any name; the import creates it next to your current flow                                                             |
+| `PHOTOS_LIBRARY`                                | `Fleet Photos`                    | The photo library's name exactly as SharePoint shows it                                                               |
+| `PHOTOS_URL_NAME`                               | `Fleet Photos`                    | Open the library and look at the address bar: the part after the site name (spaces show as `%20`), for the email link |
+| `FAILURE_EMAIL`                                 | empty (off)                       | Your email address, if you want to be told when the flow fails                                                        |
+| `WAIT_MINUTES`, `MAX_CHECKS`, `ATTACH_LIMIT_MB` | 2, 30, 19                         | Leave as they are unless you want a shorter or longer wait                                                            |
 
 You don't need to fill in the site address, list IDs or email recipients. The script reads them from your export.
 
@@ -184,15 +183,12 @@ You don't need to fill in the site address, list IDs or email recipients. The sc
   py -3 -I scripts/build_submission_email_flow.py files "files/Solo_20261123212614.zip"
   ```
   It writes `files/Run Sheet - Submission email v2 - import package.zip`. Zip files in `files/` are git-ignored, because they contain your site address and list IDs.
-- [ ] **A2.** Power Automate → **My flows** → **Import** → **Import Package (Legacy)** → **Upload** → pick the new .zip.
+- [ ] **A2.** Delete any earlier imported **Run Sheet - Submission email v2** (**⋯ → Delete**), so only one copy exists. Then Power Automate → **My flows** → **Import** → **Import Package (Legacy)** → **Upload** → pick the new .zip.
 - [ ] **A3.** On the import page:
   - Next to the flow, click **Update** under *Import setup* → **Create as new** → **Save**.
   - For each connection (SharePoint, Office 365 Outlook), click **Select during import** → pick yours → **Save**.
   - Then click **Import**.
-- [ ] **A4.** Open the new flow → **Edit** and check that no action shows a red error.
-  - If **Check photos** or **Get invoice files** complains about the library, pick **Fleet Photos** from its **Library Name** drop-down.
-  - If **Create HTML** or **Save PDF** complains about the folder, pick **Run sheet PDFs** with the folder icon.
-  - Then **Save**.
+- [ ] **A4.** Open the new flow → **Edit** and check that no action shows a red error. If **Check photos** or **Get invoice files** complains about the library, pick **Fleet Photos** from its **Library Name** drop-down. Then **Save**.
 - [ ] **A5.** Turn the **new** flow **on** and your **old** "Run Sheet - Submission email" **off** (**⋯ → Turn off**). If both are on, both send.
 - [ ] **A6.** Test as in step 8 below. If anything is wrong, turn the new flow off and the old one back on while it's fixed.
 
@@ -211,13 +207,12 @@ Steps 0–8 below are the same changes done by hand. You only need them if the i
 #### 0. Before you start
 
 - [ ] **1.** Step 1.4 has run. Run Sheets now has `NoofStops`, `NoofInvoicePhotos` and `RunKey`, and Fleet Photos has `RunKey` (indexed) and `StopKey`.
-- [ ] **2.** The **Run sheet PDFs** folder exists in Fleet Photos (step 1.6). The temporary HTML file is made there too, then deleted.
-- [ ] **3.** **Keep a backup:** open the flow → **⋯ → Save As** → `Run Sheet - Submission email (backup)` → **Save**. Then turn the backup **off** (**⋯ → Turn off**) so it never sends.
-- [ ] **4.** Open the original: **My flows** → **Run Sheet - Submission email** → **Edit**.
+- [ ] **2.** **Keep a backup:** open the flow → **⋯ → Save As** → `Run Sheet - Submission email (backup)` → **Save**. Then turn the backup **off** (**⋯ → Turn off**) so it never sends.
+- [ ] **3.** Open the original: **My flows** → **Run Sheet - Submission email** → **Edit**.
 
 #### 1. Variables, at the top
 
-- [X] **1.** Hover between the trigger and **Delay** → **+** → **Add an action** → **Initialize variable**. Add six, renaming each one as shown:
+- [X] **1.** Hover between the trigger and **Delay** → **+** → **Add an action** → **Initialize variable**. Add these, renaming each one as shown:
 
   | Rename to            | Name            | Type    | Value                                                 |
   | -------------------- | --------------- | ------- | ----------------------------------------------------- |
@@ -226,11 +221,17 @@ Steps 0–8 below are the same changes done by hand. You only need them if the i
   | `Init tries`       | `tries`       | Integer | `0`                                                 |
   | `Init seen`        | `seen`        | Array   | `[]`                                                |
   | `Init keep`        | `keep`        | Array   | `[]`                                                |
-  | `Init html`        | `html`        | String  | `<html><body style="font-family:Arial,sans-serif">` |
+
+- [ ] **1b.** Two more (added 24 Nov 2026). If you added `Init html` earlier, delete it (**⋯ → Delete**); there's no PDF to build any more.
+
+  | Rename to            | Name            | Type    | Value |
+  | -------------------- | --------------- | ------- | ----- |
+  | `Init photoFiles`  | `photoFiles`  | Array   | `[]`  |
+  | `Init photoChars`  | `photoChars`  | Integer | `0`   |
 
   Initialize variable only works at the top level, never inside a loop or condition, so put them all directly under the trigger.
 
-  **Name** (inside the action) must be typed exactly, including capitals, because later steps use `variables('stopsFound')` and so on. **Rename to** is the action's title (**⋯ → Rename**). It's optional for these six, but for every other new action in this guide the rename is required, because expressions refer to those actions by name.
+  **Name** (inside the action) must be typed exactly, including capitals, because later steps use `variables('stopsFound')` and so on. **Rename to** is the action's title (**⋯ → Rename**). It's optional for these, but for every other new action in this guide the rename is required, because expressions refer to those actions by name.
 
 #### 2. Replace the Delay with a wait loop
 
@@ -267,7 +268,7 @@ Steps 0–8 below are the same changes done by hand. You only need them if the i
 - [ ] **5.** Your **Get items** now sits below the Do until. Leave it as it is. Because it runs after the wait, it finds every stop.
 - [ ] **6.** Your **Condition** (stops > 0) stays. Its **False** branch (Terminate) stays.
 
-#### 4. Build the invoice PDF, inside your Condition's True branch, before Send an email
+#### 4. Collect the invoice photos, inside your Condition's True branch, before Send an email
 
 - [ ] **7.** In **True**, hover above **Send an email (V2)** → **+** → add these in order:
 
@@ -287,67 +288,30 @@ Steps 0–8 below are the same changes done by hand. You only need them if the i
       - [ ] **2.** **Append to array variable** `keep`, expression `items('For_each_file')`
 
     The newest copy of each invoice wins, so a retake replaces the first photo.
-  - [ ] **3.** **Append to string variable** `html`, expression:
+  - [ ] **3.** **Control – Apply to each**, renamed `For each invoice`:
 
-    ```
-    concat('<h2 style="color:#007070">Run sheet invoices: ', triggerOutputs()?['body/Title'], ' · ', formatDateTime(triggerOutputs()?['body/RunDate'], 'dd MMM yyyy'), '</h2><p>Driver: ', coalesce(triggerOutputs()?['body/DriverName'], ''), ' · Area: ', coalesce(triggerOutputs()?['body/Area'], ''), ' · Stops: ', length(body('Get_items')?['value']), ' · Invoice photos: ', length(variables('keep')), '</p>')
-    ```
-  - [ ] **4.** **Control – Apply to each**, renamed `For each invoice`:
-
-    - **Select an output:** expression `reverse(variables('keep'))`
+    - **Select an output:** expression `reverse(variables('keep'))` (oldest first, so the photos follow the stops)
     - Concurrency **On, 1**
     - Inside it:
       - [ ] **1.** **SharePoint – Get file content**, renamed `Get invoice content`. **File Identifier:** expression `items('For_each_invoice')?['{Identifier}']`
-      - [ ] **2.** **Append to string variable** `html`, expression:
-        ```
-        concat('<div style="page-break-before:always"><p style="font-size:14px; color:#1F2933">', items('For_each_invoice')?['Item'], '</p><img src="data:image/jpeg;base64,', body('Get_invoice_content')?['$content'], '" style="width:100%"></div>')
-        ```
-  - [ ] **5.** **Append to string variable** `html`: `</body></html>`
-  - [ ] **6.** **SharePoint – Create file**, renamed `Create HTML`:
+      - [ ] **2.** **Condition**, renamed `Fits in email`. Left box expression: `add(variables('photoChars'), length(string(body('Get_invoice_content')?['$content'])))`. Operator **is less than**. Right box: `26563925` (about 19 MB once encoded; Outlook rejects much bigger emails).
+      - In its **True**, add two actions:
+        - [ ] **1.** **Append to array variable** `photoFiles`, renamed `Add photo file`. Value (paste as is; the two `@{…}` parts become expressions):
+          ```
+          {"Name": "@{concat(replace(replace(coalesce(items('For_each_invoice')?['Item'], 'Invoice'), ' · ', '_'), ' ', ''), '.jpg')}", "ContentBytes": "@{body('Get_invoice_content')?['$content']}"}
+          ```
+        - [ ] **2.** **Increment variable** `photoChars`, renamed `Count photo size`, by expression `length(string(body('Get_invoice_content')?['$content']))`
 
-    - **Folder Path:** Fleet Photos → `Run sheet PDFs`
-    - **File Name:** expression `concat('Run_', triggerOutputs()?['body/ID'], '.html')`
-    - **File Content:** expression `variables('html')`
-  - [ ] **7.** **SharePoint – Send an HTTP request to SharePoint**, renamed `Get site libraries`:
+  Photos are named after their slot, e.g. `Stop3_Invoice2.jpg`. Once the email is full, the rest are left off and reached through the link.
 
-    - **Method:** GET
-    - **Uri:** `_api/v2.0/drives?$select=id,name`
-    - **Headers:** key `Accept`, value `application/json`
-  - [ ] **8.** **Data Operation – Filter array**, renamed `Find photo library`:
-
-    - **From:** expression `body('Get_site_libraries')?['value']`
-    - Click **Edit in advanced mode** and paste: `@equals(item()?['name'], 'Fleet Photos')`
-  - [ ] **9.** **SharePoint – Send an HTTP request to SharePoint**, renamed `Convert to PDF`:
-
-    - **Method:** GET
-    - **Uri:** `_api/v2.0/drives/` + expression `first(body('Find_photo_library'))?['id']` + `/root:/Run%20sheet%20PDFs/` + expression `outputs('Create_HTML')?['body/Name']` + `:/content?format=pdf`
-    - No headers.
-
-    SharePoint converts the HTML file and returns the PDF.
-  - [ ] **10.** **SharePoint – Create file**, renamed `Save PDF`:
-
-    - **Folder Path:** Fleet Photos → `Run sheet PDFs`
-    - **File Name:** expression `concat('RunSheet_', replace(coalesce(triggerOutputs()?['body/Title'], 'NoTruck'), ' ', ''), '_', formatDateTime(triggerOutputs()?['body/RunDate'], 'yyyyMMdd'), '_', triggerOutputs()?['body/ID'], '.pdf')`
-    - **File Content:** expression `body('Convert_to_PDF')`
-  - [ ] **11.** **SharePoint – Delete file**, renamed `Delete HTML`: **File Identifier** = expression `outputs('Create_HTML')?['body/Id']`
-
-  If a run has no invoice photos, the PDF just has the summary heading.
-
-#### 5. Your Send an email (V2): add the PDF
+#### 5. Your Send an email (V2): invoice line and attachments
 
 - [ ] **8.** Open **Send an email (V2)** and leave To, Subject and the body as they are, except for two changes.
-  - [ ] **1.** **Body:** switch to code view (**</>**). Just before the line `<p>Waiting for Team Leader verification in the Fleet Checklist app.</p>`, paste:
+  - [ ] **1.** **Body:** switch to code view (**</>**). Just before the line `<p>Waiting for Team Leader verification in the Fleet Checklist app.</p>`, paste the line below. Type your Fleet Operations site address in place of `<site>`; it goes in the flow only, never in the repo.
     ```
-    <p><b>Invoices:</b> @{length(variables('keep'))} photos. <a href="<your Fleet Operations site address>@{outputs('Save_PDF')?['body/Path']}">Open the invoices PDF</a>@{if(less(length(string(body('Convert_to_PDF')?['$content'])), 26000000), ' (also attached)', ' (too large to attach)')}.</p>
+    <p><b>Invoices:</b> @{length(variables('keep'))} photos, @{length(variables('photoFiles'))} attached. <a href="<site>/Fleet%20Photos/Forms/AllItems.aspx?FilterField1=RunKey&amp;FilterValue1=@{encodeUriComponent(coalesce(triggerOutputs()?['body/RunKey'], 'none'))}">Open this run's invoice photos in Fleet Photos</a>.</p>
     ```
-
-    Type your Fleet Operations site address in place of `<your Fleet Operations site address>`. It goes in the flow only; don't save it in the repo.
-  - [ ] **2.** **Show advanced options → Attachments:** click the **T** / **Switch to input entire array** icon, then the expression:
-    ```
-    if(less(length(string(body('Convert_to_PDF')?['$content'])), 26000000), createArray(addProperty(addProperty(json('{}'), 'Name', outputs('Save_PDF')?['body/Name']), 'ContentBytes', body('Convert_to_PDF')?['$content'])), createArray())
-    ```
-
-    This attaches the PDF when it's under about 19 MB; Outlook rejects much bigger attachments. Bigger PDFs are reached through the link.
+  - [ ] **2.** **Show advanced options → Attachments:** click the **T** / **Switch to input entire array** icon, then the expression `variables('photoFiles')`.
 
 #### 6. Mark as emailed once
 
@@ -365,18 +329,14 @@ Steps 0–8 below are the same changes done by hand. You only need them if the i
 #### 8. Save and test
 
 - [ ] **13.** **Save** (top right).
-- [ ] **14.** Submit a test run from the app with a few stops and an invoice photo on each. Or run `scripts/create_test_runsheet.js`, which creates no photos but adds stops after the trip, as the app does.
+- [ ] **14.** Submit a test run from the app with a few stops and an invoice photo on each. Or run `scripts/create_test_runsheet.js`: it sends a submitted trip, its stops and generated JPEG invoice photos (coloured "TEST INVOICE" pages, plus one retake) the way the app does. With `PHOTOS_FIRST = false` the photos arrive a minute late, so the wait loop is tested too.
 - [ ] **15.** Open the flow's **Run history** and check:
   - **Wait for the run** looped until the stops (and photos) were all found.
-  - The email lists every stop and has the PDF attached and linked.
-  - The PDF is in Fleet Photos / Run sheet PDFs, with one readable page per invoice.
+  - The email lists every stop, says "Invoices: N photos, N attached", and has the JPEGs attached (a retaken invoice only once, the newest copy).
+  - The link opens Fleet Photos showing only that run's photos.
   - **Submission Emailed** is Yes on the run, and it was updated once.
 
-**If Convert to PDF fails:**
-- *Find photo library* came back empty: the library's name doesn't match `Fleet Photos` exactly. Check **Get site libraries**' output for the right `name`, and use that.
-- A 404 error: the folder part of the Uri doesn't match. It's the folder's path inside the library, with spaces as `%20`.
-
-**If the PDF images come out blank,** the conversion didn't render the embedded pictures. While testing, turn off **Delete HTML** and open the HTML file in Fleet Photos / Run sheet PDFs. If its `<img>` tags have data, try smaller photos. If they're empty, check the **Get invoice content** output.
+**If fewer photos are attached than taken,** they didn't fit in about 19 MB together; the link shows them all. **If none are attached,** check **Get invoice files**: an empty result means the photos have no `RunKey` (SaveFleetPhoto step 2.1 not done, or the app not re-published).
 
 **Email sender:** this keeps sending from the flow owner's mailbox, as today. When IT grants Send As on the shared mailbox, switch **Send an email (V2)** to **Send an email from a shared mailbox (V2)**.
 
@@ -434,7 +394,7 @@ The app doesn't call this flow; the SharePoint trigger starts it. So there's not
   - [ ] Times are entered as HH : MM; Arrive time comes first and "Time left the premises" last.
   - [ ] Add stops with a number of invoices and take each invoice photo.
   - [ ] Turn signal back on → the photos upload → Submit → the trip and stops appear in SharePoint.
-  - [ ] The PDF is saved in Fleet Photos / Run sheet PDFs and the email arrives.
+  - [ ] The submission email arrives with the invoice photos attached and a link to them in Fleet Photos.
 - [ ] **3.** **As a reviewer:**
   - [ ] Sign off a checklist, including **Cabin tilt** and **Underneath greasing**. Open a second checklist for the same truck in the same week: it shows "… inspection conducted on {date} by {name}".
   - [ ] Verify a run sheet.
