@@ -32,13 +32,13 @@ Screens:
                 IfError(
                     Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
                         Title: d.Title, ChecklistID: d.RecId, Truck: d.Truck, ItemField: d.ItemField,
-                        Comment: d.Comment}),
-                    Collect(colPendingDefects, d)));
+                        Comment: d.Comment}); true,
+                    Collect(colPendingDefects, d); false));
             ForAll(colRetryPhotos As p,
                 IfError(
                     'SaveFleetPhoto'.Run(p.Truck, p.Type, p.Item, p.RecId, "Fleet Checklist",
-                        {file: {name: "photo.jpg", contentBytes: p.Img}}),
-                    Collect(colPendingPhotos, p)));
+                        {file: {name: "photo.jpg", contentBytes: p.Img}}); true,
+                    Collect(colPendingPhotos, p); false));
             Clear(colRetryDefects);
             Clear(colRetryPhotos);
             IfError(SaveData(colPendingDefects, "fcCheckRetry"); SaveData(colPendingPhotos, "fcCheckRetryPhotos"); true, false);

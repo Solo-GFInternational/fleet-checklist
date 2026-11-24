@@ -999,8 +999,8 @@ T_CHROME = r'''    Children:
                           IfError(
                               Patch('GF Fleet Checklist Defects', Defaults('GF Fleet Checklist Defects'), {
                                   Title: name, ChecklistID: recId, Truck: varTruck, ItemField: f,
-                                  Comment: c}),
-                              Collect(colPendingDefects, {RecId: recId, Truck: varTruck, Title: name, ItemField: f, Comment: c})));
+                                  Comment: c}); true,
+                              Collect(colPendingDefects, {RecId: recId, Truck: varTruck, Title: name, ItemField: f, Comment: c}); false));
                       ForAll(colPhotos,
                           IfError(
                               'SaveFleetPhoto'.Run(
@@ -1009,10 +1009,10 @@ T_CHROME = r'''    Children:
                                   Coalesce(ThisRecord.Item, ThisRecord.Type, "Photo"),
                                   recId,
                                   "Fleet Checklist",
-                                  {file: {name: "photo.jpg", contentBytes: ThisRecord.Img}}),
+                                  {file: {name: "photo.jpg", contentBytes: ThisRecord.Img}}); true,
                               Collect(colPendingPhotos, {RecId: recId, Truck: Coalesce(varTruck, "Unknown"),
                                   Type: Coalesce(ThisRecord.Type, "Photo"), Item: Coalesce(ThisRecord.Item, ThisRecord.Type, "Photo"),
-                                  Img: ThisRecord.Img})));
+                                  Img: ThisRecord.Img}); false));
                       IfError(SaveData(colPendingDefects, "fcCheckRetry"); SaveData(colPendingPhotos, "fcCheckRetryPhotos"); true, false);
                       If(IsEmpty(colPendingDefects) && IsEmpty(colPendingPhotos),
                           Notify("Checklist saved", NotificationType.Success),

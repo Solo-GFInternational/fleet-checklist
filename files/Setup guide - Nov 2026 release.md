@@ -350,10 +350,10 @@ The app doesn't call this flow; the SharePoint trigger starts it. So there's not
 - [ ] **2.** **Data sources:** left bar → **Data** (cylinder icon).
 
   - [ ] **1.** **+ Add data** → **SharePoint** → the Fleet Operations site. Tick **GF Fleet Checklist Defects**, **GF Fleet Trucks** and **GF Fleet Daily Reviews** → **Connect**.
-  - [ ] **2.** For **Fleet Checklist**, **Run Sheet Details** and the **Fleet Photos** library: **⋯** next to each → **Refresh**, so the app sees the new columns.
+  - [ ] **2.** For **Fleet Checklist**, **Run Sheets**, **Run Sheet Details** and the **Fleet Photos** library: **⋯** next to each → **Refresh**, so the app sees the new columns. If **Run Sheets** isn't refreshed, scrRunSheet shows "The specified column 'NoofInvoicePhotos' does not exist".
 - [ ] **3.** **Flows:** left bar → **Power Automate** (flow icon).
 
-  - [ ] **1.** **SaveFleetPhoto:** **⋯** → **Remove from app**, then **+ Add flow** → **SaveFleetPhoto**. This re-reads its two new inputs.
+  - [ ] **1.** **SaveFleetPhoto:** first make sure step 2.1 is done and saved (the flow has the `RunKey` and `StopKey` inputs). Then **⋯** → **Remove from app**, then **+ Add flow** → **SaveFleetPhoto**. This re-reads its two new inputs. If the app still has the old version, scrRunSheet shows "Invalid number of arguments: received 8, expected 5-6".
 
   The submission email flow isn't added to the app; SharePoint starts it.
 - [ ] **4.** **Screens:** paste each one in this order. After each, check that the formula checker (the ⚠ icon at the top) shows no errors before going on.

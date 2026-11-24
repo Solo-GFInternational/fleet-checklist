@@ -385,8 +385,8 @@ Screens:
                                                     {file: {name: "invoice.jpg", contentBytes: p.Img}},
                                                     p.RunKey,
                                                     p.StopKey);
-                                                Patch(colInvoicePhotos, LookUp(colInvoicePhotos, RunKey = p.RunKey && StopKey = p.StopKey && Slot = p.Slot && !Uploaded), {Img: Blank(), Uploaded: true}),
-                                                Collect(colSyncErrors, {Msg: "Invoice photo: " & FirstError.Message}))));
+                                                Patch(colInvoicePhotos, LookUp(colInvoicePhotos, RunKey = p.RunKey && StopKey = p.StopKey && Slot = p.Slot && !Uploaded), {Img: Blank(), Uploaded: true}); true,
+                                                Collect(colSyncErrors, {Msg: "Invoice photo: " & FirstError.Message}); false)));
                                     IfError(SaveData(colInvoicePhotos, "fcRunPhotos"); true, false);
                                     If(varRunSheet.PendingSubmit,
                                         If(IsBlank(varRunSheet.ID),

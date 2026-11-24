@@ -883,75 +883,90 @@ Screens:
                                     LayoutMinHeight: =16
                                     LayoutMinWidth: =16
                                   Children:
-                                    - icoDailyStar1:
-                                        Control: Classic/Icon@2.5.0
+                                    - lblDailyStar1:
+                                        Control: Label@2.5.1
                                         Properties:
-                                          AccessibleLabel: ="1 star"
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
                                           Color: =If(ctxStars >= 1, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
                                           Height: =48
-                                          Icon: =Icon.Star
                                           OnSelect: |-
                                             =UpdateContext({ctxStars: 1})
-                                          PaddingBottom: =6
-                                          PaddingLeft: =6
-                                          PaddingRight: =6
-                                          PaddingTop: =6
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =28
+                                          Text: ="★"
+                                          VerticalAlign: =VerticalAlign.Middle
                                           Width: =48
-                                    - icoDailyStar2:
-                                        Control: Classic/Icon@2.5.0
+                                    - lblDailyStar2:
+                                        Control: Label@2.5.1
                                         Properties:
-                                          AccessibleLabel: ="2 stars"
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
                                           Color: =If(ctxStars >= 2, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
                                           Height: =48
-                                          Icon: =Icon.Star
                                           OnSelect: |-
                                             =UpdateContext({ctxStars: 2})
-                                          PaddingBottom: =6
-                                          PaddingLeft: =6
-                                          PaddingRight: =6
-                                          PaddingTop: =6
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =28
+                                          Text: ="★"
+                                          VerticalAlign: =VerticalAlign.Middle
                                           Width: =48
-                                    - icoDailyStar3:
-                                        Control: Classic/Icon@2.5.0
+                                    - lblDailyStar3:
+                                        Control: Label@2.5.1
                                         Properties:
-                                          AccessibleLabel: ="3 stars"
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
                                           Color: =If(ctxStars >= 3, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
                                           Height: =48
-                                          Icon: =Icon.Star
                                           OnSelect: |-
                                             =UpdateContext({ctxStars: 3})
-                                          PaddingBottom: =6
-                                          PaddingLeft: =6
-                                          PaddingRight: =6
-                                          PaddingTop: =6
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =28
+                                          Text: ="★"
+                                          VerticalAlign: =VerticalAlign.Middle
                                           Width: =48
-                                    - icoDailyStar4:
-                                        Control: Classic/Icon@2.5.0
+                                    - lblDailyStar4:
+                                        Control: Label@2.5.1
                                         Properties:
-                                          AccessibleLabel: ="4 stars"
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
                                           Color: =If(ctxStars >= 4, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
                                           Height: =48
-                                          Icon: =Icon.Star
                                           OnSelect: |-
                                             =UpdateContext({ctxStars: 4})
-                                          PaddingBottom: =6
-                                          PaddingLeft: =6
-                                          PaddingRight: =6
-                                          PaddingTop: =6
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =28
+                                          Text: ="★"
+                                          VerticalAlign: =VerticalAlign.Middle
                                           Width: =48
-                                    - icoDailyStar5:
-                                        Control: Classic/Icon@2.5.0
+                                    - lblDailyStar5:
+                                        Control: Label@2.5.1
                                         Properties:
-                                          AccessibleLabel: ="5 stars"
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
                                           Color: =If(ctxStars >= 5, RGBA(248, 208, 0, 1), RGBA(208, 216, 218, 1))
                                           Height: =48
-                                          Icon: =Icon.Star
                                           OnSelect: |-
                                             =UpdateContext({ctxStars: 5})
-                                          PaddingBottom: =6
-                                          PaddingLeft: =6
-                                          PaddingRight: =6
-                                          PaddingTop: =6
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =28
+                                          Text: ="★"
+                                          VerticalAlign: =VerticalAlign.Middle
                                           Width: =48
                               - lblDailyScoreText:
                                   Control: Label@2.5.1
