@@ -116,7 +116,7 @@
       "isNew": true,
       "kind": "yesno",
       "currentName": null,
-      "proposedName": "Valid driver's licence with you",
+      "proposedName": "Valid driver's licence",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -238,7 +238,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Driver / Passenger Seat Belts (Functional)",
-      "proposedName": "Both seat belts lock and release",
+      "proposedName": "Both seat belts lock and release (working)",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -258,7 +258,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Rear Vision Mirrors / Immediate Vicinity Check Mirrors",
-      "proposedName": "Mirrors clean, uncracked and adjusted",
+      "proposedName": "Rear vision mirrors clean, uncracked and adjusted",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -278,7 +278,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Cabin Doors / Windows / Locks (Functional)",
-      "proposedName": "Cabin doors open, close and lock",
+      "proposedName": "Cabin Doors / Windows / Locks (Functional)",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -298,7 +298,7 @@
       "isNew": true,
       "kind": "yesno",
       "currentName": null,
-      "proposedName": "Driver's window uncracked and winds freely",
+      "proposedName": "Both sides window glass uncracked and winds freely",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -328,8 +328,8 @@
       "weekly": false,
       "truckType": "all",
       "required": true,
-      "hidden": false,
-      "notes": null
+      "hidden": true,
+      "notes": "Removed 24 Nov 2026 (wording review: disregard)."
     },
     {
       "order": 15,
@@ -530,13 +530,13 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Traffic Cones Available",
-      "proposedName": "Cones and reflector triangle in truck",
+      "proposedName": "Traffic / Reflector cones in truck",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
       "photo": "one",
       "photoSlots": [
-        "Cones and reflector triangle in truck"
+        "Traffic / Reflector cones in truck"
       ],
       "answeredBy": "driver",
       "weekly": false,
@@ -734,8 +734,8 @@
       "weekly": false,
       "truckType": "all",
       "required": true,
-      "hidden": false,
-      "notes": null
+      "hidden": true,
+      "notes": "Removed 24 Nov 2026 (wording review: disregard)."
     },
     {
       "order": 34,
@@ -744,7 +744,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Battery Water Level (Top Mark)",
-      "proposedName": "Battery water at top mark",
+      "proposedName": "Battery water level at top mark",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -764,7 +764,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Battery Terminals (No Loose Terminals / Acid Build Up)",
-      "proposedName": "Battery terminals tight and clean",
+      "proposedName": "Battery terminals tight and clean (no acid build up)",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -784,7 +784,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Head / Fog Light (Left and Right) Functional",
-      "proposedName": "Headlights and fog lights working",
+      "proposedName": "Head / Fog Light (Left and Right) Functional",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -804,7 +804,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Indicators (Left/Right & Front/Rear Truck) (Functional)",
-      "proposedName": "All indicators working",
+      "proposedName": "Indicators (Left/Right & Front/Rear Truck) (Functional)",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -824,7 +824,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Brake Lights (Left & Right, Truck) (Functional)",
-      "proposedName": "Brake lights working",
+      "proposedName": "Brake Lights (Left & Right, Truck) (Functional)",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -844,7 +844,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Reverse Alarm / Lights (Left & Right Truck) (Functional)",
-      "proposedName": "Reverse alarm and lights working",
+      "proposedName": "Reverse Alarm / Lights (Left & Right Truck) (Functional)",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
@@ -894,8 +894,8 @@
       "weekly": false,
       "truckType": "all",
       "required": true,
-      "hidden": false,
-      "notes": null
+      "hidden": true,
+      "notes": "Removed 24 Nov 2026 (wording review: disregard)."
     },
     {
       "order": 42,
@@ -1054,8 +1054,8 @@
       "weekly": false,
       "truckType": "all",
       "required": true,
-      "hidden": false,
-      "notes": "Moved from Engine and Transmission."
+      "hidden": true,
+      "notes": "Moved from Engine and Transmission. Removed 24 Nov 2026 (wording review: disregard)."
     },
     {
       "order": 50,
@@ -1084,13 +1084,13 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Truck Floor Condition",
-      "proposedName": "Load floor clean and undamaged",
+      "proposedName": "Truck floor clean and undamaged",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
       "photo": "one",
       "photoSlots": [
-        "Load floor clean and undamaged"
+        "Truck floor clean and undamaged"
       ],
       "answeredBy": "driver",
       "weekly": false,
@@ -1106,13 +1106,13 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Plug Wire Available",
-      "proposedName": "Fridge plug-in lead in truck",
+      "proposedName": "Plug Wire available in truck (Freezer)",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
       "photo": "one",
       "photoSlots": [
-        "Fridge plug-in lead in truck"
+        "Plug Wire available in truck (Freezer)"
       ],
       "answeredBy": "driver",
       "weekly": false,
@@ -1150,7 +1150,7 @@
       "isNew": false,
       "kind": "yesno",
       "currentName": "Tyre Condition",
-      "proposedName": "Every tyre good, no steer-wheel retreads",
+      "proposedName": "All tyres in good condition",
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
