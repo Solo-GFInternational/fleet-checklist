@@ -251,6 +251,8 @@ Called from `scrPreTrip` (`frmPreTrip.OnSuccess`) once per photo in `colPhotos` 
 | 7 | RunKey | Text, optional | run sheet `LocalKey` (invoice photos only, added 23 Nov 2026) |
 | 8 | StopKey | Text, optional | stop `LocalKey` (invoice photos only, added 23 Nov 2026) |
 
+In Power Apps the optional inputs (file, RunKey, StopKey) all go in one record as the last argument, named by their internal keys: `'SaveFleetPhotos'.Run(Truck, PhotoType, Item, RecordID, SourceList, {file: {...}, text_4: RunKey, text_5: StopKey})` (the tooltip shows `Run(text, text_1, text_2, number, text_3, {file, text_4, text_5})`). The checklist calls pass only `{file: ...}`.
+
 Inputs 7–8 need two text columns, `RunKey` and `StopKey`, on the library (`scripts/create_runsheet_v2_columns.js`), and *Update file properties* must fill them. Optional inputs can be left out, so scrPreTrip's six-argument call keeps working. After adding them, remove and re-add the flow in the app. The run sheet uploads invoice photos with PhotoType `Invoice`, Item `Stop N · Invoice k`, RecordID = the stop ID (0 if the stop isn't sent yet) and SourceList `Run Sheet Details`.
 
 Setup (not documented before 20 Nov 2026; confirm whether the live flow matches):

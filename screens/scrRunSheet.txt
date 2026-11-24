@@ -382,9 +382,7 @@ Screens:
                                                     "Stop " & s.StopOrder & " · Invoice " & p.Slot,
                                                     Coalesce(s.ID, 0),
                                                     "Run Sheet Details",
-                                                    {file: {name: "invoice.jpg", contentBytes: p.Img}},
-                                                    p.RunKey,
-                                                    p.StopKey);
+                                                    {file: {name: "invoice.jpg", contentBytes: p.Img}, text_4: p.RunKey, text_5: p.StopKey});
                                                 Patch(colInvoicePhotos, LookUp(colInvoicePhotos, RunKey = p.RunKey && StopKey = p.StopKey && Slot = p.Slot && !Uploaded), {Img: Blank(), Uploaded: true}); true,
                                                 Collect(colSyncErrors, {Msg: "Invoice photo: " & FirstError.Message}); false)));
                                     IfError(SaveData(colInvoicePhotos, "fcRunPhotos"); true, false);
