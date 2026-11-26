@@ -1,0 +1,1589 @@
+{
+  "version": 1,
+  "description": "In-app user manual (scrHelp), one guide per role. Edit here, then run: py -3 -I scripts/build_help_screen.py screens files. roleOrder lists the topics each role sees, in order. Blocks: [\"h\", text] sub-heading, [\"p\", text], [\"step\", text] (numbered automatically), [\"tip\", text], [\"warn\", text], [\"shot\", id, optional caption]. Shots are listed in 'shots' and taken by hand (see files/Manual - screenshot list.md).",
+  "intro": {
+    "Driver": "This guide shows you how to use the Fleet Checklist app, step by step. Tap a topic to read it. Tap the arrow at the top left to go back.",
+    "Reviewer": "This guide shows you how to use the Fleet Checklist app as a Reviewer. You can do everything a driver can, and you also check and sign off checklists, run sheets and daily reviews. Tap a topic to read it.",
+    "Admin": "This guide shows you how to use the Fleet Checklist app as an Admin. You can do everything a Reviewer and a driver can, and you also add people to the app and change what they can do. Tap a topic to read it.",
+    "None": "You are not set up to use this app yet. Read the topic below to see what to do."
+  },
+  "roleOrder": {
+    "Driver": [
+      "Start",
+      "Home",
+      "Checklist",
+      "Checklist2",
+      "Checklist3",
+      "Photos",
+      "Declaration",
+      "RunTrip",
+      "RunStops",
+      "RunInvoice",
+      "RunReturn",
+      "RunUpload",
+      "DailyStars",
+      "NoSignal",
+      "Problems"
+    ],
+    "Reviewer": [
+      "Start",
+      "Home",
+      "ReviewOpen",
+      "ReviewChecks",
+      "ReviewRuns",
+      "ReviewDecl",
+      "ReviewDaily",
+      "Checklist",
+      "Checklist2",
+      "Checklist3",
+      "Photos",
+      "Declaration",
+      "RunTrip",
+      "RunStops",
+      "RunInvoice",
+      "RunReturn",
+      "RunUpload",
+      "DailyStars",
+      "NoSignal",
+      "Problems"
+    ],
+    "Admin": [
+      "Start",
+      "Home",
+      "Users",
+      "ReviewOpen",
+      "ReviewChecks",
+      "ReviewRuns",
+      "ReviewDecl",
+      "ReviewDaily",
+      "Checklist",
+      "Checklist2",
+      "Checklist3",
+      "Photos",
+      "Declaration",
+      "RunTrip",
+      "RunStops",
+      "RunInvoice",
+      "RunReturn",
+      "RunUpload",
+      "DailyStars",
+      "NoSignal",
+      "Problems"
+    ],
+    "None": [
+      "NotRegistered",
+      "Problems"
+    ]
+  },
+  "topics": [
+    {
+      "key": "NotRegistered",
+      "title": "You are not set up yet",
+      "summary": "Why you only see a red message, and what to do.",
+      "blocks": [
+        [
+          "shot",
+          "S01",
+          "What you see when you are not set up yet"
+        ],
+        [
+          "p",
+          "The app only works for people who have been added to it. If you see the red message \"You're not registered to use this app yet\", you have not been added yet, or your access has been turned off."
+        ],
+        [
+          "step",
+          "Ask your supervisor or a Fleet Checklist admin to add you to the app."
+        ],
+        [
+          "step",
+          "When they tell you it is done, close the app fully and open it again with phone signal."
+        ],
+        [
+          "step",
+          "You should now see the Home screen with \"Which truck are you driving?\"."
+        ],
+        [
+          "tip",
+          "The first time you open the app it must have signal, so it can check who you are."
+        ]
+      ]
+    },
+    {
+      "key": "Start",
+      "title": "Getting started",
+      "summary": "Opening the app and finding your way around.",
+      "blocks": [
+        [
+          "h",
+          "Opening the app"
+        ],
+        [
+          "step",
+          "Open the Power Apps app on your phone and sign in with your work account."
+        ],
+        [
+          "step",
+          "Tap Fleet Checklist."
+        ],
+        [
+          "step",
+          "The Home screen opens. At the top it says \"Hello\" and your name, and your role (Driver, Reviewer or Admin)."
+        ],
+        [
+          "shot",
+          "S02",
+          "The Home screen"
+        ],
+        [
+          "h",
+          "Finding your way around"
+        ],
+        [
+          "p",
+          "Every screen looks the same way: a white bar at the top with the screen name, the page in the middle (slide your finger up to see more), and the main button at the bottom."
+        ],
+        [
+          "p",
+          "Tap the arrow at the top left of any screen to go back."
+        ],
+        [
+          "p",
+          "Tap the question mark at the top right of the Home screen to open this guide."
+        ],
+        [
+          "tip",
+          "Keep your phone charged and keep the Power Apps app up to date from the App Store or Play Store. An old Power Apps can stop the app from opening after it is updated."
+        ]
+      ]
+    },
+    {
+      "key": "Home",
+      "title": "Home screen and choosing your truck",
+      "summary": "You must choose a registered truck before you can fill in a form.",
+      "blocks": [
+        [
+          "h",
+          "Choose your truck"
+        ],
+        [
+          "p",
+          "Before you start, the app needs to know which truck you are driving. The form buttons only appear after you choose a truck."
+        ],
+        [
+          "shot",
+          "S02",
+          "Before a truck is chosen: no form buttons yet"
+        ],
+        [
+          "step",
+          "Tap Scan truck barcode and point the camera at the QR code in the truck."
+        ],
+        [
+          "step",
+          "Or type the truck number in the box \"Or type the truck number\" (for example FU 806), then tap outside the box."
+        ],
+        [
+          "step",
+          "The line under the box changes to \"✓ Truck:\" and the truck number, and the buttons appear."
+        ],
+        [
+          "shot",
+          "S03",
+          "After a truck is chosen: the buttons appear"
+        ],
+        [
+          "tip",
+          "Spaces, dashes and small or capital letters do not matter. FU806, fu-806 and FU 806 all work."
+        ],
+        [
+          "h",
+          "\"Vehicle not found\""
+        ],
+        [
+          "p",
+          "If the truck is not on the list of registered trucks, a box says \"Vehicle not found. Please try again.\" It also shows what the app read."
+        ],
+        [
+          "shot",
+          "S04",
+          "Vehicle not found"
+        ],
+        [
+          "step",
+          "Tap OK."
+        ],
+        [
+          "step",
+          "Check the number and scan or type it again."
+        ],
+        [
+          "step",
+          "If it still does not work, tell your supervisor. The truck may need to be added to the list by the office."
+        ],
+        [
+          "h",
+          "The buttons"
+        ],
+        [
+          "p",
+          "Start fleet checklist: the truck check you do before driving."
+        ],
+        [
+          "p",
+          "Driver declaration: your fitness to drive statement."
+        ],
+        [
+          "p",
+          "Run sheet: your trip, your stops and your return to the CD."
+        ],
+        [
+          "p",
+          "Review and sign-off: only Reviewers and Admins see this button."
+        ],
+        [
+          "p",
+          "Manage users: only Admins see this button."
+        ],
+        [
+          "h",
+          "Messages on the Home screen"
+        ],
+        [
+          "p",
+          "Yellow box \"You're offline\": your phone has no signal. The run sheet still works. The checklist and declaration need signal."
+        ],
+        [
+          "p",
+          "\"You have an unfinished checklist\": see the topic Fleet checklist."
+        ],
+        [
+          "p",
+          "\"Your run sheet is saved on this phone but not submitted yet\": open Run sheet when you have signal and tap Upload now."
+        ]
+      ]
+    },
+    {
+      "key": "Checklist",
+      "title": "Fleet checklist 1: Start and answer",
+      "summary": "The truck check you do before you drive. It needs phone signal.",
+      "blocks": [
+        [
+          "step",
+          "On the Home screen, choose your truck."
+        ],
+        [
+          "step",
+          "Tap Start fleet checklist."
+        ],
+        [
+          "step",
+          "The checklist opens on the first page, \"In the cabin\". The truck number is filled in for you."
+        ],
+        [
+          "step",
+          "Check your name and type the Site."
+        ],
+        [
+          "shot",
+          "S10",
+          "The first page of the checklist"
+        ],
+        [
+          "h",
+          "Yes or No"
+        ],
+        [
+          "p",
+          "Each item says what you should see on a good truck, for example \"Horn working\"."
+        ],
+        [
+          "p",
+          "Tick Yes if the truck is like that. Tick No if it is not. No always means there is a problem."
+        ],
+        [
+          "p",
+          "When you tick No, a box opens under the item: \"Say what is wrong\". You must write what the problem is."
+        ],
+        [
+          "shot",
+          "S11",
+          "An item ticked Yes and an item ticked No with a comment"
+        ],
+        [
+          "tip",
+          "Tapped the wrong box? Tap the other box and the answer changes. Tap a ticked box again to clear it."
+        ],
+        [
+          "h",
+          "Moving between pages"
+        ],
+        [
+          "p",
+          "There is one section on each page. The bar at the bottom shows where you are, for example \"Section 3 of 8\", and how many things are still to do on this page."
+        ],
+        [
+          "p",
+          "Tap Next to go to the next page and Back to go to the page before."
+        ],
+        [
+          "shot",
+          "S12",
+          "The bottom bar: Back, Photos and Next"
+        ],
+        [
+          "h",
+          "The pages"
+        ],
+        [
+          "p",
+          "1. In the cabin: licence, odometer, gauges, horn, lights, brakes, seat belts, mirrors, doors, windows, cleanliness and the safety items in the cabin."
+        ],
+        [
+          "p",
+          "2. Expiry and weight stickers: next service, COF, blower service (freezer trucks), truck service and the weight plate photo."
+        ],
+        [
+          "p",
+          "3. Walk-around 1: Electrical: battery and all the lights."
+        ],
+        [
+          "p",
+          "4. Walk-around 2: Body and engine: bumpers, oil, coolant, belts, leaks, hoses, springs, boxes locked, truck floor and tools."
+        ],
+        [
+          "p",
+          "5. Walk-around 2: Tyres and tools: tyres, wheel nuts, spare tyre, jack and other tools."
+        ],
+        [
+          "p",
+          "6. Accident Imagery: new dents or cracks."
+        ],
+        [
+          "p",
+          "7. Truck Profiles: photos of the front, back and both sides."
+        ],
+        [
+          "p",
+          "8. Other comments: anything else, and Submit."
+        ]
+      ]
+    },
+    {
+      "key": "Checklist2",
+      "title": "Fleet checklist 2: Photos, tyres and due dates",
+      "summary": "Items that need a photo, and the dates on the truck.",
+      "blocks": [
+        [
+          "h",
+          "Items with a photo"
+        ],
+        [
+          "p",
+          "Some items have a Take photo button, for example Valid driver's licence and Fuel card in truck. The photo is needed whether you tick Yes or No. Next to the button it says \"Photo required\" in red until you take it, then \"✓ Photo taken\"."
+        ],
+        [
+          "shot",
+          "S13",
+          "An item with its photo taken"
+        ],
+        [
+          "p",
+          "See the topic Taking checklist photos for how the camera works."
+        ],
+        [
+          "h",
+          "Odometer"
+        ],
+        [
+          "p",
+          "Type the odometer reading in km and take a photo of the odometer."
+        ],
+        [
+          "h",
+          "Tyres"
+        ],
+        [
+          "p",
+          "On the tyres page there is a button for each tyre: Tyre 1, Tyre 2 and so on. Tap each one and take a photo of that tyre. A done tyre shows a tick. The line under the buttons counts them, for example \"4 of 6 photos taken\"."
+        ],
+        [
+          "shot",
+          "S14",
+          "Tyre photos"
+        ],
+        [
+          "h",
+          "Truck profiles"
+        ],
+        [
+          "p",
+          "Take four photos of the whole truck: Front, Rear, Left and Right."
+        ],
+        [
+          "h",
+          "New dents or cracks"
+        ],
+        [
+          "p",
+          "On the Accident Imagery page, tick Yes if there are no new dents or cracks. If you tick No, write what happened and tap Add photo for each damaged spot."
+        ],
+        [
+          "shot",
+          "S15",
+          "Reporting new damage"
+        ],
+        [
+          "h",
+          "Due dates (COF, blower service, truck service)"
+        ],
+        [
+          "p",
+          "These dates come from the office's truck list. You see the date and a label:"
+        ],
+        [
+          "p",
+          "OK: the date is more than 30 days away."
+        ],
+        [
+          "p",
+          "Due within 30 days: tell your supervisor soon."
+        ],
+        [
+          "p",
+          "Expired: the date has passed. Tell your supervisor before you drive."
+        ],
+        [
+          "shot",
+          "S16",
+          "Due dates from the truck list"
+        ],
+        [
+          "p",
+          "If the office has not filled in a date, you see a date box and a Take photo button instead. Pick the date from the sticker on the truck and take a photo of the sticker."
+        ]
+      ]
+    },
+    {
+      "key": "Checklist3",
+      "title": "Fleet checklist 3: Submit, or finish later",
+      "summary": "Sending the checklist, and what happens if you stop part way.",
+      "blocks": [
+        [
+          "h",
+          "Submit"
+        ],
+        [
+          "step",
+          "On the last page, add anything else in Other comments."
+        ],
+        [
+          "step",
+          "Look at the Submit button. If something is still missing, the button says what it is, for example \"Answer: Horn working\" or \"Photo needed: Tyre 3\"."
+        ],
+        [
+          "step",
+          "Tap Go to it to jump to that page, fix it, then come back with Next."
+        ],
+        [
+          "step",
+          "When the button says Submit, tap it."
+        ],
+        [
+          "shot",
+          "S17",
+          "Submit button showing what is missing"
+        ],
+        [
+          "p",
+          "You see \"Checklist saved\" and go back to the Home screen. Every No you ticked is sent to the office as a problem to fix."
+        ],
+        [
+          "tip",
+          "If a photo or problem note could not be sent, the app keeps it on your phone and sends it next time you open the app with signal."
+        ],
+        [
+          "h",
+          "Finishing later"
+        ],
+        [
+          "p",
+          "Your answers and photos are kept on the phone as you go. If you close the app, or a call comes in, nothing is lost."
+        ],
+        [
+          "p",
+          "On the Home screen you see \"You have an unfinished checklist\". Tap Carry on to go back to it."
+        ],
+        [
+          "shot",
+          "S18",
+          "Unfinished checklist on the Home screen"
+        ],
+        [
+          "p",
+          "To throw it away, tap Discard, then tap it again (\"Tap again to discard\")."
+        ],
+        [
+          "warn",
+          "You can't start a new checklist until you finish or discard the unfinished one."
+        ]
+      ]
+    },
+    {
+      "key": "Photos",
+      "title": "Taking checklist photos",
+      "summary": "How the photo screen works.",
+      "blocks": [
+        [
+          "p",
+          "Some checklist items need a photo, for example your driver's licence and the odometer. The app uses the phone camera inside the app. You cannot pick a photo from your gallery."
+        ],
+        [
+          "h",
+          "Taking a photo for an item"
+        ],
+        [
+          "step",
+          "On the checklist, tap Take photo under the item."
+        ],
+        [
+          "step",
+          "The camera opens. The top says \"Photo of:\" and the item name."
+        ],
+        [
+          "step",
+          "Line the item up in the frame so it is clear and readable."
+        ],
+        [
+          "step",
+          "Tap Take photo (or tap the camera picture). The app saves it and takes you back to the checklist."
+        ],
+        [
+          "shot",
+          "S20",
+          "Taking a photo for one item"
+        ],
+        [
+          "p",
+          "Under the item it now says \"✓ Photo taken\". To take it again, tap Retake photo. The new photo replaces the old one."
+        ],
+        [
+          "h",
+          "Extra photos"
+        ],
+        [
+          "p",
+          "Tap Photos at the bottom of the checklist to add extra photos (for example of a problem). Choose what the photo is of, add a short description if you like, and tap Take photo. You can take as many as you need. Tap Done when you finish."
+        ],
+        [
+          "shot",
+          "S21",
+          "The photo screen with photos taken"
+        ],
+        [
+          "p",
+          "To remove a photo, tap the bin on it. It is removed straight away."
+        ],
+        [
+          "tip",
+          "Use the back camera, hold the phone still and make sure there is enough light. Tap Switch camera if the wrong camera opens."
+        ]
+      ]
+    },
+    {
+      "key": "Declaration",
+      "title": "Driver declaration",
+      "summary": "Your fitness to drive statement.",
+      "blocks": [
+        [
+          "p",
+          "The declaration needs phone signal. Choose your truck on the Home screen first, then tap Driver declaration."
+        ],
+        [
+          "shot",
+          "S22",
+          "The declaration when you open it"
+        ],
+        [
+          "step",
+          "Type your employee number (for example W02203). After your first time, the app fills it in for you."
+        ],
+        [
+          "step",
+          "Read each statement. Tap a statement to tick it if it is true for you today. A ticked statement gets a teal border."
+        ],
+        [
+          "step",
+          "If a statement is not true, leave it unticked and write why in Comments. You must also tell your supervisor before you drive."
+        ],
+        [
+          "step",
+          "Tap Submit declaration at the bottom."
+        ],
+        [
+          "shot",
+          "S23",
+          "All statements ticked, ready to submit"
+        ],
+        [
+          "p",
+          "The button tells you what is missing: \"Enter your employee number\" or \"Explain the unticked declarations in Comments\"."
+        ],
+        [
+          "p",
+          "When it is saved you see \"Declaration saved. Drive safely.\" and you go back to the Home screen."
+        ],
+        [
+          "warn",
+          "Unticked means No. If you leave any statement unticked, tell your supervisor before you drive."
+        ],
+        [
+          "tip",
+          "If you already made a declaration today, the app tells you. Only submit again if something has changed."
+        ]
+      ]
+    },
+    {
+      "key": "RunTrip",
+      "title": "Run sheet 1: Start your run",
+      "summary": "Fill in the trip details before you leave the CD.",
+      "blocks": [
+        [
+          "p",
+          "The run sheet has three tabs at the top: Trip, Stops and Return to CD. It works without signal. Everything is kept on your phone until you submit at the end of the run."
+        ],
+        [
+          "step",
+          "On the Home screen, choose your truck, then tap Run sheet."
+        ],
+        [
+          "step",
+          "The Trip tab opens. The truck number comes from the Home screen."
+        ],
+        [
+          "step",
+          "Fill in Area, No of invoices and Start mileage (km). Add your Partner if you have one."
+        ],
+        [
+          "step",
+          "Actual departure time: tap Now when you leave, or type the hours and minutes."
+        ],
+        [
+          "step",
+          "Tap Start run at the bottom."
+        ],
+        [
+          "shot",
+          "S30",
+          "The Trip tab filled in"
+        ],
+        [
+          "p",
+          "Fields marked * must be filled in. Until they are, the bottom button says \"Fill in the fields marked *\"."
+        ],
+        [
+          "h",
+          "Typing a time"
+        ],
+        [
+          "p",
+          "Each time has two small boxes: hours, then minutes, in 24-hour time. For example 07 : 30 in the morning or 14 : 05 in the afternoon. Tap Now to fill in the time now."
+        ],
+        [
+          "tip",
+          "You can come back to the Trip tab and change the details at any time before you submit. Tap Save trip details after a change."
+        ]
+      ]
+    },
+    {
+      "key": "RunStops",
+      "title": "Run sheet 2: Add each stop",
+      "summary": "Fill in one stop at a time on the Stops tab.",
+      "blocks": [
+        [
+          "p",
+          "After Start run, the Stops tab opens with \"Stop 1\"."
+        ],
+        [
+          "step",
+          "When you arrive, tap Now next to Arrive time."
+        ],
+        [
+          "step",
+          "Type the Destination (the customer or site name)."
+        ],
+        [
+          "step",
+          "Type the No of cartons (if you have them) and the No. of invoices at this stop."
+        ],
+        [
+          "step",
+          "Take a photo of every invoice (see Run sheet 3: Invoice photos)."
+        ],
+        [
+          "step",
+          "Type the Truck temp (°C), for example -18."
+        ],
+        [
+          "step",
+          "Tap Now for Start op time when you start unloading, and for Complete op time when you finish. The app works out the Duration."
+        ],
+        [
+          "step",
+          "Write anything to report in HSEQ observations, issues, comments."
+        ],
+        [
+          "step",
+          "Tap Now for Time left the premises when you leave."
+        ],
+        [
+          "step",
+          "Tap Save stop. The form clears for the next stop."
+        ],
+        [
+          "shot",
+          "S31",
+          "A stop being filled in"
+        ],
+        [
+          "h",
+          "Warnings"
+        ],
+        [
+          "p",
+          "If the truck temperature is above -15 °C, or unloading takes more than 15 minutes, a yellow box tells you to let your Team Leader know."
+        ],
+        [
+          "shot",
+          "S32",
+          "Temperature warning"
+        ],
+        [
+          "h",
+          "Your saved stops"
+        ],
+        [
+          "p",
+          "Saved stops are listed under the form, newest first. The tab name shows how many you have, for example Stops (3)."
+        ],
+        [
+          "shot",
+          "S33",
+          "The list of saved stops"
+        ],
+        [
+          "p",
+          "To fix a mistake, tap the stop in the list (or its pencil). Change it and tap Save change, or tap Cancel."
+        ],
+        [
+          "warn",
+          "A half-filled stop is lost if you leave the run sheet before tapping Save stop. Save each stop before you go back to the Home screen."
+        ]
+      ]
+    },
+    {
+      "key": "RunInvoice",
+      "title": "Run sheet 3: Invoice photos",
+      "summary": "One photo for every invoice at a stop.",
+      "blocks": [
+        [
+          "p",
+          "When you type the No. of invoices at a stop, a row appears for each invoice: Invoice 1, Invoice 2 and so on. You must take a photo of every invoice before you can save the stop."
+        ],
+        [
+          "shot",
+          "S34",
+          "Invoice rows waiting for photos"
+        ],
+        [
+          "step",
+          "Tap Take photo next to Invoice 1."
+        ],
+        [
+          "step",
+          "Lay the invoice flat in good light and fill the frame with it."
+        ],
+        [
+          "step",
+          "Tap Take photo."
+        ],
+        [
+          "step",
+          "Check the invoice is sharp and readable. Tap Use photo, or Retake if it is blurry."
+        ],
+        [
+          "shot",
+          "S35",
+          "Checking the invoice photo"
+        ],
+        [
+          "step",
+          "Do the same for each invoice. Each row then says \"Photo taken\"."
+        ],
+        [
+          "tip",
+          "Invoice photos upload by themselves whenever you have signal. The row changes to \"Uploaded\" when it is sent."
+        ]
+      ]
+    },
+    {
+      "key": "RunReturn",
+      "title": "Run sheet 4: Back at the CD and submit",
+      "summary": "Finish the run on the Return to CD tab.",
+      "blocks": [
+        [
+          "step",
+          "When you are back at the CD, tap the Return to CD tab."
+        ],
+        [
+          "step",
+          "Tap Now next to Time truck returned."
+        ],
+        [
+          "step",
+          "Type the End mileage (km). The app shows the distance of this run."
+        ],
+        [
+          "step",
+          "Type the Temp on plug in (°C) and the Analog temp (°C)."
+        ],
+        [
+          "step",
+          "Type the Qty on balance delivery (0 if none)."
+        ],
+        [
+          "step",
+          "Tap Yes or No for Invoice balanced with cashier."
+        ],
+        [
+          "step",
+          "Read the list under \"Before you finish\"."
+        ],
+        [
+          "step",
+          "Tap Submit run sheet."
+        ],
+        [
+          "shot",
+          "S36",
+          "Return to CD filled in, ready to submit"
+        ],
+        [
+          "p",
+          "With signal, the run sheet is sent straight away. You see \"Run sheet submitted. Thank you.\" and go back to the Home screen."
+        ],
+        [
+          "warn",
+          "Fill in this tab and tap Submit in one go. If you leave the run sheet before you tap Submit, what you typed on this tab is lost."
+        ],
+        [
+          "tip",
+          "If the end mileage is lower than the start mileage, the line under it turns red. Check the odometer and type it again."
+        ]
+      ]
+    },
+    {
+      "key": "RunUpload",
+      "title": "Run sheet 5: No signal and Upload now",
+      "summary": "What happens when your phone has no signal.",
+      "blocks": [
+        [
+          "p",
+          "You can fill in the whole run sheet without signal. Everything is kept on your phone."
+        ],
+        [
+          "p",
+          "If you tap Submit with no signal, the app tells you the run sheet is saved on the phone. A yellow box at the top of the run sheet says \"Your run sheet hasn't been sent yet. Tap Upload now.\""
+        ],
+        [
+          "shot",
+          "S37",
+          "Waiting to upload, no signal"
+        ],
+        [
+          "step",
+          "When you have signal again, open the app and tap Run sheet."
+        ],
+        [
+          "step",
+          "Tap Upload now."
+        ],
+        [
+          "step",
+          "When everything is sent you see \"Run sheet submitted. Thank you.\""
+        ],
+        [
+          "warn",
+          "Do not delete the Power Apps app or sign out while a run sheet is waiting to upload. It is only on your phone until it is sent."
+        ],
+        [
+          "tip",
+          "Offline only works in the Power Apps app on your phone, not in a web browser."
+        ]
+      ]
+    },
+    {
+      "key": "DailyStars",
+      "title": "Your daily review",
+      "summary": "The stars your Team Leader gives you.",
+      "blocks": [
+        [
+          "p",
+          "Your Team Leader can give you a daily review: a score out of 5 stars and a comment. When you have a new one, it shows at the top of the Home screen."
+        ],
+        [
+          "shot",
+          "S05",
+          "A daily review on the Home screen"
+        ],
+        [
+          "p",
+          "Read it, then tap Got it. It will not show again."
+        ]
+      ]
+    },
+    {
+      "key": "ReviewOpen",
+      "title": "Review and sign-off: the basics",
+      "summary": "Where reviewers check what drivers sent.",
+      "blocks": [
+        [
+          "step",
+          "On the Home screen tap Review and sign-off. You don't need to choose a truck first."
+        ],
+        [
+          "step",
+          "Pick a tab at the top: Checklists, Run sheets, Declarations or Daily review."
+        ],
+        [
+          "step",
+          "Tap Waiting to see only the ones still to do, or All to see everything. Newest are at the top."
+        ],
+        [
+          "step",
+          "Tap a row to open it. Tap Back to list (or the arrow at the top) to go back."
+        ],
+        [
+          "shot",
+          "S40",
+          "Review and sign-off: Checklists waiting"
+        ],
+        [
+          "tip",
+          "Reviewing needs phone signal."
+        ]
+      ]
+    },
+    {
+      "key": "ReviewChecks",
+      "title": "Signing off a checklist",
+      "summary": "Approve a driver's checklist and decide on repairs.",
+      "blocks": [
+        [
+          "step",
+          "On the Checklists tab, tap a row that says \"Waiting for sign-off\"."
+        ],
+        [
+          "step",
+          "The checklist opens as \"Review checklist\". You see the driver's answers. You can't change them. Under each No you see what the driver wrote."
+        ],
+        [
+          "shot",
+          "S41",
+          "Reviewing a driver's answers"
+        ],
+        [
+          "step",
+          "On the first page, answer the weekly items Cabin tilt inspection done and Underneath greasing done. If one was already done this week, you see who did it and when instead."
+        ],
+        [
+          "step",
+          "Tap Next until the last page."
+        ],
+        [
+          "step",
+          "Choose Approval for Delivery and Send for Repairs. Check the date and your name."
+        ],
+        [
+          "step",
+          "Tap Save sign-off."
+        ],
+        [
+          "shot",
+          "S42",
+          "Sign-off on the last page"
+        ],
+        [
+          "p",
+          "You see \"Sign-off saved\" and go back to the list."
+        ],
+        [
+          "tip",
+          "If you ticked No on a weekly item, write a comment. The app reminds you if something is missing."
+        ],
+        [
+          "tip",
+          "Photos are not shown here. The driver's photos are in the Fleet Photos library in SharePoint, saved under the truck number."
+        ]
+      ]
+    },
+    {
+      "key": "ReviewRuns",
+      "title": "Verifying a run sheet",
+      "summary": "Check a driver's run and its stops.",
+      "blocks": [
+        [
+          "step",
+          "Tap the Run sheets tab. Rows that say \"Waiting for Team Leader\" are ready for you."
+        ],
+        [
+          "step",
+          "Tap a row. You see the trip details at the top and every stop below."
+        ],
+        [
+          "step",
+          "Stops in red had a truck temperature above -15 °C or took more than 15 minutes to unload. Check those."
+        ],
+        [
+          "step",
+          "Tap Verify run sheet."
+        ],
+        [
+          "shot",
+          "S43",
+          "A run sheet to verify"
+        ],
+        [
+          "p",
+          "You see \"Run sheet verified\". The run now shows \"Verified by\" and your name."
+        ],
+        [
+          "p",
+          "\"Driver still out\" means the driver has not submitted the run yet. You can look at it but not verify it."
+        ]
+      ]
+    },
+    {
+      "key": "ReviewDecl",
+      "title": "Signing off a declaration",
+      "summary": "Check a driver's fitness to drive statement.",
+      "blocks": [
+        [
+          "step",
+          "Tap the Declarations tab. Each row shows the driver, the time, and how many statements were answered No."
+        ],
+        [
+          "step",
+          "Tap a row. You see all 14 statements with Yes or No, and the driver's comments."
+        ],
+        [
+          "step",
+          "If anything is No, talk to the driver before they drive."
+        ],
+        [
+          "step",
+          "Tap Sign off."
+        ],
+        [
+          "shot",
+          "S44",
+          "A declaration to sign off"
+        ],
+        [
+          "p",
+          "You see \"Declaration signed off\" and go back to the list."
+        ]
+      ]
+    },
+    {
+      "key": "ReviewDaily",
+      "title": "Scoring a driver's day",
+      "summary": "Give each driver a score out of 5 stars.",
+      "blocks": [
+        [
+          "step",
+          "Tap the Daily review tab."
+        ],
+        [
+          "step",
+          "Pick the Date. The list shows every driver who sent something that day, and whether they are scored."
+        ],
+        [
+          "step",
+          "Tap a driver."
+        ],
+        [
+          "shot",
+          "S45",
+          "Drivers to score for the day"
+        ],
+        [
+          "h",
+          "Approximate time of rest"
+        ],
+        [
+          "p",
+          "At the top you see the driver's approximate time of rest, for example \"0 days 10 hours 15 minutes\". It is the time from when the driver got back to the CD on their last run until they left on this day's run."
+        ],
+        [
+          "p",
+          "\"Not available\" means the app could not find both times. The line under it says why."
+        ],
+        [
+          "shot",
+          "S46",
+          "Approximate time of rest and the stars"
+        ],
+        [
+          "h",
+          "Give the score"
+        ],
+        [
+          "step",
+          "Tap a star: 1 is poor, 5 is excellent."
+        ],
+        [
+          "step",
+          "Add a comment if you like: what went well, or what to improve."
+        ],
+        [
+          "step",
+          "Tap Save score."
+        ],
+        [
+          "p",
+          "The driver sees the stars and comment on their Home screen."
+        ],
+        [
+          "tip",
+          "Each driver has one score a day. Saving again replaces it (the button says Update score)."
+        ]
+      ]
+    },
+    {
+      "key": "Users",
+      "title": "Manage users: add people and change roles",
+      "summary": "Only Admins can do this. It needs phone signal.",
+      "blocks": [
+        [
+          "h",
+          "The three roles"
+        ],
+        [
+          "p",
+          "Driver: fills in checklists, declarations and run sheets. Can't change them once sent."
+        ],
+        [
+          "p",
+          "Reviewer: everything a driver can do, plus Review and sign-off."
+        ],
+        [
+          "p",
+          "Admin: everything a Reviewer can do, plus Manage users."
+        ],
+        [
+          "h",
+          "Add a person"
+        ],
+        [
+          "step",
+          "On the Home screen tap Manage users."
+        ],
+        [
+          "step",
+          "Type at least 3 letters of their name. Tap the right person in the list."
+        ],
+        [
+          "step",
+          "Choose their Role."
+        ],
+        [
+          "step",
+          "Tap Add person. You see \"added as\" and their role. No email is sent."
+        ],
+        [
+          "shot",
+          "S50",
+          "Adding a person"
+        ],
+        [
+          "warn",
+          "A new person also needs the app shared with them in Power Apps before they can open it. Adding them here gives them access to the data only."
+        ],
+        [
+          "h",
+          "Change a role or remove access"
+        ],
+        [
+          "step",
+          "Under \"People with access\", tap the person."
+        ],
+        [
+          "step",
+          "To change their role, choose the new Role and tap Save role."
+        ],
+        [
+          "step",
+          "To stop them using the app, tap Remove access. Their past records are kept."
+        ],
+        [
+          "step",
+          "To let them back in, tap Give access back."
+        ],
+        [
+          "shot",
+          "S51",
+          "One person open"
+        ],
+        [
+          "tip",
+          "You can't change your own role or remove your own access. Another Admin has to do it, so you can't lock yourself out."
+        ],
+        [
+          "tip",
+          "A change works the next time that person opens the app or goes back to their Home screen."
+        ]
+      ]
+    },
+    {
+      "key": "NoSignal",
+      "title": "When there is no signal",
+      "summary": "What works and what does not without signal.",
+      "blocks": [
+        [
+          "p",
+          "When your phone has no signal, the Home screen shows a yellow box: \"You're offline\"."
+        ],
+        [
+          "shot",
+          "S06",
+          "The Home screen with no signal"
+        ],
+        [
+          "p",
+          "Works without signal: choosing your truck and the whole run sheet."
+        ],
+        [
+          "p",
+          "Needs signal: starting or carrying on a checklist, the driver declaration, Manage users."
+        ],
+        [
+          "tip",
+          "Open the app with signal at least once at the start of the day, so it has the latest truck list."
+        ]
+      ]
+    },
+    {
+      "key": "Problems",
+      "title": "Common problems",
+      "summary": "Quick fixes.",
+      "blocks": [
+        [
+          "h",
+          "\"Vehicle not found\""
+        ],
+        [
+          "p",
+          "Check the truck number and try again. If it still does not work, the truck is not on the list yet. Tell your supervisor."
+        ],
+        [
+          "h",
+          "I can't see the form buttons"
+        ],
+        [
+          "p",
+          "Choose your truck first. The buttons appear after a truck is found."
+        ],
+        [
+          "h",
+          "A button is grey and I can't tap it"
+        ],
+        [
+          "p",
+          "Grey means something is missing or you have no signal. Read the words on the button: they tell you what to do."
+        ],
+        [
+          "h",
+          "The app says I can't download it, or to contact my admin"
+        ],
+        [
+          "step",
+          "Update the Power Apps app from the App Store or Play Store."
+        ],
+        [
+          "step",
+          "Close Power Apps fully and open it again."
+        ],
+        [
+          "step",
+          "If that does not help, ask your supervisor."
+        ],
+        [
+          "warn",
+          "Do not delete and reinstall Power Apps if you have a run sheet or checklist that is not sent. It would be lost."
+        ],
+        [
+          "h",
+          "I closed the app in the middle of a checklist"
+        ],
+        [
+          "p",
+          "Your answers are kept. On the Home screen tap Carry on."
+        ]
+      ]
+    }
+  ],
+  "shots": [
+    {
+      "id": "S01",
+      "title": "Not registered message",
+      "account": "An account NOT in App Users (or set inactive)",
+      "how": "Open the app with signal.",
+      "show": "Header and the red \"You're not registered\" box."
+    },
+    {
+      "id": "S02",
+      "title": "Home before a truck is chosen",
+      "account": "Driver",
+      "how": "Open the app with signal, no truck chosen, no unfinished checklist.",
+      "show": "Truck card with \"Scan or type a registered truck to start\", \"What do you need to do?\", no form buttons. Question mark icon top right."
+    },
+    {
+      "id": "S03",
+      "title": "Home after a truck is chosen",
+      "account": "Driver",
+      "how": "Scan or type a registered test truck.",
+      "show": "\"✓ Truck: …\" and the three buttons Start fleet checklist, Driver declaration, Run sheet."
+    },
+    {
+      "id": "S04",
+      "title": "Vehicle not found popup",
+      "account": "Driver",
+      "how": "Type ZZ 999 (or scan the ZZ 999 code in the QR codes document) and tap outside the box.",
+      "show": "The popup with \"Vehicle not found. Please try again.\", \"Read: ZZ 999 …\" and OK."
+    },
+    {
+      "id": "S05",
+      "title": "Daily review card on Home",
+      "account": "Driver (with a daily review from the last 7 days, not today)",
+      "how": "Have a Reviewer give the test driver a daily review dated yesterday, then open Home as the driver.",
+      "show": "The pale teal card with the stars, comment and Got it."
+    },
+    {
+      "id": "S06",
+      "title": "Home with no signal",
+      "account": "Driver",
+      "how": "In the Power Apps mobile app, turn on airplane mode and return to Home with a truck chosen.",
+      "show": "Yellow \"You're offline\" box and greyed Start fleet checklist / Driver declaration."
+    },
+    {
+      "id": "S10",
+      "title": "Checklist first page",
+      "account": "Driver",
+      "how": "Home → choose a test truck → Start fleet checklist.",
+      "show": "\"Fleet checklist\" header with the truck, Truck number / Driver name / Site, the \"In the cabin\" heading and the first item."
+    },
+    {
+      "id": "S11",
+      "title": "Checklist: Yes and No with comment",
+      "account": "Driver",
+      "how": "Tick Yes on one item and No on the next; type a short comment.",
+      "show": "One item ticked Yes and one ticked No with the \"Say what is wrong\" box filled."
+    },
+    {
+      "id": "S12",
+      "title": "Checklist: bottom bar",
+      "account": "Driver",
+      "how": "Go to page 3 with a few items unanswered.",
+      "show": "\"Section 3 of 8 …\", \"N still to do\", Back, Photos (N), Next."
+    },
+    {
+      "id": "S13",
+      "title": "Checklist: item with photo taken",
+      "account": "Driver",
+      "how": "Take the photo for Fuel card in truck (or another photo item).",
+      "show": "The item with \"Retake photo\" and \"✓ Photo taken\"."
+    },
+    {
+      "id": "S14",
+      "title": "Checklist: tyre photos",
+      "account": "Driver",
+      "how": "On the tyres page take photos for some tyres.",
+      "show": "The tyre buttons, some with ✓, and \"x of N photos taken\"."
+    },
+    {
+      "id": "S15",
+      "title": "Checklist: reporting damage",
+      "account": "Driver",
+      "how": "On Accident Imagery tick No, type a comment and add one photo.",
+      "show": "No ticked, the comment, Add photo and \"1 photo(s) taken\"."
+    },
+    {
+      "id": "S16",
+      "title": "Checklist: due dates",
+      "account": "Driver",
+      "how": "Use a test truck whose dates in GF Fleet Trucks give OK / Due within 30 days / Expired; open page 2.",
+      "show": "The dates with their coloured labels."
+    },
+    {
+      "id": "S17",
+      "title": "Checklist: Submit showing what is missing",
+      "account": "Driver",
+      "how": "Go to the last page with one item unanswered.",
+      "show": "The grey button reading \"Answer: …\" (or \"Photo needed: …\") and Go to it."
+    },
+    {
+      "id": "S18",
+      "title": "Home: unfinished checklist",
+      "account": "Driver",
+      "how": "Start a checklist, answer one item, go back to Home.",
+      "show": "\"You have an unfinished checklist …\" with Carry on and Discard; the start button says \"Finish or discard your checklist first\"."
+    },
+    {
+      "id": "S20",
+      "title": "Photo screen for one item",
+      "account": "Driver",
+      "how": "In a checklist, tap Take photo under \"Valid driver's licence\".",
+      "show": "\"Photo of: Driver's licence\", the camera view (point it at a test card, not a real licence) and Take photo."
+    },
+    {
+      "id": "S21",
+      "title": "Photo screen with photos taken",
+      "account": "Driver",
+      "how": "In a checklist tap Photos at the bottom and take 2–3 photos.",
+      "show": "The photo type, description, camera and the row of photos with bin icons, \"Done (3 photos)\"."
+    },
+    {
+      "id": "S22",
+      "title": "Driver declaration when opened",
+      "account": "Driver",
+      "how": "Home → choose truck → Driver declaration.",
+      "show": "Driver details, Employee No, first statements unticked."
+    },
+    {
+      "id": "S23",
+      "title": "Driver declaration ready to submit",
+      "account": "Driver",
+      "how": "Tick all 14 statements, scroll to the bottom.",
+      "show": "Ticked statements with teal borders and the Submit declaration button."
+    },
+    {
+      "id": "S30",
+      "title": "Run sheet: Trip tab filled in",
+      "account": "Driver",
+      "how": "Home → choose truck → Run sheet with no run saved; fill Area, invoices, start mileage, tap Now.",
+      "show": "The Trip tab with fields filled in and Start run at the bottom."
+    },
+    {
+      "id": "S31",
+      "title": "Run sheet: stop being filled in",
+      "account": "Driver",
+      "how": "After Start run, fill in Stop 1 including 1 invoice photo.",
+      "show": "Arrive time, Destination, cartons, invoices, the invoice row \"Photo taken\", Truck temp, Save stop."
+    },
+    {
+      "id": "S32",
+      "title": "Run sheet: temperature warning",
+      "account": "Driver",
+      "how": "In a stop type Truck temp -10.",
+      "show": "The yellow \"Truck temperature is above -15 °C\" box."
+    },
+    {
+      "id": "S33",
+      "title": "Run sheet: saved stops list",
+      "account": "Driver",
+      "how": "Save 2–3 test stops, scroll down below the form.",
+      "show": "\"Saved stops, newest first\" with the stops and pencil icons; the tab says Stops (3)."
+    },
+    {
+      "id": "S34",
+      "title": "Run sheet: invoice rows waiting for photos",
+      "account": "Driver",
+      "how": "In a new stop type No. of invoices 2.",
+      "show": "Invoice 1 and Invoice 2 rows with \"Not taken\" and Take photo, the red reminder."
+    },
+    {
+      "id": "S35",
+      "title": "Run sheet: checking an invoice photo",
+      "account": "Driver",
+      "how": "Tap Take photo on an invoice row and take a photo of a test invoice.",
+      "show": "The photo preview with Use photo, Retake, Cancel."
+    },
+    {
+      "id": "S36",
+      "title": "Run sheet: Return to CD ready to submit",
+      "account": "Driver",
+      "how": "With at least one saved stop, fill in the Return to CD tab and tap Yes.",
+      "show": "The filled tab, \"Distance this run\" and Submit run sheet."
+    },
+    {
+      "id": "S37",
+      "title": "Run sheet: waiting to upload, no signal",
+      "account": "Driver",
+      "how": "Airplane mode on, then tap Submit run sheet on a test run. Close the message.",
+      "show": "The yellow box \"Your run sheet hasn't been sent yet. Tap Upload now.\" and the grey Upload now button. (Turn signal back on and tap Upload now afterwards.)"
+    },
+    {
+      "id": "S40",
+      "title": "Review: Checklists waiting",
+      "account": "Reviewer",
+      "how": "Home → Review and sign-off (Checklists tab, Waiting).",
+      "show": "The four tabs, Waiting / All, rows \"Waiting for sign-off\"."
+    },
+    {
+      "id": "S41",
+      "title": "Review: driver's answers",
+      "account": "Reviewer",
+      "how": "Tap a waiting checklist that has a No answer.",
+      "show": "\"Review checklist\", read-only ticks, the driver's comment under a No, the weekly items."
+    },
+    {
+      "id": "S42",
+      "title": "Review: checklist sign-off",
+      "account": "Reviewer",
+      "how": "In a reviewed checklist go to the last page and choose both drop-downs.",
+      "show": "Approval for Delivery, Send for Repairs, date, name and Save sign-off."
+    },
+    {
+      "id": "S43",
+      "title": "Review: run sheet to verify",
+      "account": "Reviewer",
+      "how": "Run sheets tab → tap a \"Waiting for Team Leader\" test run (ideally with one red stop).",
+      "show": "The trip summary, the stops and Verify run sheet."
+    },
+    {
+      "id": "S44",
+      "title": "Review: declaration to sign off",
+      "account": "Reviewer",
+      "how": "Declarations tab → tap a waiting declaration.",
+      "show": "The 14 answers, comments and Sign off."
+    },
+    {
+      "id": "S45",
+      "title": "Review: daily review list",
+      "account": "Reviewer",
+      "how": "Daily review tab, pick a day with test activity.",
+      "show": "The date, \"N driver(s) submitted something…\" and the driver rows."
+    },
+    {
+      "id": "S46",
+      "title": "Review: rest time and stars",
+      "account": "Reviewer",
+      "how": "Tap a driver who has run sheets on that day and the day before; tap 4 stars and type a comment.",
+      "show": "\"Approximate time of rest\" with a value, the stars, comment and Save score."
+    },
+    {
+      "id": "S50",
+      "title": "Manage users: adding a person",
+      "account": "Admin",
+      "how": "Home → Manage users → type 3 letters of a test colleague's name → pick them → choose Driver.",
+      "show": "The picked person, the Role and the active Add person button. (Blur or use a colleague who agrees to appear.)"
+    },
+    {
+      "id": "S51",
+      "title": "Manage users: one person open",
+      "account": "Admin",
+      "how": "Tap a person in \"People with access\".",
+      "show": "\"Has access as …\", the Role, Remove access and Save role."
+    }
+  ]
+}

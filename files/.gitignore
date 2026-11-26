@@ -1,2 +1,13 @@
 # Flow export and import packages contain site addresses, list IDs and email addresses
 *.zip
+
+# Truck data (registrations, makes, COF dates; the office workbooks also have staff names).
+# Kept on the project owner's PC only for now.
+CD-DG Truck Details.xlsx
+Truck Details updated.xlsx
+Fleet Trucks.csv
+Fleet Trucks - SharePoint list.xlsx
+Fleet Trucks - QR codes.docx
+
+# Office lock files
+~$*

@@ -120,14 +120,16 @@
       "instruction": "",
       "commentField": null,
       "commentOn": "No",
-      "photo": "none",
-      "photoSlots": [],
+      "photo": "one",
+      "photoSlots": [
+        "Driver's licence"
+      ],
       "answeredBy": "driver",
       "weekly": false,
       "truckType": "all",
       "required": true,
       "hidden": false,
-      "notes": null
+      "notes": "Photo of the licence required on every checklist (meeting 25 Nov 2026)."
     },
     {
       "order": 5,

@@ -32,7 +32,7 @@
 */
 (async () => {
   const LIST = 'Fleet Checklist';
-  const MODE = 'create';   // 'create' | 'rename'
+  const MODE = 'rename';   // 'create' | 'rename'
   const DRY_RUN = true;
 
   // [internal name, proposed display name, new Yes/No column to create?]

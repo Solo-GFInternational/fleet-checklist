@@ -52,7 +52,6 @@ Screens:
         Reset(txtEndReturnedHH);
         Reset(txtEndReturnedMM);
         Reset(txtEndMileage);
-        Reset(txtEndBalanceInvoice);
         Reset(txtEndAnalogTemp);
         Reset(txtEndPlugInTemp);
         Reset(txtEndBalanceQty);
@@ -402,7 +401,6 @@ Screens:
                                                         ExpectedDeparture: varRunSheet.ExpectedDeparture,
                                                         TimeReturned: varRunSheet.TimeReturned,
                                                         EndMileage: varRunSheet.EndMileage,
-                                                        BalanceInvoice: varRunSheet.BalanceInvoice,
                                                         AnalogTemp_x002e_: varRunSheet.AnalogTemp,
                                                         TemponPlugIn: varRunSheet.PlugInTemp,
                                                         QtyonBalanceRecovery: varRunSheet.BalanceQty,
@@ -1988,7 +1986,7 @@ Screens:
                         DropShadow: =DropShadow.Light
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =0
-                        Height: =734 + (lblEndDistance.Height - 22) + (lblEndBalanceQtyLabel.Height - 24) + (lblEndInvoiceBalancedLabel.Height - 24)
+                        Height: =642 + (lblEndDistance.Height - 22) + (lblEndBalanceQtyLabel.Height - 24) + (lblEndInvoiceBalancedLabel.Height - 24)
                         LayoutAlignItems: =LayoutAlignItems.Stretch
                         LayoutDirection: =LayoutDirection.Vertical
                         LayoutGap: =8
@@ -2199,7 +2197,7 @@ Screens:
                               Size: =12
                               Text: |-
                                 =If(!IsMatch(Trim(txtEndMileage.Text), "\d+(\.\d+)?"), "Start mileage was " & varRunSheet.StartMileage & " km.", If(Value(txtEndMileage.Text) < varRunSheet.StartMileage, "End mileage is lower than the start mileage (" & varRunSheet.StartMileage & " km).", "Distance this run: " & (Value(txtEndMileage.Text) - varRunSheet.StartMileage) & " km"))
-                        - lblEndBalanceInvoiceLabel:
+                        - lblEndPlugInTempLabel:
                             Control: Label@2.5.1
                             Properties:
                               BorderStyle: =BorderStyle.None
@@ -2209,20 +2207,20 @@ Screens:
                               Height: =24
                               PaddingLeft: =0
                               Size: =14
-                              Text: ="Balance invoice"
-                        - txtEndBalanceInvoice:
+                              Text: ="Temp on plug in (°C) *"
+                        - txtEndPlugInTemp:
                             Control: Classic/TextInput@2.3.2
                             Properties:
                               BorderColor: =RGBA(208, 216, 218, 1)
                               BorderThickness: =1
                               Color: =RGBA(31, 41, 51, 1)
-                              Default: =Coalesce(varRunSheet.BalanceInvoice, "")
+                              Default: =If(IsBlank(varRunSheet.PlugInTemp), "", Text(varRunSheet.PlugInTemp))
                               Fill: =RGBA(255, 255, 255, 1)
                               FocusedBorderColor: =RGBA(8, 144, 144, 1)
                               FocusedBorderThickness: =2
                               Font: =Font.'Segoe UI'
                               Height: =52
-                              HintText: ="Invoice number, if any"
+                              HintText: ="e.g. -18"
                               HoverBorderColor: =RGBA(8, 144, 144, 1)
                               PaddingLeft: =12
                               PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -2249,38 +2247,6 @@ Screens:
                               BorderThickness: =1
                               Color: =RGBA(31, 41, 51, 1)
                               Default: =If(IsBlank(varRunSheet.AnalogTemp), "", Text(varRunSheet.AnalogTemp))
-                              Fill: =RGBA(255, 255, 255, 1)
-                              FocusedBorderColor: =RGBA(8, 144, 144, 1)
-                              FocusedBorderThickness: =2
-                              Font: =Font.'Segoe UI'
-                              Height: =52
-                              HintText: ="e.g. -18"
-                              HoverBorderColor: =RGBA(8, 144, 144, 1)
-                              PaddingLeft: =12
-                              PressedBorderColor: =RGBA(8, 144, 144, 1)
-                              RadiusBottomLeft: =8
-                              RadiusBottomRight: =8
-                              RadiusTopLeft: =8
-                              RadiusTopRight: =8
-                              Size: =15
-                        - lblEndPlugInTempLabel:
-                            Control: Label@2.5.1
-                            Properties:
-                              BorderStyle: =BorderStyle.None
-                              Color: =RGBA(31, 41, 51, 1)
-                              Font: =Font.'Segoe UI'
-                              FontWeight: =FontWeight.Semibold
-                              Height: =24
-                              PaddingLeft: =0
-                              Size: =14
-                              Text: ="Temp on plug in (°C) *"
-                        - txtEndPlugInTemp:
-                            Control: Classic/TextInput@2.3.2
-                            Properties:
-                              BorderColor: =RGBA(208, 216, 218, 1)
-                              BorderThickness: =1
-                              Color: =RGBA(31, 41, 51, 1)
-                              Default: =If(IsBlank(varRunSheet.PlugInTemp), "", Text(varRunSheet.PlugInTemp))
                               Fill: =RGBA(255, 255, 255, 1)
                               FocusedBorderColor: =RGBA(8, 144, 144, 1)
                               FocusedBorderThickness: =2
@@ -2536,7 +2502,6 @@ Screens:
                                       ExpectedArrival: "",
                                       TimeReturned: "",
                                       EndMileage: Value(""),
-                                      BalanceInvoice: "",
                                       AnalogTemp: Value(""),
                                       PlugInTemp: Value(""),
                                       BalanceQty: Value(""),
@@ -2721,7 +2686,6 @@ Screens:
                           =Set(varRunSheet, Patch(varRunSheet, {
                               TimeReturned: lblEndReturnedVal.Text,
                               EndMileage: Value(txtEndMileage.Text),
-                              BalanceInvoice: Trim(txtEndBalanceInvoice.Text),
                               AnalogTemp: Value(txtEndAnalogTemp.Text),
                               PlugInTemp: Value(txtEndPlugInTemp.Text),
                               BalanceQty: Value(txtEndBalanceQty.Text),

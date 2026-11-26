@@ -286,6 +286,8 @@ def status_label(name, ok_cond, ok_text, todo_text, width, x, y, visible):
 def photo_type(it):
     if it['field'] == 'field_50':
         return 'Odometer'
+    if it['field'] == 'LicenceValid':
+        return 'Licence'
     return {'perTyre': 'Tyre', 'fourSides': 'Profile', 'multi': 'Accident'}.get(it['photo'], 'Accessory')
 
 

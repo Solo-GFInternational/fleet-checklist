@@ -712,7 +712,25 @@ Screens:
                               LayoutMinHeight: =100
                               OnSelect: |-
                                 =UpdateContext({ctxDaily: ThisItem, ctxStars: Coalesce(ThisItem.Review.Stars, 0)});
-                                Reset(txtDailyComment)
+                                Reset(txtDailyComment);
+                                With({d: Coalesce(dteDailyDate.SelectedDate, Today()), k: ThisItem.Key},
+                                    With({rs: ForAll(
+                                            Filter(FirstN(Sort('Run Sheets', ID, SortOrder.Descending), 500),
+                                                Lower('Created By'.Email) = k || Lower(Trim(Coalesce(DriverName, Driver))) = k),
+                                            With({rd: Date(Year(RunDate), Month(RunDate), Day(RunDate)),
+                                                  dm: If(IsMatch(ExpectedDeparture, "\d{1,2}:\d{2}"), Value(First(Split(ExpectedDeparture, ":")).Value) * 60 + Value(Last(Split(ExpectedDeparture, ":")).Value), Blank()),
+                                                  rm: If(IsMatch(TimeReturned, "\d{1,2}:\d{2}"), Value(First(Split(TimeReturned, ":")).Value) * 60 + Value(Last(Split(TimeReturned, ":")).Value), Blank())},
+                                                {RunDay: rd,
+                                                 Dep: If(IsBlank(dm), Blank(), DateAdd(rd, dm, TimeUnit.Minutes)),
+                                                 Ret: If(IsBlank(rm), Blank(), DateAdd(rd, rm + If(!IsBlank(dm) && rm < dm, 1440, 0), TimeUnit.Minutes))}))},
+                                        With({cur: First(Sort(Filter(rs, RunDay = d && !IsBlank(Dep)), Dep))},
+                                            With({prev: First(Sort(Filter(rs, !IsBlank(cur) && !IsBlank(Ret) && Ret <= cur.Dep), Ret, SortOrder.Descending))},
+                                                UpdateContext({
+                                                    ctxRestMins: If(IsBlank(cur) || IsBlank(prev), Blank(), DateDiff(prev.Ret, cur.Dep, TimeUnit.Minutes)),
+                                                    ctxRestNote: If(
+                                                        IsBlank(cur), "No run sheet with an actual departure time for this driver on this day.",
+                                                        IsBlank(prev), "No earlier run sheet with a return time was found for this driver (the latest 500 run sheets were checked).",
+                                                        "From the return to CD at " & Text(prev.Ret, "hh:mm ddd dd mmm") & " to the actual departure at " & Text(cur.Dep, "hh:mm ddd dd mmm") & ".")})))))
                               TemplatePadding: =0
                               TemplateSize: =120
                             Children:
@@ -789,6 +807,68 @@ Screens:
                         PaddingTop: =16
                         Visible: =ctxTab = "Daily" && !IsBlank(ctxDaily)
                       Children:
+                        - conDailyRest:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.Light
+                              Fill: =RGBA(226, 243, 242, 1)
+                              FillPortions: =0
+                              Height: =32 + lblDailyRestHeading.Height + 4 + lblDailyRestValue.Height + 4 + lblDailyRestDetail.Height
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =4
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              PaddingBottom: =16
+                              PaddingLeft: =16
+                              PaddingRight: =16
+                              PaddingTop: =16
+                              RadiusBottomLeft: =12
+                              RadiusBottomRight: =12
+                              RadiusTopLeft: =12
+                              RadiusTopRight: =12
+                            Children:
+                              - lblDailyRestHeading:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(0, 112, 112, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =22
+                                    PaddingLeft: =0
+                                    Size: =13
+                                    Text: ="Approximate time of rest"
+                              - lblDailyRestValue:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(31, 41, 51, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =32
+                                    PaddingLeft: =0
+                                    Size: =20
+                                    Text: |-
+                                      =If(IsBlank(ctxRestMins) || ctxRestMins < 0, "Not available",
+                                          With({dd: RoundDown(ctxRestMins / 1440, 0), hh: RoundDown(Mod(ctxRestMins, 1440) / 60, 0), mm: Mod(ctxRestMins, 60)},
+                                              dd & If(dd = 1, " day ", " days ") & hh & If(hh = 1, " hour ", " hours ") & mm & If(mm = 1, " minute", " minutes")))
+                                    Wrap: =true
+                              - lblDailyRestDetail:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(96, 108, 118, 1)
+                                    Font: =Font.'Segoe UI'
+                                    Height: =22
+                                    PaddingLeft: =0
+                                    Size: =12
+                                    Text: |-
+                                      =ctxRestNote
+                                    Wrap: =true
                         - conDailySummary:
                             Control: GroupContainer@1.5.0
                             Variant: AutoLayout

@@ -873,6 +873,54 @@ Screens:
                         Width: =30
                         Wrap: =false
                         Y: =DataCardKey103.Y
+                  - btnLicenceValidPhoto:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(8, 144, 144, 1)
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =2
+                        Color: =RGBA(0, 112, 112, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =44
+                        HoverBorderColor: =RGBA(8, 144, 144, 1)
+                        HoverColor: =RGBA(0, 112, 112, 1)
+                        HoverFill: =RGBA(226, 243, 242, 1)
+                        OnSelect: |-
+                          =Set(varPhotoType, "Licence");
+                          Set(varPhotoItem, "Driver's licence");
+                          Navigate(scrPhotos)
+                        PressedBorderColor: =RGBA(0, 112, 112, 1)
+                        PressedColor: =RGBA(0, 112, 112, 1)
+                        PressedFill: =RGBA(226, 243, 242, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =14
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Licence" && Item = "Driver's licence")), "Retake photo", "Take photo")
+                        Visible: =!varReviewing
+                        Width: =150
+                        X: =30
+                        Y: =ErrorMessage103.Y + ErrorMessage103.Height - 4
+                  - lblLicenceValidPhoto:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =If(!IsEmpty(Filter(colPhotos, Type = "Licence" && Item = "Driver's licence")), RGBA(0, 112, 112, 1), RGBA(196, 49, 75, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        PaddingBottom: =12
+                        PaddingLeft: =0
+                        Size: =13
+                        Text: =If(!IsEmpty(Filter(colPhotos, Type = "Licence" && Item = "Driver's licence")), "✓ Photo taken", "Photo required")
+                        Visible: =!varReviewing
+                        Width: =Parent.Width - 210
+                        X: =192
+                        Y: =ErrorMessage103.Y + ErrorMessage103.Height - 4
+                        Wrap: =true
             - crdOdometer:
                 Control: TypedDataCard@1.0.7
                 Variant: ClassicNumberEdit
@@ -12446,6 +12494,7 @@ Screens:
                                   If(IsBlank(DataCardValue20.Text), 1, 0) +
                                   If(!DataCardValue103.Value && !chkLicenceValidNo.Value, 1, 0) +
                                   If(chkLicenceValidNo.Value && IsBlank(txtLicenceValidCmt.Text), 1, 0) +
+                                  If(IsEmpty(Filter(colPhotos, Type = "Licence" && Item = "Driver's licence")), 1, 0) +
                                   If(IsBlank(DataCardValue69.Text), 1, 0) +
                                   If(IsEmpty(Filter(colPhotos, Type = "Odometer")), 1, 0) +
                                   If(!DataCardValue34.Value && !chkDashGaugesNo.Value, 1, 0) +
@@ -12611,6 +12660,8 @@ Screens:
                               !DataCardValue103.Value && !chkLicenceValidNo.Value,
                                   "cabin",
                               chkLicenceValidNo.Value && IsBlank(txtLicenceValidCmt.Text),
+                                  "cabin",
+                              IsEmpty(Filter(colPhotos, Type = "Licence" && Item = "Driver's licence")),
                                   "cabin",
                               IsBlank(DataCardValue69.Text),
                                   "cabin",
@@ -13001,6 +13052,8 @@ Screens:
                                   "Answer: " & DataCardKey103.Text,
                               chkLicenceValidNo.Value && IsBlank(txtLicenceValidCmt.Text),
                                   "Comment needed: " & DataCardKey103.Text,
+                              IsEmpty(Filter(colPhotos, Type = "Licence" && Item = "Driver's licence")),
+                                  "Photo needed: Driver's licence",
                               IsBlank(DataCardValue69.Text),
                                   "Fill in: " & DataCardKey69.Text,
                               IsEmpty(Filter(colPhotos, Type = "Odometer")),

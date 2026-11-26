@@ -87,17 +87,14 @@ Run these in order, each one dry run first.
 - **Columns:**
   - Title: the truck number, as "FJ 101"
   - Truck type: Ambient or Frozen
+  - Make, as "Isuzu FTR + Freezer Body"
   - Number of tyres
   - Active
   - COF expiry, Blower service due, Truck service due
 - **Permissions:** Drivers can read; Reviewers can edit, so the office keeps the dates current.
-- **Optional import:** paste Krish's truck table between the backticks of `const CSV_TEXT = \`` … `\`;`, in this format. The three date columns are optional. Dates can be `yyyy-mm-dd`or`dd/mm/yyyy`.
-  ```
-  Truck,Type,Tyres,COF,BlowerService,TruckService
-  FJ101,Frozen,6,2027-03-31,2027-01-15,2026-12-20
-  ```
-
-  Trucks already in the list are skipped, so you can also add trucks by hand later.
+- **Paste the trucks into the script:** copy `files/Fleet Trucks.csv` (the 33 trucks; kept on the project owner's PC, not in git) between the backticks of `CSV_TEXT`. It comes from the office's truck workbook (Details and Tires sheets matched by registration). It fills Truck type (Dry → Ambient, Freezer → Frozen), Make, Number of tyres (the Tires count minus the spare) and COF expiry. Blower service due and Truck service due are left for reviewers.
+  - When the office sends a new workbook: save it as `files/Truck Details updated.xlsx`, run `py -3 -I scripts/merge_truck_details.py "files/Truck Details updated.xlsx" files`, read its `NOTE` lines, and paste the new `files/Fleet Trucks.csv` between the backticks of `CSV_TEXT`.
+  - Trucks already in the list are updated with the sheet's values (`UPDATE_EXISTING = true`). Blank cells never clear anything, and the two service dates are never touched.
 - **If you ran an earlier version** that created `LastOdometer` / `LastOdometerDate`, delete those two columns: List settings → click the column → **Delete**. The app no longer uses them.
 
 - [ ] Dry run (`DRY_RUN = true`): output looks right

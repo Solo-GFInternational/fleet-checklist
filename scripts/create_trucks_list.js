@@ -6,6 +6,7 @@
   Columns:
     Title      (display name "Truck number")  e.g. "FJ 101", unique
     TruckType  choice: Ambient / Frozen
+    Make       text, e.g. "Isuzu FTR + Freezer Body"
     NoOfTyres  number (whole, 1-30)
     ActiveYN   yes/no, default Yes (set No instead of deleting a truck)
     COFExpiry, BlowerServiceDue, TruckServiceDue   date only; the office keeps these current here
@@ -16,10 +17,14 @@
   Fleet App Reviewer (edit items: the office keeps the due dates current). A Read grant that an earlier
   run gave Fleet App Reviewers is removed. Edit the trucks in SharePoint.
 
-  Optional import: paste the contents of files/Fleet Trucks.csv (header row Truck,Type,Tyres) between
-  the backticks of CSV_TEXT. Optional extra columns: COF,BlowerService,TruckService (dates as
-  yyyy-mm-dd or dd/mm/yyyy). Truck numbers are written the way the app writes them (upper case, a space
-  after the 2-letter prefix: "fj101" -> "FJ 101"). Trucks already in the list are skipped.
+  Import: paste files/Fleet Trucks.csv into CSV_TEXT (truck data is kept out of git), made from the office's workbook by
+    py -3 -I scripts/merge_truck_details.py "files/Truck Details updated.xlsx" files
+  (header row Truck,Type,Make,Tyres,COF; also accepted: BlowerService,TruckService; dates as yyyy-mm-dd
+  or dd/mm/yyyy; Type Dry/Ambient -> Ambient, Freezer/Frozen -> Frozen). Truck numbers are written the way
+  the app writes them (upper case, a space after the 2-letter prefix: "fj101" -> "FJ 101").
+  New trucks are added. Trucks already in the list are updated with the CSV's non-blank values when
+  UPDATE_EXISTING = true (blank cells never clear anything, and date columns not in the CSV, such as
+  Blower service due / Truck service due, are left as the reviewers set them); skipped when false.
 
   Safe to run again: anything that already exists is skipped.
 
@@ -37,12 +42,14 @@
   const LIST = 'GF Fleet Trucks';
   // group -> permission level on the list (Reader = built-in Read)
   const GRANTS = [['Fleet App Drivers', 'Read'], ['Fleet App Reviewers', 'Fleet App Reviewer']];
+  const UPDATE_EXISTING = true;
   const CSV_TEXT = `
 `;
 
   const FIELDS = [
     ['TruckType', '<Field Type="Choice" Name="TruckType" StaticName="TruckType" DisplayName="Truck type" Required="FALSE" ' +
       'Format="Dropdown" FillInChoice="FALSE"><CHOICES><CHOICE>Ambient</CHOICE><CHOICE>Frozen</CHOICE></CHOICES></Field>'],
+    ['Make', '<Field Type="Text" Name="Make" StaticName="Make" DisplayName="Make" Required="FALSE" MaxLength="255" />'],
     ['NoOfTyres', '<Field Type="Number" Name="NoOfTyres" StaticName="NoOfTyres" DisplayName="Number of tyres" Required="FALSE" ' +
       'Decimals="0" Min="1" Max="30" />'],
     ['ActiveYN', '<Field Type="Boolean" Name="ActiveYN" StaticName="ActiveYN" DisplayName="Active" Required="FALSE">' +
@@ -137,7 +144,7 @@
   const lines = CSV_TEXT.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   if (lines.length) {
     const head = lines[0].split(',').map(h => h.trim().toLowerCase());
-    const iTruck = head.indexOf('truck'), iType = head.indexOf('type'), iTyres = head.indexOf('tyres');
+    const iTruck = head.indexOf('truck'), iType = head.indexOf('type'), iTyres = head.indexOf('tyres'), iMake = head.indexOf('make');
     const DATE_COLS = [['cof', 'COFExpiry'], ['blowerservice', 'BlowerServiceDue'], ['truckservice', 'TruckServiceDue']]
       .map(([h, col]) => [head.indexOf(h), col]).filter(([i]) => i >= 0);
     const isoDate = v => { // yyyy-mm-dd or dd/mm/yyyy -> yyyy-mm-dd (null if not a date)
@@ -151,28 +158,34 @@
     const noonUtc = d => new Date(Date.parse(`${d}T12:00:00Z`) + bias * 60000).toISOString();
     if (iTruck < 0) out.push('FAILED CSV: header must have a "Truck" column (Truck,Type,Tyres)');
     else {
-      const existingTitles = new Set(info ? ((await get(`${listUrl}/items?$select=Title&$top=5000`))?.results || [])
-        .map(i => truckNo(i.Title)) : []);
-      let added = 0, skipped = 0;
+      const existing = new Map(info ? ((await get(`${listUrl}/items?$select=Id,Title&$top=5000`))?.results || [])
+        .map(i => [truckNo(i.Title), i.Id]) : []);
+      const seen = new Set();
+      let added = 0, updated = 0, skipped = 0;
       for (const line of lines.slice(1)) {
         const c = line.split(',').map(x => x.trim());
         const t = truckNo(c[iTruck]);
-        if (!t) continue;
-        if (existingTitles.has(t)) { skipped++; continue; }
+        if (!t || seen.has(t)) continue;
+        seen.add(t);
+        const id = existing.get(t);
+        if (id && !UPDATE_EXISTING) { skipped++; continue; }
         const typeRaw = iType >= 0 ? (c[iType] || '').toLowerCase() : '';
-        const type = typeRaw.startsWith('f') ? 'Frozen' : typeRaw.startsWith('a') ? 'Ambient' : null;
+        const type = /^(f)/.test(typeRaw) ? 'Frozen' : /^(a|d)/.test(typeRaw) ? 'Ambient' : null;
+        const make = iMake >= 0 ? (c[iMake] || '') : '';
         const tyres = iTyres >= 0 && c[iTyres] ? parseInt(c[iTyres], 10) : null;
         const dates = DATE_COLS.map(([i, col]) => [col, isoDate(c[i])]).filter(([, d]) => d);
-        existingTitles.add(t);
-        if (DRY_RUN) { out.push(`would add truck ${t}  ${type || '(no type)'}  ${tyres || '(no tyre count)'}  ${dates.map(d => d.join(' ')).join('  ')}`); added++; continue; }
-        const body = { __metadata: { type: info.ListItemEntityTypeFullName }, Title: t, ActiveYN: true };
+        const desc = `${t}  ${type || '(no type)'}  ${make || '(no make)'}  ${Number.isFinite(tyres) ? tyres + ' tyres' : '(no tyre count)'}  ${dates.map(d => d.join(' ')).join('  ') || '(no dates)'}`;
+        if (DRY_RUN) { out.push(`${id ? 'would update' : 'would add'} truck ${desc}`); id ? updated++ : added++; continue; }
+        const body = { __metadata: { type: info.ListItemEntityTypeFullName } };
+        if (!id) { body.Title = t; body.ActiveYN = true; }
         if (type) body.TruckType = type;
+        if (make) body.Make = make;
         if (Number.isFinite(tyres)) body.NoOfTyres = tyres;
         for (const [col, d] of dates) body[col] = noonUtc(d);
-        const r = await post(`${listUrl}/items`, body);
-        if (r.ok) added++; else await fail(`add truck ${t}`, r);
+        const r = id ? await post(`${listUrl}/items(${id})`, body, merge) : await post(`${listUrl}/items`, body);
+        if (r.ok) { id ? updated++ : added++; } else await fail(`${id ? 'update' : 'add'} truck ${t}`, r);
       }
-      out.push(`CSV: ${DRY_RUN ? 'would add' : 'added'} ${added}, skipped ${skipped} already in the list`);
+      out.push(`CSV: ${DRY_RUN ? 'would add' : 'added'} ${added}, ${DRY_RUN ? 'would update' : 'updated'} ${updated}, skipped ${skipped} already in the list`);
     }
   } else out.push('CSV: nothing pasted into CSV_TEXT, no trucks imported');
 

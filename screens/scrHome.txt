@@ -13,6 +13,10 @@ Screens:
             Set(varRole, Coalesce(First(colRoleCache).Role, "None")));
         IfError(LoadData(colLocalRun, "fcRunHeader", true); true, false);
         IfError(LoadData(colSeenReview, "fcSeenReview", true); true, false);
+        Set(varTrucksLoaded, Connection.Connected && IfError(ClearCollect(colTrucks, ShowColumns(Filter('GF Fleet Trucks', ActiveYN = true), Title)); true, false));
+        If(varTrucksLoaded,
+            IfError(SaveData(colTrucks, "fcTrucks"); true, false),
+            IfError(LoadData(colTrucks, "fcTrucks", true); true, false));
         If(Connection.Connected && varRole in ["Driver", "Reviewer", "Admin"],
             With({me: Lower(User().Email), tday: Today(), wk: DateAdd(Today(), -7, TimeUnit.Days)},
                 Set(varLastDailyReview, IfError(
@@ -115,6 +119,21 @@ Screens:
                               PaddingLeft: =0
                               Size: =12
                               Text: ="Hello " & User().FullName & If(varRole in ["Driver", "Reviewer", "Admin"], "   ·   " & varRole, "")
+                  - icoHomeHelp:
+                      Control: Classic/Icon@2.5.0
+                      Properties:
+                        AccessibleLabel: ="How to use the app"
+                        Color: =RGBA(0, 112, 112, 1)
+                        Height: =48
+                        HoverColor: =RGBA(8, 144, 144, 1)
+                        Icon: =Icon.Help
+                        OnSelect: =Navigate(scrHelp)
+                        PaddingBottom: =10
+                        PaddingLeft: =10
+                        PaddingRight: =10
+                        PaddingTop: =10
+                        Tooltip: ="How to use the app"
+                        Width: =48
             - conHomeStripe:
                 Control: GroupContainer@1.5.0
                 Variant: AutoLayout
@@ -375,7 +394,7 @@ Screens:
                         DropShadow: =DropShadow.Light
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =0
-                        Height: =236
+                        Height: =32 + lblHomeTruckHeading.Height + 52 + 52 + 36 + lblTruckStatus.Height + 16
                         LayoutAlignItems: =LayoutAlignItems.Stretch
                         LayoutDirection: =LayoutDirection.Vertical
                         LayoutGap: =12
@@ -397,17 +416,23 @@ Screens:
                               Color: =RGBA(31, 41, 51, 1)
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
+                              AutoHeight: =true
                               Height: =28
                               PaddingLeft: =0
                               Size: =15
                               Text: ="Which truck are you driving?"
+                              Wrap: =true
                         - bcrTruck:
                             Control: BarcodeReader@1.0.25
                             Properties:
                               Height: =52
                               OnScan: |-
                                 =With({t: Upper(Substitute(Substitute(First(Self.Barcodes).Value, " ", ""), "-", ""))},
-                                    Set(varTruck, If(IsBlank(t), Blank(), Left(t, 2) & " " & Mid(t, 3, 10))))
+                                    With({hit: LookUp(colTrucks, Upper(Substitute(Substitute(Title, " ", ""), "-", "")) = t)},
+                                        If(!IsBlank(t) && !IsBlank(hit),
+                                            Set(varTruck, hit.Title),
+                                            Set(varTruck, Blank());
+                                            UpdateContext({ctxTruckTried: Left(t, 2) & " " & Mid(t, 3, 10), ctxTruckNotFound: true}))))
                               Text: ="Scan truck barcode"
                         - txtTruck:
                             Control: Classic/TextInput@2.3.2
@@ -425,7 +450,13 @@ Screens:
                               HoverBorderColor: =RGBA(8, 144, 144, 1)
                               OnChange: |-
                                 =With({t: Upper(Substitute(Substitute(Self.Text, " ", ""), "-", ""))},
-                                    Set(varTruck, If(IsBlank(t), Blank(), Left(t, 2) & " " & Mid(t, 3, 10))))
+                                    With({hit: LookUp(colTrucks, Upper(Substitute(Substitute(Title, " ", ""), "-", "")) = t)},
+                                        If(IsBlank(t),
+                                            Set(varTruck, Blank()),
+                                            !IsBlank(hit),
+                                            Set(varTruck, hit.Title),
+                                            Set(varTruck, Blank());
+                                            UpdateContext({ctxTruckTried: Left(t, 2) & " " & Mid(t, 3, 10), ctxTruckNotFound: true}))))
                               PaddingLeft: =12
                               PressedBorderColor: =RGBA(8, 144, 144, 1)
                               RadiusBottomLeft: =8
@@ -440,11 +471,13 @@ Screens:
                               Color: =If(IsBlank(varTruck), RGBA(96, 108, 118, 1), RGBA(0, 112, 112, 1))
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
+                              AutoHeight: =true
                               Height: =32
                               PaddingLeft: =0
                               Size: =15
                               Text: |-
-                                =If(IsBlank(varTruck), "No truck selected yet", "Truck: " & varTruck)
+                                =If(IsBlank(varTruck), "Scan or type a registered truck to start", "✓ Truck: " & varTruck)
+                              Wrap: =true
                   - lblHomeNoAccess:
                       Control: Label@2.5.1
                       Properties:
@@ -518,7 +551,7 @@ Screens:
                   - btnFleetChecklist:
                       Control: Classic/Button@2.2.0
                       Properties:
-                        Visible: =varRole in ["Driver", "Reviewer", "Admin"]
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"] && !IsBlank(varTruck)
                         BorderColor: =RGBA(0, 0, 0, 0)
                         BorderStyle: =BorderStyle.None
                         Color: =RGBA(255, 255, 255, 1)
@@ -549,12 +582,12 @@ Screens:
                         RadiusTopLeft: =10
                         RadiusTopRight: =10
                         Size: =15
-                        Text: =If(!IsEmpty(colDraft), "Finish or discard your checklist first", IsBlank(varTruck), "Select a truck first", "Start fleet checklist")
+                        Text: =If(!IsEmpty(colDraft), "Finish or discard your checklist first", "Start fleet checklist")
                   - btnDriverDeclaration:
                       Control: Classic/Button@2.2.0
                       Properties:
                         DisplayMode: =If(Connection.Connected, DisplayMode.Edit, DisplayMode.Disabled)
-                        Visible: =varRole in ["Driver", "Reviewer", "Admin"]
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"] && !IsBlank(varTruck)
                         BorderColor: =RGBA(8, 144, 144, 1)
                         BorderStyle: =BorderStyle.Solid
                         BorderThickness: =2
@@ -582,7 +615,7 @@ Screens:
                   - btnRunSheet:
                       Control: Classic/Button@2.2.0
                       Properties:
-                        Visible: =varRole in ["Driver", "Reviewer", "Admin"]
+                        Visible: =varRole in ["Driver", "Reviewer", "Admin"] && (!IsBlank(varTruck) || !IsEmpty(colLocalRun))
                         BorderColor: =RGBA(8, 144, 144, 1)
                         BorderStyle: =BorderStyle.Solid
                         BorderThickness: =2
@@ -619,7 +652,6 @@ Screens:
                                   ExpectedArrival: "",
                                   TimeReturned: "",
                                   EndMileage: Value(""),
-                                  BalanceInvoice: "",
                                   AnalogTemp: Value(""),
                                   PlugInTemp: Value(""),
                                   BalanceQty: Value(""),
@@ -692,3 +724,95 @@ Screens:
                         RadiusTopRight: =10
                         Size: =15
                         Text: ="Manage users"
+      - conHomeNotFound:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            Height: =Parent.Height
+            Visible: =ctxTruckNotFound
+            Width: =Parent.Width
+            X: =0
+            Y: =0
+          Children:
+            - recHomeNotFoundShade:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  Fill: =RGBA(31, 41, 51, 0.55)
+                  Height: =Parent.Height
+                  Width: =Parent.Width
+                  X: =0
+                  Y: =0
+            - conHomeNotFoundCard:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.Bold
+                  Fill: =RGBA(255, 255, 255, 1)
+                  Height: =48 + lblHomeNotFound.Height + 12 + lblHomeNotFoundRead.Height + 12 + 56
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =12
+                  PaddingBottom: =24
+                  PaddingLeft: =24
+                  PaddingRight: =24
+                  PaddingTop: =24
+                  RadiusBottomLeft: =12
+                  RadiusBottomRight: =12
+                  RadiusTopLeft: =12
+                  RadiusTopRight: =12
+                  Width: =Min(Parent.Width - 32, 400)
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =(Parent.Height - Self.Height) / 2
+                Children:
+                  - lblHomeNotFound:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(196, 49, 75, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =30
+                        PaddingLeft: =0
+                        Size: =17
+                        Text: ="Vehicle not found. Please try again."
+                        Wrap: =true
+                  - lblHomeNotFoundRead:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(96, 108, 118, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        PaddingLeft: =0
+                        Size: =13
+                        Text: |-
+                          =If(IsEmpty(colTrucks), "The truck list hasn't loaded on this phone yet. Open the app once with signal.", "Read: " & ctxTruckTried & ". Only trucks registered in the GF Fleet Trucks list can be used.")
+                        Wrap: =true
+                  - btnHomeNotFoundOK:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        Fill: =RGBA(8, 144, 144, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =56
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =RGBA(0, 112, 112, 1)
+                        OnSelect: |-
+                          =UpdateContext({ctxTruckNotFound: false, ctxTruckTried: ""});
+                          Reset(txtTruck)
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 112, 112, 1)
+                        RadiusBottomLeft: =10
+                        RadiusBottomRight: =10
+                        RadiusTopLeft: =10
+                        RadiusTopRight: =10
+                        Size: =15
+                        Text: ="OK"
