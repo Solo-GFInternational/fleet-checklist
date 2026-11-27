@@ -139,7 +139,7 @@ Hiding buttons in the app is not security. **SharePoint list permissions are the
 - A **Microsoft 365 account** for every user, and the app shared with them by name (not "Everyone").
 - The **Power Apps mobile app** for offline run sheets. It needs one online launch first.
 - Flows need a **co-owner**, ideally a service account, so they survive staff changes.
-- Email alerts from the shared mailbox need **Send As** permission from IT (approved 25 Nov 2026; the flows still have to be switched over).
+- Email from the shared mailbox: Send As approved 25 Nov 2026. **Send an email from a shared mailbox (V2)** needs **Full Access** as well as Send As (with Send As only it fails: "The specified object was not found in the store", 27 Nov 2026). With Send As only, use **Send an email (V2)** with **From (Send as)** = the shared mailbox. Until then the flows send from the owner's work email.
 
 ---
 
@@ -150,7 +150,7 @@ Hiding buttons in the app is not security. **SharePoint list permissions are the
 | **Solomone Tuilagivou** | Project owner and developer: app, lists, flows, scripts. App Admin |
 | **Krish Kumar** | Business stakeholder for fleet operations: requirements (accessory checks, reporting emails) and confirmation of reviewer roles |
 | Reviewers (five recipients of the 16 Nov 2026 meeting notes) | Initial Reviewer users, roles to be confirmed with Krish |
-| IT | Microsoft 365 licences, shared-mailbox Send As (approved 25 Nov 2026), service account, a security group to share the app with |
+| IT | Microsoft 365 licences, shared-mailbox Send As (approved 25 Nov 2026) and Full Access (requested), service account |
 
 ---
 
@@ -175,21 +175,13 @@ Hiding buttons in the app is not security. **SharePoint list permissions are the
 
 ### Next steps
 
-1. **Paste and publish** the changed screens (scrHome, scrPreTrip, scrRunSheet, scrReview, new scrHelp) and test on a phone, including the QR codes (`files/Fleet Trucks - QR codes.docx`) and airplane mode for the run sheet.
-2. **Switch the flow emails to the shared mailbox** (permission approved 25 Nov 2026), then send a test run:
-   - **Run Sheet - Submission email v2** (import package): replace `Send_an_email_(V2)` with **Send an email from a shared mailbox (V2)**. Set Original Mailbox Address to the shared mailbox and carry over To, Subject, Body, Importance and **Attachments** (`variables('photoFiles')`). Point `Update_item`'s run-after at the new action.
-   - **Tell owner it failed** (v2): optional; switch it too if every email should come from the shared mailbox.
-   - **Run Sheet - Submission email (v1)**: only if it stays live. Otherwise turn v1 off when v2 goes on, or both will send.
-   - `scripts/build_submission_email_flow.py`: add a shared-mailbox input and convert both send actions (`SharedMailboxSendEmailV2` + mailbox address), and accept either action name. Take the hard-coded failure address out of the tracked file.
-   - Docs: setup guide (Option B steps 7–9, the "Tell owner it failed" step, the "keeps sending from the flow owner's mailbox" note, the waiting-on-IT row), PROJECT_HANDOVER §4 and §7 gotchas, PROJECT_GUIDE.
-   - The account that owns the Office 365 Outlook connection needs **Send As** on the mailbox (Full Access alone isn't enough). Allow up to an hour after IT's change before testing.
-3. **Take the manual screenshots** (36, listed in `files/Manual - screenshot list.md`), run `scripts/prepare_manual_screenshots.ps1` and `scripts/build_help_screen.py`, upload the images to Media.
-4. **Daily SharePoint views:** Total stops per day on Run Sheets (by hand). Driving and waiting time need minute columns written by the app; decide whether the first and last legs count, then build.
-5. Fix the flagged COF dates in GF Fleet Trucks (load with `scripts/create_trucks_list.js` instead of a grid paste). Reviewers fill in blower and truck service dates.
-6. Get from Krish: which items apply to Ambient vs Frozen trucks, the final wording session, and whether the COF label has a barcode.
-7. Ask IT for a security group to share the app with; then extend `SyncAppUser` to add and remove members.
-8. Housekeeping: commit the pending work (not the office truck workbook, which has staff names), rewrite PROJECT_HANDOVER "Current state", add a co-owner / service account to every flow.
+1. **Paste and publish** scrHome, scrPreTrip, scrPhotos, scrRunSheet, scrReview (27 Nov fixes: comment box, camera speed, tabs on small phones) and scrHelp if not yet pasted. Test on a phone with one of the pilot users: QR scan, a No with a comment, run sheet in airplane mode then upload.
+2. **Fleet Checklist columns must not be "required" in SharePoint** (a reviewer-only item blocked every submit, 27 Nov). Check List settings > Columns, or run `scripts/create_checklist_v2_columns.js` with `MODE = 'optional'`.
+3. **Shared mailbox:** the flows send from the owner's work email for now. Waiting on IT for **Full Access**; then switch to **Send an email from a shared mailbox (V2)** (or now: **Send an email (V2)** with **From (Send as)**, which needs Send As only). Update `scripts/build_submission_email_flow.py` to match, and take the hard-coded failure address out of the tracked file.
+4. **Take the manual screenshots** (36, listed in `files/Manual - screenshot list.md`), run `scripts/prepare_manual_screenshots.ps1` and `scripts/build_help_screen.py`, upload the images to Media.
+5. **Daily SharePoint views:** Total stops per day on Run Sheets (by hand). Driving and waiting time need minute columns written by the app; decide whether the first and last legs count, then build.
+6. Fix the flagged COF dates in GF Fleet Trucks (load with `scripts/create_trucks_list.js`, pasting `files/Fleet Trucks.csv` into `CSV_TEXT`). Reviewers fill in blower and truck service dates.
+7. Get from Krish: which items apply to Ambient vs Frozen trucks, the final wording session (then run the column script with `MODE = 'rename'`), and whether the COF label has a barcode.
+8. Add a co-owner / service account to every flow; merge `meeting-changes-2026-11` into `main` once testing passes.
 9. Outstanding reporting emails: Trade Issue, Fleet Checklist export to Excel/MEX. Phase 2: monthly Driver Assessment with an Assessor role.
 10. Pilot with one or two trucks for a week, then roll out.
-
-See [PROJECT_HISTORY.md](PROJECT_HISTORY.md) for the full log and [PROJECT_HANDOVER.md](PROJECT_HANDOVER.md) for technical detail.

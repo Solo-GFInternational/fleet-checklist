@@ -112,6 +112,7 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Height: =6
                   - recReviewStripe2:
                       Control: Rectangle@2.3.0
@@ -119,6 +120,7 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(0, 184, 216, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Height: =6
                   - recReviewStripe3:
                       Control: Rectangle@2.3.0
@@ -126,6 +128,7 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(248, 208, 0, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Height: =6
                   - recReviewStripe4:
                       Control: Rectangle@2.3.0
@@ -133,6 +136,7 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(160, 200, 80, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Height: =6
             - conReviewTabs:
                 Control: GroupContainer@1.5.0
@@ -163,6 +167,7 @@ Screens:
                         DisabledFill: =RGBA(186, 198, 200, 1)
                         Fill: =If(ctxTab = "Checks", RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =If(ctxTab = "Checks", FontWeight.Bold, FontWeight.Semibold)
                         Height: =48
@@ -194,6 +199,7 @@ Screens:
                         DisabledFill: =RGBA(186, 198, 200, 1)
                         Fill: =If(ctxTab = "Runs", RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =If(ctxTab = "Runs", FontWeight.Bold, FontWeight.Semibold)
                         Height: =48
@@ -225,6 +231,7 @@ Screens:
                         DisabledFill: =RGBA(186, 198, 200, 1)
                         Fill: =If(ctxTab = "Decls", RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =If(ctxTab = "Decls", FontWeight.Bold, FontWeight.Semibold)
                         Height: =48
@@ -256,6 +263,7 @@ Screens:
                         DisabledFill: =RGBA(186, 198, 200, 1)
                         Fill: =If(ctxTab = "Daily", RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =If(ctxTab = "Daily", FontWeight.Bold, FontWeight.Semibold)
                         Height: =48
@@ -383,6 +391,7 @@ Screens:
                                     BorderStyle: =BorderStyle.None
                                     Color: =RGBA(96, 108, 118, 1)
                                     FillPortions: =1
+                                    LayoutMinWidth: =0
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Normal
                                     Height: =40
@@ -404,6 +413,7 @@ Screens:
                                 =Set(varReviewing, true);
                                 Set(varCheck, LookUp('Fleet Checklist', ID = ThisItem.ID));
                                 EditForm(frmPreTrip);
+                                Set(varTruckInfo, Blank());
                                 Navigate(scrPreTrip, ScreenTransition.None, {ctxPage: 1, ctxSec: "cabin"})
                               TemplatePadding: =0
                               TemplateSize: =120
@@ -661,6 +671,7 @@ Screens:
                                     EndYear: =Year(Today()) + 1
                                     Fill: =RGBA(255, 255, 255, 1)
                                     FillPortions: =1
+                                    LayoutMinWidth: =0
                                     Font: =Font.'Segoe UI'
                                     Height: =48
                                     IconBackground: =RGBA(8, 144, 144, 1)
@@ -1477,6 +1488,7 @@ Screens:
                         DisabledFill: =RGBA(186, 198, 200, 1)
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
@@ -1506,6 +1518,7 @@ Screens:
                         DisplayMode: =If(ctxRun.Status.Value = "Open", DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
@@ -1546,6 +1559,7 @@ Screens:
                         DisplayMode: =If(IsBlank(ctxDecl.field_19), DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
@@ -1585,6 +1599,7 @@ Screens:
                         DisplayMode: =If(ctxStars >= 1 && Connection.Connected, DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56

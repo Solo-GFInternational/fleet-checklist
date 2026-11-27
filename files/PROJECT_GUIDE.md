@@ -58,7 +58,7 @@ A phone-first **Power Apps canvas app** that replaces the GF truck fleet's daily
 - **Current release steps** (all in `files/Setup guide - Nov 2026 release.md`): merge branch → run `create_checklist_v2_columns.js` (now `MODE = 'rename'`), `create_checklist_defects.js`, `create_trucks_list.js`, `create_runsheet_v2_columns.js`, `create_daily_reviews.js` → add `RunKey`/`StopKey` optional inputs to **SaveFleetPhotos** → build `Run Sheet - Submission email v2` with `py -3 -I scripts/build_submission_email_flow.py files "<exported flow zip>"`, import via *Import Package (Legacy)*, turn the **new flow on and the old one off** → in Studio add data sources (Defects, Trucks, Daily Reviews), refresh others, re-add SaveFleetPhotos, paste screens in the guide's order → publish → test.
 - **Flows the app depends on:** `SaveFleetPhotos` (instant, called by app), `SyncAppUser` (instant, called by scrUsers), `Run Sheet - Submission email` (SharePoint-triggered, not in the app). Legacy Forms flows (Driver Declaration/Run Sheet/Pre-Trip → SharePoint) remain from the earlier track.
 - **SharePoint (Fleet Operations site):** Fleet Checklist, GF Fleet Checklist Defects, Run Sheets, Run Sheet Details, Driver Declarations, GF Fleet Checklist App Users, GF Fleet Trucks, GF Fleet Daily Reviews, Fleet Photos library; groups Fleet App Drivers / Fleet App Reviewers.
-- **Sharing/rollout:** share the app by name (not "Everyone") after reviewer roles are confirmed; pilot 1–2 trucks for a week. Sharing process beyond that — not documented, confirm with project owner.
+- **Sharing/rollout:** share the app by name (not "Everyone") after reviewer roles are confirmed; pilot 1–2 trucks for a week. Sharing is by hand: add the person on Manage users, then Apps > ... > Share as a User (handover 4.4 step 6).
 
 ## 5. Access & accounts needed
 
@@ -67,9 +67,9 @@ A phone-first **Power Apps canvas app** that replaces the GF truck fleet's daily
 - **Power Automate:** owner/co-owner of SaveFleetPhotos, SyncAppUser and Run Sheet - Submission email (a co-owner/service account is still to be added). SyncAppUser's owner must be able to manage SharePoint groups.
 - **SharePoint:** site Owner on Fleet Operations (scripts break inheritance, create groups and permission levels).
 - **App role:** a row in GF Fleet Checklist App Users with `AppRole = Admin` (added by an existing Admin on scrUsers).
-- **Mailbox:** flow owner's Office 365 Outlook connection sends the submission email; shared-mailbox **Send As** pending from IT.
+- **Mailbox:** flow owner's Office 365 Outlook connection sends the submission email; shared-mailbox Send As granted 25 Nov 2026; **Full Access** pending from IT (needed for *Send an email from a shared mailbox*).
 - **Licences:** Microsoft 365 for every user (drivers ideally Frontline F1/F3 — confirm with IT); no premium Power Platform licence needed today.
-- **People:** Solomone Tuilagivou (owner/developer, Admin), Krish Kumar (fleet ops stakeholder), Pawan's team (wording approval), IT (licences, Send As, service account), office (truck due dates).
+- **People:** Solomone Tuilagivou (owner/developer, Admin), Krish Kumar (fleet ops stakeholder), Pawan's team (wording approval), IT (licences, shared-mailbox access, service account), office (truck due dates).
 
 ## 6. Conventions & gotchas
 
@@ -89,6 +89,6 @@ A phone-first **Power Apps canvas app** that replaces the GF truck fleet's daily
 - Uncommitted work on `meeting-changes-2026-11` (registered-trucks-only, QR doc, rest-time panel, new truck files); `scripts/__pycache__/` should be git-ignored.
 - Release not deployed: run the setup guide end to end, merge the branch to `main`, publish, then pilot.
 - Flows depend on a single personal owner — add a co-owner / service account.
-- Waiting on Krish (Frozen-only items, reviewer roles), office (truck due dates), IT (Send As on shared mailbox), Pawan (final wording sign-off before the rename).
+- Waiting on Krish (Frozen-only items, reviewer roles), office (truck due dates), IT (Full Access on shared mailbox), Pawan (final wording sign-off before the rename).
 - Backlog: Trade Issue and Fleet Checklist/MEX reporting emails, Team Leader run sheet approval columns, Phase 2 Driver Assessment.
 - Full list: [STATUS-fleet-checklist.md](STATUS-fleet-checklist.md) "Next Steps & Open TODOs" and "Blockers".

@@ -17,6 +17,12 @@
       through DataSourceInfo, so no app change.
       Columns whose display name already matches are skipped.
 
+  MODE = 'optional' (run when a submit fails with "An entry is required ... Field(s) with problems"):
+    - turns off "Require that this column contains information" on every column in ITEMS. The app
+      decides which answers are required; cards a driver doesn't see (reviewer-only items such as
+      Underneath greasing done, items for the other truck type) are sent blank, and a column still
+      required in SharePoint makes the whole checklist fail to save (found 27 Nov 2026).
+
   ITEMS is generated from scripts/checklist_items.json (field, proposed wording, new Yes/No column?).
   If the JSON changes, update ITEMS to match.
 
@@ -32,7 +38,7 @@
 */
 (async () => {
   const LIST = 'Fleet Checklist';
-  const MODE = 'rename';   // 'create' | 'rename'
+  const MODE = 'rename';   // 'create' | 'rename' | 'optional'
   const DRY_RUN = true;
 
   // [internal name, proposed display name, new Yes/No column to create?]
@@ -130,7 +136,7 @@
   const V = 'application/json;odata=verbose';
   const out = [];
 
-  const existingRes = await fetch(`${list}/fields?$select=InternalName,Title,Indexed`, { headers: { Accept: V } });
+  const existingRes = await fetch(`${list}/fields?$select=InternalName,Title,Indexed,Required`, { headers: { Accept: V } });
   if (!existingRes.ok) { console.log(`List "${LIST}" not found or no access (${existingRes.status})`); return; }
   const existing = new Map((await existingRes.json()).d.results.map(f => [f.InternalName, f]));
 
@@ -187,10 +193,20 @@
       if (r.ok) { out.push(`renamed ${name}  "${f.Title}"  ->  "${title}"`); done++; }
       else { out.push(`FAILED  ${name}  (${r.status}) ${(await r.text()).slice(0, 200)}`); failed++; }
     }
+  } else if (MODE === 'optional') {
+    for (const [name] of ITEMS) {
+      const f = existing.get(name);
+      if (!f) { out.push(`MISSING ${name}  (run MODE = 'create' first)`); failed++; continue; }
+      if (!f.Required) { skipped++; continue; }
+      if (DRY_RUN) { out.push(`would make optional  ${name}  "${f.Title}"`); continue; }
+      const r = await mergeField(name, { Required: false });
+      if (r.ok) { out.push(`optional ${name}  "${f.Title}"`); done++; }
+      else { out.push(`FAILED  ${name}  (${r.status}) ${(await r.text()).slice(0, 200)}`); failed++; }
+    }
   } else {
-    out.push(`Unknown MODE "${MODE}". Use 'create' or 'rename'.`);
+    out.push(`Unknown MODE "${MODE}". Use 'create', 'rename' or 'optional'.`);
   }
 
-  out.push('', `${MODE === 'create' ? 'created' : 'renamed'} ${done}, skipped ${skipped}, problems ${failed}`);
+  out.push('', `${{ create: 'created', rename: 'renamed', optional: 'made optional' }[MODE] || 'changed'} ${done}, skipped ${skipped}, problems ${failed}`);
   console.log('=====\n' + out.join('\n') + '\n=====');
 })();

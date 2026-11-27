@@ -163,6 +163,7 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Height: =6
                   - recRunSheetStripe2:
                       Control: Rectangle@2.3.0
@@ -170,6 +171,7 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(0, 184, 216, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Height: =6
                   - recRunSheetStripe3:
                       Control: Rectangle@2.3.0
@@ -177,6 +179,7 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(248, 208, 0, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Height: =6
                   - recRunSheetStripe4:
                       Control: Rectangle@2.3.0
@@ -184,6 +187,7 @@ Screens:
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Fill: =RGBA(160, 200, 80, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Height: =6
             - conRunSheetTabs:
                 Control: GroupContainer@1.5.0
@@ -214,6 +218,7 @@ Screens:
                         DisabledFill: =RGBA(255, 255, 255, 1)
                         Fill: =If(ctxTab = "Trip", RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =If(ctxTab = "Trip", FontWeight.Bold, FontWeight.Semibold)
                         Height: =48
@@ -244,6 +249,7 @@ Screens:
                         DisplayMode: =If(!IsBlank(varRunSheet), DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =If(ctxTab = "Stops", RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =If(ctxTab = "Stops", FontWeight.Bold, FontWeight.Semibold)
                         Height: =48
@@ -274,6 +280,7 @@ Screens:
                         DisplayMode: =If(!IsBlank(varRunSheet), DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =If(ctxTab = "End", RGBA(226, 243, 242, 1), RGBA(255, 255, 255, 1))
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =If(ctxTab = "End", FontWeight.Bold, FontWeight.Semibold)
                         Height: =48
@@ -340,6 +347,7 @@ Screens:
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
                               FillPortions: =1
+                              LayoutMinWidth: =0
                               Height: =56
                               PaddingLeft: =0
                               Size: =13
@@ -2333,6 +2341,7 @@ Screens:
                                     DisabledFill: =RGBA(186, 198, 200, 1)
                                     Fill: =If(ctxInvBalanced = true, RGBA(8, 144, 144, 1), RGBA(255, 255, 255, 1))
                                     FillPortions: =1
+                                    LayoutMinWidth: =0
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Semibold
                                     Height: =52
@@ -2362,6 +2371,7 @@ Screens:
                                     DisabledFill: =RGBA(186, 198, 200, 1)
                                     Fill: =If(ctxInvBalanced = false, RGBA(8, 144, 144, 1), RGBA(255, 255, 255, 1))
                                     FillPortions: =1
+                                    LayoutMinWidth: =0
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Semibold
                                     Height: =52
@@ -2475,6 +2485,7 @@ Screens:
                           lblRunDepartureVal.Text <> "!", DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
@@ -2545,6 +2556,7 @@ Screens:
                         DisabledFill: =RGBA(186, 198, 200, 1)
                         Fill: =RGBA(255, 255, 255, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
@@ -2597,6 +2609,7 @@ Screens:
                           CountRows(Filter(colInvoicePhotos, RunKey = varRunSheet.LocalKey && StopKey = ctxStopKey && Slot <= Value(txtStopInvoices.Text))) = Value(txtStopInvoices.Text), DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
@@ -2676,6 +2689,7 @@ Screens:
                           !IsBlank(ctxInvBalanced), DisplayMode.Edit, DisplayMode.Disabled)
                         Fill: =RGBA(8, 144, 144, 1)
                         FillPortions: =1
+                        LayoutMinWidth: =0
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
                         Height: =56
@@ -2810,6 +2824,7 @@ Screens:
                               DisabledColor: =RGBA(255, 255, 255, 1)
                               DisabledFill: =RGBA(186, 198, 200, 1)
                               FillPortions: =1
+                              LayoutMinWidth: =0
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
                               Height: =56
@@ -2839,6 +2854,7 @@ Screens:
                               DisabledColor: =RGBA(255, 255, 255, 1)
                               DisabledFill: =RGBA(186, 198, 200, 1)
                               FillPortions: =1
+                              LayoutMinWidth: =0
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
                               Height: =56
@@ -2884,6 +2900,7 @@ Screens:
                               DisabledColor: =RGBA(255, 255, 255, 1)
                               DisabledFill: =RGBA(186, 198, 200, 1)
                               FillPortions: =1
+                              LayoutMinWidth: =0
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
                               Height: =56
@@ -2914,6 +2931,7 @@ Screens:
                               DisabledColor: =RGBA(255, 255, 255, 1)
                               DisabledFill: =RGBA(186, 198, 200, 1)
                               FillPortions: =1
+                              LayoutMinWidth: =0
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
                               Height: =56
@@ -2944,6 +2962,7 @@ Screens:
                               DisabledColor: =RGBA(255, 255, 255, 1)
                               DisabledFill: =RGBA(186, 198, 200, 1)
                               FillPortions: =1
+                              LayoutMinWidth: =0
                               Font: =Font.'Segoe UI'
                               FontWeight: =FontWeight.Semibold
                               Height: =56

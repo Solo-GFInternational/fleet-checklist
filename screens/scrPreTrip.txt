@@ -5,7 +5,9 @@ Screens:
       ImagePosition: =ImagePosition.Fill
       LoadingSpinnerColor: =RGBA(8, 144, 144, 1)
       OnVisible: |-
-        =Set(varTruckInfo, LookUp('GF Fleet Trucks', Title = If(varReviewing, varCheck.field_1, varTruck) && ActiveYN = true));
+        =With({tk: If(varReviewing, varCheck.field_1, varTruck)},
+            If(IsBlank(varTruckInfo) || varTruckInfo.Title <> tk,
+                Set(varTruckInfo, LookUp('GF Fleet Trucks', Title = tk && ActiveYN = true))));
         Set(varTyreCount, Min(Coalesce(varTruckInfo.NoOfTyres, 6), 12));
         If(varReviewing, ClearCollect(colCheckDefects, Filter('GF Fleet Checklist Defects', ChecklistID = varCheck.ID)), Clear(colCheckDefects));
         ClearCollect(colPages, If(varReviewing,
@@ -573,8 +575,9 @@ Screens:
                           =If(varReviewing, Parent.Default, LookUp(colDraft, f = "field_3").a)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_3");
-                              Collect(colDraft, {f: "field_3", a: Self.Text, c: ""});
+                              If(IsBlank(LookUp(colDraft, f = "field_3")),
+                                  Collect(colDraft, {f: "field_3", a: Self.Text, c: ""}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_3"), {a: Self.Text, c: ""}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         DelayOutput: =true
                         DisabledBorderColor: =RGBA(0, 0, 0, 0)
@@ -738,14 +741,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "LicenceValid");
-                              Collect(colDraft, {f: "LicenceValid", a: "Yes", c: txtLicenceValidCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "LicenceValid")),
+                                  Collect(colDraft, {f: "LicenceValid", a: "Yes", c: txtLicenceValidCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "LicenceValid"), {a: "Yes", c: txtLicenceValidCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkLicenceValidNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "LicenceValid");
-                              Collect(colDraft, {f: "LicenceValid", a: If(DataCardValue103.Value, "Yes", chkLicenceValidNo.Value, "No", ""), c: txtLicenceValidCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "LicenceValid")),
+                                  Collect(colDraft, {f: "LicenceValid", a: If(DataCardValue103.Value, "Yes", chkLicenceValidNo.Value, "No", ""), c: txtLicenceValidCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "LicenceValid"), {a: If(DataCardValue103.Value, "Yes", chkLicenceValidNo.Value, "No", ""), c: txtLicenceValidCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -774,14 +779,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "LicenceValid");
-                              Collect(colDraft, {f: "LicenceValid", a: "No", c: txtLicenceValidCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "LicenceValid")),
+                                  Collect(colDraft, {f: "LicenceValid", a: "No", c: txtLicenceValidCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "LicenceValid"), {a: "No", c: txtLicenceValidCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue103)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "LicenceValid");
-                              Collect(colDraft, {f: "LicenceValid", a: If(DataCardValue103.Value, "Yes", chkLicenceValidNo.Value, "No", ""), c: txtLicenceValidCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "LicenceValid")),
+                                  Collect(colDraft, {f: "LicenceValid", a: If(DataCardValue103.Value, "Yes", chkLicenceValidNo.Value, "No", ""), c: txtLicenceValidCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "LicenceValid"), {a: If(DataCardValue103.Value, "Yes", chkLicenceValidNo.Value, "No", ""), c: txtLicenceValidCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -810,8 +817,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "LicenceValid");
-                              Collect(colDraft, {f: "LicenceValid", a: If(DataCardValue103.Value, "Yes", chkLicenceValidNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "LicenceValid")),
+                                  Collect(colDraft, {f: "LicenceValid", a: If(DataCardValue103.Value, "Yes", chkLicenceValidNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "LicenceValid"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -972,8 +980,9 @@ Screens:
                           =If(varReviewing, Text(Parent.Default), LookUp(colDraft, f = "field_50").a)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_50");
-                              Collect(colDraft, {f: "field_50", a: Self.Text, c: ""});
+                              If(IsBlank(LookUp(colDraft, f = "field_50")),
+                                  Collect(colDraft, {f: "field_50", a: Self.Text, c: ""}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_50"), {a: Self.Text, c: ""}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         DelayOutput: =true
                         DisabledBorderColor: =RGBA(0, 0, 0, 0)
@@ -1151,14 +1160,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_21");
-                              Collect(colDraft, {f: "field_21", a: "Yes", c: txtDashGaugesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_21")),
+                                  Collect(colDraft, {f: "field_21", a: "Yes", c: txtDashGaugesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_21"), {a: "Yes", c: txtDashGaugesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkDashGaugesNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_21");
-                              Collect(colDraft, {f: "field_21", a: If(DataCardValue34.Value, "Yes", chkDashGaugesNo.Value, "No", ""), c: txtDashGaugesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_21")),
+                                  Collect(colDraft, {f: "field_21", a: If(DataCardValue34.Value, "Yes", chkDashGaugesNo.Value, "No", ""), c: txtDashGaugesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_21"), {a: If(DataCardValue34.Value, "Yes", chkDashGaugesNo.Value, "No", ""), c: txtDashGaugesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1187,14 +1198,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_21");
-                              Collect(colDraft, {f: "field_21", a: "No", c: txtDashGaugesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_21")),
+                                  Collect(colDraft, {f: "field_21", a: "No", c: txtDashGaugesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_21"), {a: "No", c: txtDashGaugesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue34)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_21");
-                              Collect(colDraft, {f: "field_21", a: If(DataCardValue34.Value, "Yes", chkDashGaugesNo.Value, "No", ""), c: txtDashGaugesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_21")),
+                                  Collect(colDraft, {f: "field_21", a: If(DataCardValue34.Value, "Yes", chkDashGaugesNo.Value, "No", ""), c: txtDashGaugesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_21"), {a: If(DataCardValue34.Value, "Yes", chkDashGaugesNo.Value, "No", ""), c: txtDashGaugesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1223,8 +1236,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_21");
-                              Collect(colDraft, {f: "field_21", a: If(DataCardValue34.Value, "Yes", chkDashGaugesNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_21")),
+                                  Collect(colDraft, {f: "field_21", a: If(DataCardValue34.Value, "Yes", chkDashGaugesNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_21"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -1346,14 +1360,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_19");
-                              Collect(colDraft, {f: "field_19", a: "Yes", c: txtHornCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_19")),
+                                  Collect(colDraft, {f: "field_19", a: "Yes", c: txtHornCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_19"), {a: "Yes", c: txtHornCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkHornNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_19");
-                              Collect(colDraft, {f: "field_19", a: If(DataCardValue52.Value, "Yes", chkHornNo.Value, "No", ""), c: txtHornCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_19")),
+                                  Collect(colDraft, {f: "field_19", a: If(DataCardValue52.Value, "Yes", chkHornNo.Value, "No", ""), c: txtHornCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_19"), {a: If(DataCardValue52.Value, "Yes", chkHornNo.Value, "No", ""), c: txtHornCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1382,14 +1398,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_19");
-                              Collect(colDraft, {f: "field_19", a: "No", c: txtHornCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_19")),
+                                  Collect(colDraft, {f: "field_19", a: "No", c: txtHornCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_19"), {a: "No", c: txtHornCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue52)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_19");
-                              Collect(colDraft, {f: "field_19", a: If(DataCardValue52.Value, "Yes", chkHornNo.Value, "No", ""), c: txtHornCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_19")),
+                                  Collect(colDraft, {f: "field_19", a: If(DataCardValue52.Value, "Yes", chkHornNo.Value, "No", ""), c: txtHornCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_19"), {a: If(DataCardValue52.Value, "Yes", chkHornNo.Value, "No", ""), c: txtHornCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1418,8 +1436,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_19");
-                              Collect(colDraft, {f: "field_19", a: If(DataCardValue52.Value, "Yes", chkHornNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_19")),
+                                  Collect(colDraft, {f: "field_19", a: If(DataCardValue52.Value, "Yes", chkHornNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_19"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -1541,14 +1560,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_17");
-                              Collect(colDraft, {f: "field_17", a: "Yes", c: txtCabinSpotLightCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_17")),
+                                  Collect(colDraft, {f: "field_17", a: "Yes", c: txtCabinSpotLightCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_17"), {a: "Yes", c: txtCabinSpotLightCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkCabinSpotLightNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_17");
-                              Collect(colDraft, {f: "field_17", a: If(DataCardValue36.Value, "Yes", chkCabinSpotLightNo.Value, "No", ""), c: txtCabinSpotLightCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_17")),
+                                  Collect(colDraft, {f: "field_17", a: If(DataCardValue36.Value, "Yes", chkCabinSpotLightNo.Value, "No", ""), c: txtCabinSpotLightCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_17"), {a: If(DataCardValue36.Value, "Yes", chkCabinSpotLightNo.Value, "No", ""), c: txtCabinSpotLightCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1577,14 +1598,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_17");
-                              Collect(colDraft, {f: "field_17", a: "No", c: txtCabinSpotLightCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_17")),
+                                  Collect(colDraft, {f: "field_17", a: "No", c: txtCabinSpotLightCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_17"), {a: "No", c: txtCabinSpotLightCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue36)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_17");
-                              Collect(colDraft, {f: "field_17", a: If(DataCardValue36.Value, "Yes", chkCabinSpotLightNo.Value, "No", ""), c: txtCabinSpotLightCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_17")),
+                                  Collect(colDraft, {f: "field_17", a: If(DataCardValue36.Value, "Yes", chkCabinSpotLightNo.Value, "No", ""), c: txtCabinSpotLightCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_17"), {a: If(DataCardValue36.Value, "Yes", chkCabinSpotLightNo.Value, "No", ""), c: txtCabinSpotLightCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1613,8 +1636,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_17");
-                              Collect(colDraft, {f: "field_17", a: If(DataCardValue36.Value, "Yes", chkCabinSpotLightNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_17")),
+                                  Collect(colDraft, {f: "field_17", a: If(DataCardValue36.Value, "Yes", chkCabinSpotLightNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_17"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -1736,14 +1760,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_30");
-                              Collect(colDraft, {f: "field_30", a: "Yes", c: txtParkBrakeCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_30")),
+                                  Collect(colDraft, {f: "field_30", a: "Yes", c: txtParkBrakeCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_30"), {a: "Yes", c: txtParkBrakeCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkParkBrakeNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_30");
-                              Collect(colDraft, {f: "field_30", a: If(DataCardValue64.Value, "Yes", chkParkBrakeNo.Value, "No", ""), c: txtParkBrakeCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_30")),
+                                  Collect(colDraft, {f: "field_30", a: If(DataCardValue64.Value, "Yes", chkParkBrakeNo.Value, "No", ""), c: txtParkBrakeCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_30"), {a: If(DataCardValue64.Value, "Yes", chkParkBrakeNo.Value, "No", ""), c: txtParkBrakeCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1772,14 +1798,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_30");
-                              Collect(colDraft, {f: "field_30", a: "No", c: txtParkBrakeCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_30")),
+                                  Collect(colDraft, {f: "field_30", a: "No", c: txtParkBrakeCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_30"), {a: "No", c: txtParkBrakeCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue64)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_30");
-                              Collect(colDraft, {f: "field_30", a: If(DataCardValue64.Value, "Yes", chkParkBrakeNo.Value, "No", ""), c: txtParkBrakeCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_30")),
+                                  Collect(colDraft, {f: "field_30", a: If(DataCardValue64.Value, "Yes", chkParkBrakeNo.Value, "No", ""), c: txtParkBrakeCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_30"), {a: If(DataCardValue64.Value, "Yes", chkParkBrakeNo.Value, "No", ""), c: txtParkBrakeCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1808,8 +1836,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_30");
-                              Collect(colDraft, {f: "field_30", a: If(DataCardValue64.Value, "Yes", chkParkBrakeNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_30")),
+                                  Collect(colDraft, {f: "field_30", a: If(DataCardValue64.Value, "Yes", chkParkBrakeNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_30"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -1931,14 +1960,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_26");
-                              Collect(colDraft, {f: "field_26", a: "Yes", c: txtSeatBeltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_26")),
+                                  Collect(colDraft, {f: "field_26", a: "Yes", c: txtSeatBeltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_26"), {a: "Yes", c: txtSeatBeltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkSeatBeltsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_26");
-                              Collect(colDraft, {f: "field_26", a: If(DataCardValue38.Value, "Yes", chkSeatBeltsNo.Value, "No", ""), c: txtSeatBeltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_26")),
+                                  Collect(colDraft, {f: "field_26", a: If(DataCardValue38.Value, "Yes", chkSeatBeltsNo.Value, "No", ""), c: txtSeatBeltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_26"), {a: If(DataCardValue38.Value, "Yes", chkSeatBeltsNo.Value, "No", ""), c: txtSeatBeltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -1967,14 +1998,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_26");
-                              Collect(colDraft, {f: "field_26", a: "No", c: txtSeatBeltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_26")),
+                                  Collect(colDraft, {f: "field_26", a: "No", c: txtSeatBeltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_26"), {a: "No", c: txtSeatBeltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue38)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_26");
-                              Collect(colDraft, {f: "field_26", a: If(DataCardValue38.Value, "Yes", chkSeatBeltsNo.Value, "No", ""), c: txtSeatBeltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_26")),
+                                  Collect(colDraft, {f: "field_26", a: If(DataCardValue38.Value, "Yes", chkSeatBeltsNo.Value, "No", ""), c: txtSeatBeltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_26"), {a: If(DataCardValue38.Value, "Yes", chkSeatBeltsNo.Value, "No", ""), c: txtSeatBeltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2003,8 +2036,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_26");
-                              Collect(colDraft, {f: "field_26", a: If(DataCardValue38.Value, "Yes", chkSeatBeltsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_26")),
+                                  Collect(colDraft, {f: "field_26", a: If(DataCardValue38.Value, "Yes", chkSeatBeltsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_26"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -2126,14 +2160,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_25");
-                              Collect(colDraft, {f: "field_25", a: "Yes", c: txtMirrorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_25")),
+                                  Collect(colDraft, {f: "field_25", a: "Yes", c: txtMirrorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_25"), {a: "Yes", c: txtMirrorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkMirrorsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_25");
-                              Collect(colDraft, {f: "field_25", a: If(DataCardValue60.Value, "Yes", chkMirrorsNo.Value, "No", ""), c: txtMirrorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_25")),
+                                  Collect(colDraft, {f: "field_25", a: If(DataCardValue60.Value, "Yes", chkMirrorsNo.Value, "No", ""), c: txtMirrorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_25"), {a: If(DataCardValue60.Value, "Yes", chkMirrorsNo.Value, "No", ""), c: txtMirrorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2162,14 +2198,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_25");
-                              Collect(colDraft, {f: "field_25", a: "No", c: txtMirrorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_25")),
+                                  Collect(colDraft, {f: "field_25", a: "No", c: txtMirrorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_25"), {a: "No", c: txtMirrorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue60)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_25");
-                              Collect(colDraft, {f: "field_25", a: If(DataCardValue60.Value, "Yes", chkMirrorsNo.Value, "No", ""), c: txtMirrorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_25")),
+                                  Collect(colDraft, {f: "field_25", a: If(DataCardValue60.Value, "Yes", chkMirrorsNo.Value, "No", ""), c: txtMirrorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_25"), {a: If(DataCardValue60.Value, "Yes", chkMirrorsNo.Value, "No", ""), c: txtMirrorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2198,8 +2236,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_25");
-                              Collect(colDraft, {f: "field_25", a: If(DataCardValue60.Value, "Yes", chkMirrorsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_25")),
+                                  Collect(colDraft, {f: "field_25", a: If(DataCardValue60.Value, "Yes", chkMirrorsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_25"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -2321,14 +2360,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_23");
-                              Collect(colDraft, {f: "field_23", a: "Yes", c: txtCabinDoorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_23")),
+                                  Collect(colDraft, {f: "field_23", a: "Yes", c: txtCabinDoorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_23"), {a: "Yes", c: txtCabinDoorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkCabinDoorsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_23");
-                              Collect(colDraft, {f: "field_23", a: If(DataCardValue35.Value, "Yes", chkCabinDoorsNo.Value, "No", ""), c: txtCabinDoorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_23")),
+                                  Collect(colDraft, {f: "field_23", a: If(DataCardValue35.Value, "Yes", chkCabinDoorsNo.Value, "No", ""), c: txtCabinDoorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_23"), {a: If(DataCardValue35.Value, "Yes", chkCabinDoorsNo.Value, "No", ""), c: txtCabinDoorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2357,14 +2398,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_23");
-                              Collect(colDraft, {f: "field_23", a: "No", c: txtCabinDoorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_23")),
+                                  Collect(colDraft, {f: "field_23", a: "No", c: txtCabinDoorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_23"), {a: "No", c: txtCabinDoorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue35)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_23");
-                              Collect(colDraft, {f: "field_23", a: If(DataCardValue35.Value, "Yes", chkCabinDoorsNo.Value, "No", ""), c: txtCabinDoorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_23")),
+                                  Collect(colDraft, {f: "field_23", a: If(DataCardValue35.Value, "Yes", chkCabinDoorsNo.Value, "No", ""), c: txtCabinDoorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_23"), {a: If(DataCardValue35.Value, "Yes", chkCabinDoorsNo.Value, "No", ""), c: txtCabinDoorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2393,8 +2436,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_23");
-                              Collect(colDraft, {f: "field_23", a: If(DataCardValue35.Value, "Yes", chkCabinDoorsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_23")),
+                                  Collect(colDraft, {f: "field_23", a: If(DataCardValue35.Value, "Yes", chkCabinDoorsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_23"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -2516,14 +2560,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "CabGlassDriver");
-                              Collect(colDraft, {f: "CabGlassDriver", a: "Yes", c: txtCabGlassDriverCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "CabGlassDriver")),
+                                  Collect(colDraft, {f: "CabGlassDriver", a: "Yes", c: txtCabGlassDriverCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "CabGlassDriver"), {a: "Yes", c: txtCabGlassDriverCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkCabGlassDriverNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "CabGlassDriver");
-                              Collect(colDraft, {f: "CabGlassDriver", a: If(DataCardValue104.Value, "Yes", chkCabGlassDriverNo.Value, "No", ""), c: txtCabGlassDriverCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "CabGlassDriver")),
+                                  Collect(colDraft, {f: "CabGlassDriver", a: If(DataCardValue104.Value, "Yes", chkCabGlassDriverNo.Value, "No", ""), c: txtCabGlassDriverCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "CabGlassDriver"), {a: If(DataCardValue104.Value, "Yes", chkCabGlassDriverNo.Value, "No", ""), c: txtCabGlassDriverCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2552,14 +2598,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "CabGlassDriver");
-                              Collect(colDraft, {f: "CabGlassDriver", a: "No", c: txtCabGlassDriverCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "CabGlassDriver")),
+                                  Collect(colDraft, {f: "CabGlassDriver", a: "No", c: txtCabGlassDriverCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "CabGlassDriver"), {a: "No", c: txtCabGlassDriverCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue104)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "CabGlassDriver");
-                              Collect(colDraft, {f: "CabGlassDriver", a: If(DataCardValue104.Value, "Yes", chkCabGlassDriverNo.Value, "No", ""), c: txtCabGlassDriverCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "CabGlassDriver")),
+                                  Collect(colDraft, {f: "CabGlassDriver", a: If(DataCardValue104.Value, "Yes", chkCabGlassDriverNo.Value, "No", ""), c: txtCabGlassDriverCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "CabGlassDriver"), {a: If(DataCardValue104.Value, "Yes", chkCabGlassDriverNo.Value, "No", ""), c: txtCabGlassDriverCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2588,8 +2636,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "CabGlassDriver");
-                              Collect(colDraft, {f: "CabGlassDriver", a: If(DataCardValue104.Value, "Yes", chkCabGlassDriverNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "CabGlassDriver")),
+                                  Collect(colDraft, {f: "CabGlassDriver", a: If(DataCardValue104.Value, "Yes", chkCabGlassDriverNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "CabGlassDriver"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -2711,14 +2760,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_24");
-                              Collect(colDraft, {f: "field_24", a: "Yes", c: txtWindscreensCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_24")),
+                                  Collect(colDraft, {f: "field_24", a: "Yes", c: txtWindscreensCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_24"), {a: "Yes", c: txtWindscreensCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkWindscreensNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_24");
-                              Collect(colDraft, {f: "field_24", a: If(DataCardValue46.Value, "Yes", chkWindscreensNo.Value, "No", ""), c: txtWindscreensCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_24")),
+                                  Collect(colDraft, {f: "field_24", a: If(DataCardValue46.Value, "Yes", chkWindscreensNo.Value, "No", ""), c: txtWindscreensCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_24"), {a: If(DataCardValue46.Value, "Yes", chkWindscreensNo.Value, "No", ""), c: txtWindscreensCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2747,14 +2798,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_24");
-                              Collect(colDraft, {f: "field_24", a: "No", c: txtWindscreensCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_24")),
+                                  Collect(colDraft, {f: "field_24", a: "No", c: txtWindscreensCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_24"), {a: "No", c: txtWindscreensCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue46)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_24");
-                              Collect(colDraft, {f: "field_24", a: If(DataCardValue46.Value, "Yes", chkWindscreensNo.Value, "No", ""), c: txtWindscreensCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_24")),
+                                  Collect(colDraft, {f: "field_24", a: If(DataCardValue46.Value, "Yes", chkWindscreensNo.Value, "No", ""), c: txtWindscreensCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_24"), {a: If(DataCardValue46.Value, "Yes", chkWindscreensNo.Value, "No", ""), c: txtWindscreensCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2783,8 +2836,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_24");
-                              Collect(colDraft, {f: "field_24", a: If(DataCardValue46.Value, "Yes", chkWindscreensNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_24")),
+                                  Collect(colDraft, {f: "field_24", a: If(DataCardValue46.Value, "Yes", chkWindscreensNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_24"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -2906,14 +2960,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccCabinClean");
-                              Collect(colDraft, {f: "AccCabinClean", a: "Yes", c: txtCabinCleanCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccCabinClean")),
+                                  Collect(colDraft, {f: "AccCabinClean", a: "Yes", c: txtCabinCleanCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccCabinClean"), {a: "Yes", c: txtCabinCleanCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkCabinCleanNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccCabinClean");
-                              Collect(colDraft, {f: "AccCabinClean", a: If(DataCardValue105.Value, "Yes", chkCabinCleanNo.Value, "No", ""), c: txtCabinCleanCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccCabinClean")),
+                                  Collect(colDraft, {f: "AccCabinClean", a: If(DataCardValue105.Value, "Yes", chkCabinCleanNo.Value, "No", ""), c: txtCabinCleanCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccCabinClean"), {a: If(DataCardValue105.Value, "Yes", chkCabinCleanNo.Value, "No", ""), c: txtCabinCleanCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2942,14 +2998,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccCabinClean");
-                              Collect(colDraft, {f: "AccCabinClean", a: "No", c: txtCabinCleanCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccCabinClean")),
+                                  Collect(colDraft, {f: "AccCabinClean", a: "No", c: txtCabinCleanCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccCabinClean"), {a: "No", c: txtCabinCleanCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue105)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccCabinClean");
-                              Collect(colDraft, {f: "AccCabinClean", a: If(DataCardValue105.Value, "Yes", chkCabinCleanNo.Value, "No", ""), c: txtCabinCleanCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccCabinClean")),
+                                  Collect(colDraft, {f: "AccCabinClean", a: If(DataCardValue105.Value, "Yes", chkCabinCleanNo.Value, "No", ""), c: txtCabinCleanCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccCabinClean"), {a: If(DataCardValue105.Value, "Yes", chkCabinCleanNo.Value, "No", ""), c: txtCabinCleanCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -2978,8 +3036,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccCabinClean");
-                              Collect(colDraft, {f: "AccCabinClean", a: If(DataCardValue105.Value, "Yes", chkCabinCleanNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccCabinClean")),
+                                  Collect(colDraft, {f: "AccCabinClean", a: If(DataCardValue105.Value, "Yes", chkCabinCleanNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccCabinClean"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -3149,14 +3208,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccMats");
-                              Collect(colDraft, {f: "AccMats", a: "Yes", c: txtMatsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccMats")),
+                                  Collect(colDraft, {f: "AccMats", a: "Yes", c: txtMatsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccMats"), {a: "Yes", c: txtMatsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkMatsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccMats");
-                              Collect(colDraft, {f: "AccMats", a: If(DataCardValue106.Value, "Yes", chkMatsNo.Value, "No", ""), c: txtMatsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccMats")),
+                                  Collect(colDraft, {f: "AccMats", a: If(DataCardValue106.Value, "Yes", chkMatsNo.Value, "No", ""), c: txtMatsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccMats"), {a: If(DataCardValue106.Value, "Yes", chkMatsNo.Value, "No", ""), c: txtMatsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -3185,14 +3246,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccMats");
-                              Collect(colDraft, {f: "AccMats", a: "No", c: txtMatsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccMats")),
+                                  Collect(colDraft, {f: "AccMats", a: "No", c: txtMatsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccMats"), {a: "No", c: txtMatsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue106)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccMats");
-                              Collect(colDraft, {f: "AccMats", a: If(DataCardValue106.Value, "Yes", chkMatsNo.Value, "No", ""), c: txtMatsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccMats")),
+                                  Collect(colDraft, {f: "AccMats", a: If(DataCardValue106.Value, "Yes", chkMatsNo.Value, "No", ""), c: txtMatsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccMats"), {a: If(DataCardValue106.Value, "Yes", chkMatsNo.Value, "No", ""), c: txtMatsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -3221,8 +3284,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccMats");
-                              Collect(colDraft, {f: "AccMats", a: If(DataCardValue106.Value, "Yes", chkMatsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccMats")),
+                                  Collect(colDraft, {f: "AccMats", a: If(DataCardValue106.Value, "Yes", chkMatsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccMats"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -3392,14 +3456,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFuelCard");
-                              Collect(colDraft, {f: "AccFuelCard", a: "Yes", c: txtFuelCardCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFuelCard")),
+                                  Collect(colDraft, {f: "AccFuelCard", a: "Yes", c: txtFuelCardCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFuelCard"), {a: "Yes", c: txtFuelCardCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkFuelCardNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFuelCard");
-                              Collect(colDraft, {f: "AccFuelCard", a: If(DataCardValue107.Value, "Yes", chkFuelCardNo.Value, "No", ""), c: txtFuelCardCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFuelCard")),
+                                  Collect(colDraft, {f: "AccFuelCard", a: If(DataCardValue107.Value, "Yes", chkFuelCardNo.Value, "No", ""), c: txtFuelCardCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFuelCard"), {a: If(DataCardValue107.Value, "Yes", chkFuelCardNo.Value, "No", ""), c: txtFuelCardCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -3428,14 +3494,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFuelCard");
-                              Collect(colDraft, {f: "AccFuelCard", a: "No", c: txtFuelCardCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFuelCard")),
+                                  Collect(colDraft, {f: "AccFuelCard", a: "No", c: txtFuelCardCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFuelCard"), {a: "No", c: txtFuelCardCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue107)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFuelCard");
-                              Collect(colDraft, {f: "AccFuelCard", a: If(DataCardValue107.Value, "Yes", chkFuelCardNo.Value, "No", ""), c: txtFuelCardCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFuelCard")),
+                                  Collect(colDraft, {f: "AccFuelCard", a: If(DataCardValue107.Value, "Yes", chkFuelCardNo.Value, "No", ""), c: txtFuelCardCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFuelCard"), {a: If(DataCardValue107.Value, "Yes", chkFuelCardNo.Value, "No", ""), c: txtFuelCardCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -3464,8 +3532,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFuelCard");
-                              Collect(colDraft, {f: "AccFuelCard", a: If(DataCardValue107.Value, "Yes", chkFuelCardNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFuelCard")),
+                                  Collect(colDraft, {f: "AccFuelCard", a: If(DataCardValue107.Value, "Yes", chkFuelCardNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFuelCard"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -3635,14 +3704,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFireExtinguisher");
-                              Collect(colDraft, {f: "AccFireExtinguisher", a: "Yes", c: txtAccFireExtinguisherCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFireExtinguisher")),
+                                  Collect(colDraft, {f: "AccFireExtinguisher", a: "Yes", c: txtAccFireExtinguisherCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFireExtinguisher"), {a: "Yes", c: txtAccFireExtinguisherCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkAccFireExtinguisherNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFireExtinguisher");
-                              Collect(colDraft, {f: "AccFireExtinguisher", a: If(DataCardValue108.Value, "Yes", chkAccFireExtinguisherNo.Value, "No", ""), c: txtAccFireExtinguisherCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFireExtinguisher")),
+                                  Collect(colDraft, {f: "AccFireExtinguisher", a: If(DataCardValue108.Value, "Yes", chkAccFireExtinguisherNo.Value, "No", ""), c: txtAccFireExtinguisherCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFireExtinguisher"), {a: If(DataCardValue108.Value, "Yes", chkAccFireExtinguisherNo.Value, "No", ""), c: txtAccFireExtinguisherCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -3671,14 +3742,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFireExtinguisher");
-                              Collect(colDraft, {f: "AccFireExtinguisher", a: "No", c: txtAccFireExtinguisherCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFireExtinguisher")),
+                                  Collect(colDraft, {f: "AccFireExtinguisher", a: "No", c: txtAccFireExtinguisherCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFireExtinguisher"), {a: "No", c: txtAccFireExtinguisherCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue108)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFireExtinguisher");
-                              Collect(colDraft, {f: "AccFireExtinguisher", a: If(DataCardValue108.Value, "Yes", chkAccFireExtinguisherNo.Value, "No", ""), c: txtAccFireExtinguisherCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFireExtinguisher")),
+                                  Collect(colDraft, {f: "AccFireExtinguisher", a: If(DataCardValue108.Value, "Yes", chkAccFireExtinguisherNo.Value, "No", ""), c: txtAccFireExtinguisherCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFireExtinguisher"), {a: If(DataCardValue108.Value, "Yes", chkAccFireExtinguisherNo.Value, "No", ""), c: txtAccFireExtinguisherCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -3707,8 +3780,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFireExtinguisher");
-                              Collect(colDraft, {f: "AccFireExtinguisher", a: If(DataCardValue108.Value, "Yes", chkAccFireExtinguisherNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFireExtinguisher")),
+                                  Collect(colDraft, {f: "AccFireExtinguisher", a: If(DataCardValue108.Value, "Yes", chkAccFireExtinguisherNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFireExtinguisher"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -3878,14 +3952,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFirstAidKit");
-                              Collect(colDraft, {f: "AccFirstAidKit", a: "Yes", c: txtAccFirstAidKitCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFirstAidKit")),
+                                  Collect(colDraft, {f: "AccFirstAidKit", a: "Yes", c: txtAccFirstAidKitCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFirstAidKit"), {a: "Yes", c: txtAccFirstAidKitCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkAccFirstAidKitNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFirstAidKit");
-                              Collect(colDraft, {f: "AccFirstAidKit", a: If(DataCardValue109.Value, "Yes", chkAccFirstAidKitNo.Value, "No", ""), c: txtAccFirstAidKitCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFirstAidKit")),
+                                  Collect(colDraft, {f: "AccFirstAidKit", a: If(DataCardValue109.Value, "Yes", chkAccFirstAidKitNo.Value, "No", ""), c: txtAccFirstAidKitCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFirstAidKit"), {a: If(DataCardValue109.Value, "Yes", chkAccFirstAidKitNo.Value, "No", ""), c: txtAccFirstAidKitCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -3914,14 +3990,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFirstAidKit");
-                              Collect(colDraft, {f: "AccFirstAidKit", a: "No", c: txtAccFirstAidKitCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFirstAidKit")),
+                                  Collect(colDraft, {f: "AccFirstAidKit", a: "No", c: txtAccFirstAidKitCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFirstAidKit"), {a: "No", c: txtAccFirstAidKitCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue109)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFirstAidKit");
-                              Collect(colDraft, {f: "AccFirstAidKit", a: If(DataCardValue109.Value, "Yes", chkAccFirstAidKitNo.Value, "No", ""), c: txtAccFirstAidKitCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFirstAidKit")),
+                                  Collect(colDraft, {f: "AccFirstAidKit", a: If(DataCardValue109.Value, "Yes", chkAccFirstAidKitNo.Value, "No", ""), c: txtAccFirstAidKitCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFirstAidKit"), {a: If(DataCardValue109.Value, "Yes", chkAccFirstAidKitNo.Value, "No", ""), c: txtAccFirstAidKitCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -3950,8 +4028,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccFirstAidKit");
-                              Collect(colDraft, {f: "AccFirstAidKit", a: If(DataCardValue109.Value, "Yes", chkAccFirstAidKitNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccFirstAidKit")),
+                                  Collect(colDraft, {f: "AccFirstAidKit", a: If(DataCardValue109.Value, "Yes", chkAccFirstAidKitNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccFirstAidKit"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -4121,14 +4200,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTrafficCones");
-                              Collect(colDraft, {f: "AccTrafficCones", a: "Yes", c: txtTrafficConesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTrafficCones")),
+                                  Collect(colDraft, {f: "AccTrafficCones", a: "Yes", c: txtTrafficConesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTrafficCones"), {a: "Yes", c: txtTrafficConesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkTrafficConesNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTrafficCones");
-                              Collect(colDraft, {f: "AccTrafficCones", a: If(DataCardValue110.Value, "Yes", chkTrafficConesNo.Value, "No", ""), c: txtTrafficConesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTrafficCones")),
+                                  Collect(colDraft, {f: "AccTrafficCones", a: If(DataCardValue110.Value, "Yes", chkTrafficConesNo.Value, "No", ""), c: txtTrafficConesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTrafficCones"), {a: If(DataCardValue110.Value, "Yes", chkTrafficConesNo.Value, "No", ""), c: txtTrafficConesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -4157,14 +4238,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTrafficCones");
-                              Collect(colDraft, {f: "AccTrafficCones", a: "No", c: txtTrafficConesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTrafficCones")),
+                                  Collect(colDraft, {f: "AccTrafficCones", a: "No", c: txtTrafficConesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTrafficCones"), {a: "No", c: txtTrafficConesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue110)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTrafficCones");
-                              Collect(colDraft, {f: "AccTrafficCones", a: If(DataCardValue110.Value, "Yes", chkTrafficConesNo.Value, "No", ""), c: txtTrafficConesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTrafficCones")),
+                                  Collect(colDraft, {f: "AccTrafficCones", a: If(DataCardValue110.Value, "Yes", chkTrafficConesNo.Value, "No", ""), c: txtTrafficConesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTrafficCones"), {a: If(DataCardValue110.Value, "Yes", chkTrafficConesNo.Value, "No", ""), c: txtTrafficConesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -4193,8 +4276,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTrafficCones");
-                              Collect(colDraft, {f: "AccTrafficCones", a: If(DataCardValue110.Value, "Yes", chkTrafficConesNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTrafficCones")),
+                                  Collect(colDraft, {f: "AccTrafficCones", a: If(DataCardValue110.Value, "Yes", chkTrafficConesNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTrafficCones"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -4767,8 +4851,9 @@ Screens:
                           =If(varReviewing, Text(Parent.Default), LookUp(colDraft, f = "NextServiceDue").a)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "NextServiceDue");
-                              Collect(colDraft, {f: "NextServiceDue", a: Self.Text, c: ""});
+                              If(IsBlank(LookUp(colDraft, f = "NextServiceDue")),
+                                  Collect(colDraft, {f: "NextServiceDue", a: Self.Text, c: ""}),
+                                  Patch(colDraft, LookUp(colDraft, f = "NextServiceDue"), {a: Self.Text, c: ""}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         DelayOutput: =true
                         DisabledBorderColor: =RGBA(0, 0, 0, 0)
@@ -4898,8 +4983,9 @@ Screens:
                         IsEditable: =true
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccCOFExpiry");
-                              Collect(colDraft, {f: "AccCOFExpiry", a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""});
+                              If(IsBlank(LookUp(colDraft, f = "AccCOFExpiry")),
+                                  Collect(colDraft, {f: "AccCOFExpiry", a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccCOFExpiry"), {a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingBottom: =0
                         PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
@@ -5098,8 +5184,9 @@ Screens:
                         IsEditable: =true
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccBlowerServiceDue");
-                              Collect(colDraft, {f: "AccBlowerServiceDue", a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""});
+                              If(IsBlank(LookUp(colDraft, f = "AccBlowerServiceDue")),
+                                  Collect(colDraft, {f: "AccBlowerServiceDue", a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccBlowerServiceDue"), {a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingBottom: =0
                         PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
@@ -5298,8 +5385,9 @@ Screens:
                         IsEditable: =true
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTruckServiceDue");
-                              Collect(colDraft, {f: "AccTruckServiceDue", a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""});
+                              If(IsBlank(LookUp(colDraft, f = "AccTruckServiceDue")),
+                                  Collect(colDraft, {f: "AccTruckServiceDue", a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTruckServiceDue"), {a: Text(Self.SelectedDate, "yyyy-mm-dd"), c: ""}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingBottom: =0
                         PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
@@ -5610,14 +5698,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_10");
-                              Collect(colDraft, {f: "field_10", a: "Yes", c: txtBatteryWaterCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_10")),
+                                  Collect(colDraft, {f: "field_10", a: "Yes", c: txtBatteryWaterCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_10"), {a: "Yes", c: txtBatteryWaterCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkBatteryWaterNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_10");
-                              Collect(colDraft, {f: "field_10", a: If(DataCardValue24.Value, "Yes", chkBatteryWaterNo.Value, "No", ""), c: txtBatteryWaterCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_10")),
+                                  Collect(colDraft, {f: "field_10", a: If(DataCardValue24.Value, "Yes", chkBatteryWaterNo.Value, "No", ""), c: txtBatteryWaterCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_10"), {a: If(DataCardValue24.Value, "Yes", chkBatteryWaterNo.Value, "No", ""), c: txtBatteryWaterCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -5646,14 +5736,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_10");
-                              Collect(colDraft, {f: "field_10", a: "No", c: txtBatteryWaterCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_10")),
+                                  Collect(colDraft, {f: "field_10", a: "No", c: txtBatteryWaterCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_10"), {a: "No", c: txtBatteryWaterCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue24)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_10");
-                              Collect(colDraft, {f: "field_10", a: If(DataCardValue24.Value, "Yes", chkBatteryWaterNo.Value, "No", ""), c: txtBatteryWaterCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_10")),
+                                  Collect(colDraft, {f: "field_10", a: If(DataCardValue24.Value, "Yes", chkBatteryWaterNo.Value, "No", ""), c: txtBatteryWaterCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_10"), {a: If(DataCardValue24.Value, "Yes", chkBatteryWaterNo.Value, "No", ""), c: txtBatteryWaterCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -5682,8 +5774,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_10");
-                              Collect(colDraft, {f: "field_10", a: If(DataCardValue24.Value, "Yes", chkBatteryWaterNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_10")),
+                                  Collect(colDraft, {f: "field_10", a: If(DataCardValue24.Value, "Yes", chkBatteryWaterNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_10"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -5805,14 +5898,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_11");
-                              Collect(colDraft, {f: "field_11", a: "Yes", c: txtBatteryTerminalsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_11")),
+                                  Collect(colDraft, {f: "field_11", a: "Yes", c: txtBatteryTerminalsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_11"), {a: "Yes", c: txtBatteryTerminalsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkBatteryTerminalsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_11");
-                              Collect(colDraft, {f: "field_11", a: If(DataCardValue30.Value, "Yes", chkBatteryTerminalsNo.Value, "No", ""), c: txtBatteryTerminalsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_11")),
+                                  Collect(colDraft, {f: "field_11", a: If(DataCardValue30.Value, "Yes", chkBatteryTerminalsNo.Value, "No", ""), c: txtBatteryTerminalsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_11"), {a: If(DataCardValue30.Value, "Yes", chkBatteryTerminalsNo.Value, "No", ""), c: txtBatteryTerminalsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -5841,14 +5936,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_11");
-                              Collect(colDraft, {f: "field_11", a: "No", c: txtBatteryTerminalsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_11")),
+                                  Collect(colDraft, {f: "field_11", a: "No", c: txtBatteryTerminalsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_11"), {a: "No", c: txtBatteryTerminalsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue30)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_11");
-                              Collect(colDraft, {f: "field_11", a: If(DataCardValue30.Value, "Yes", chkBatteryTerminalsNo.Value, "No", ""), c: txtBatteryTerminalsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_11")),
+                                  Collect(colDraft, {f: "field_11", a: If(DataCardValue30.Value, "Yes", chkBatteryTerminalsNo.Value, "No", ""), c: txtBatteryTerminalsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_11"), {a: If(DataCardValue30.Value, "Yes", chkBatteryTerminalsNo.Value, "No", ""), c: txtBatteryTerminalsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -5877,8 +5974,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_11");
-                              Collect(colDraft, {f: "field_11", a: If(DataCardValue30.Value, "Yes", chkBatteryTerminalsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_11")),
+                                  Collect(colDraft, {f: "field_11", a: If(DataCardValue30.Value, "Yes", chkBatteryTerminalsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_11"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -6000,14 +6098,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_13");
-                              Collect(colDraft, {f: "field_13", a: "Yes", c: txtHeadFogLightsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_13")),
+                                  Collect(colDraft, {f: "field_13", a: "Yes", c: txtHeadFogLightsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_13"), {a: "Yes", c: txtHeadFogLightsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkHeadFogLightsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_13");
-                              Collect(colDraft, {f: "field_13", a: If(DataCardValue51.Value, "Yes", chkHeadFogLightsNo.Value, "No", ""), c: txtHeadFogLightsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_13")),
+                                  Collect(colDraft, {f: "field_13", a: If(DataCardValue51.Value, "Yes", chkHeadFogLightsNo.Value, "No", ""), c: txtHeadFogLightsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_13"), {a: If(DataCardValue51.Value, "Yes", chkHeadFogLightsNo.Value, "No", ""), c: txtHeadFogLightsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6036,14 +6136,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_13");
-                              Collect(colDraft, {f: "field_13", a: "No", c: txtHeadFogLightsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_13")),
+                                  Collect(colDraft, {f: "field_13", a: "No", c: txtHeadFogLightsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_13"), {a: "No", c: txtHeadFogLightsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue51)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_13");
-                              Collect(colDraft, {f: "field_13", a: If(DataCardValue51.Value, "Yes", chkHeadFogLightsNo.Value, "No", ""), c: txtHeadFogLightsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_13")),
+                                  Collect(colDraft, {f: "field_13", a: If(DataCardValue51.Value, "Yes", chkHeadFogLightsNo.Value, "No", ""), c: txtHeadFogLightsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_13"), {a: If(DataCardValue51.Value, "Yes", chkHeadFogLightsNo.Value, "No", ""), c: txtHeadFogLightsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6072,8 +6174,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_13");
-                              Collect(colDraft, {f: "field_13", a: If(DataCardValue51.Value, "Yes", chkHeadFogLightsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_13")),
+                                  Collect(colDraft, {f: "field_13", a: If(DataCardValue51.Value, "Yes", chkHeadFogLightsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_13"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -6195,14 +6298,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_14");
-                              Collect(colDraft, {f: "field_14", a: "Yes", c: txtIndicatorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_14")),
+                                  Collect(colDraft, {f: "field_14", a: "Yes", c: txtIndicatorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_14"), {a: "Yes", c: txtIndicatorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkIndicatorsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_14");
-                              Collect(colDraft, {f: "field_14", a: If(DataCardValue53.Value, "Yes", chkIndicatorsNo.Value, "No", ""), c: txtIndicatorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_14")),
+                                  Collect(colDraft, {f: "field_14", a: If(DataCardValue53.Value, "Yes", chkIndicatorsNo.Value, "No", ""), c: txtIndicatorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_14"), {a: If(DataCardValue53.Value, "Yes", chkIndicatorsNo.Value, "No", ""), c: txtIndicatorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6231,14 +6336,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_14");
-                              Collect(colDraft, {f: "field_14", a: "No", c: txtIndicatorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_14")),
+                                  Collect(colDraft, {f: "field_14", a: "No", c: txtIndicatorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_14"), {a: "No", c: txtIndicatorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue53)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_14");
-                              Collect(colDraft, {f: "field_14", a: If(DataCardValue53.Value, "Yes", chkIndicatorsNo.Value, "No", ""), c: txtIndicatorsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_14")),
+                                  Collect(colDraft, {f: "field_14", a: If(DataCardValue53.Value, "Yes", chkIndicatorsNo.Value, "No", ""), c: txtIndicatorsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_14"), {a: If(DataCardValue53.Value, "Yes", chkIndicatorsNo.Value, "No", ""), c: txtIndicatorsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6267,8 +6374,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_14");
-                              Collect(colDraft, {f: "field_14", a: If(DataCardValue53.Value, "Yes", chkIndicatorsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_14")),
+                                  Collect(colDraft, {f: "field_14", a: If(DataCardValue53.Value, "Yes", chkIndicatorsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_14"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -6390,14 +6498,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_15");
-                              Collect(colDraft, {f: "field_15", a: "Yes", c: txtBrakeLightsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_15")),
+                                  Collect(colDraft, {f: "field_15", a: "Yes", c: txtBrakeLightsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_15"), {a: "Yes", c: txtBrakeLightsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkBrakeLightsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_15");
-                              Collect(colDraft, {f: "field_15", a: If(DataCardValue25.Value, "Yes", chkBrakeLightsNo.Value, "No", ""), c: txtBrakeLightsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_15")),
+                                  Collect(colDraft, {f: "field_15", a: If(DataCardValue25.Value, "Yes", chkBrakeLightsNo.Value, "No", ""), c: txtBrakeLightsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_15"), {a: If(DataCardValue25.Value, "Yes", chkBrakeLightsNo.Value, "No", ""), c: txtBrakeLightsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6426,14 +6536,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_15");
-                              Collect(colDraft, {f: "field_15", a: "No", c: txtBrakeLightsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_15")),
+                                  Collect(colDraft, {f: "field_15", a: "No", c: txtBrakeLightsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_15"), {a: "No", c: txtBrakeLightsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue25)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_15");
-                              Collect(colDraft, {f: "field_15", a: If(DataCardValue25.Value, "Yes", chkBrakeLightsNo.Value, "No", ""), c: txtBrakeLightsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_15")),
+                                  Collect(colDraft, {f: "field_15", a: If(DataCardValue25.Value, "Yes", chkBrakeLightsNo.Value, "No", ""), c: txtBrakeLightsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_15"), {a: If(DataCardValue25.Value, "Yes", chkBrakeLightsNo.Value, "No", ""), c: txtBrakeLightsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6462,8 +6574,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_15");
-                              Collect(colDraft, {f: "field_15", a: If(DataCardValue25.Value, "Yes", chkBrakeLightsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_15")),
+                                  Collect(colDraft, {f: "field_15", a: If(DataCardValue25.Value, "Yes", chkBrakeLightsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_15"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -6585,14 +6698,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_16");
-                              Collect(colDraft, {f: "field_16", a: "Yes", c: txtReverseAlarmCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_16")),
+                                  Collect(colDraft, {f: "field_16", a: "Yes", c: txtReverseAlarmCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_16"), {a: "Yes", c: txtReverseAlarmCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkReverseAlarmNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_16");
-                              Collect(colDraft, {f: "field_16", a: If(DataCardValue61.Value, "Yes", chkReverseAlarmNo.Value, "No", ""), c: txtReverseAlarmCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_16")),
+                                  Collect(colDraft, {f: "field_16", a: If(DataCardValue61.Value, "Yes", chkReverseAlarmNo.Value, "No", ""), c: txtReverseAlarmCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_16"), {a: If(DataCardValue61.Value, "Yes", chkReverseAlarmNo.Value, "No", ""), c: txtReverseAlarmCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6621,14 +6736,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_16");
-                              Collect(colDraft, {f: "field_16", a: "No", c: txtReverseAlarmCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_16")),
+                                  Collect(colDraft, {f: "field_16", a: "No", c: txtReverseAlarmCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_16"), {a: "No", c: txtReverseAlarmCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue61)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_16");
-                              Collect(colDraft, {f: "field_16", a: If(DataCardValue61.Value, "Yes", chkReverseAlarmNo.Value, "No", ""), c: txtReverseAlarmCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_16")),
+                                  Collect(colDraft, {f: "field_16", a: If(DataCardValue61.Value, "Yes", chkReverseAlarmNo.Value, "No", ""), c: txtReverseAlarmCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_16"), {a: If(DataCardValue61.Value, "Yes", chkReverseAlarmNo.Value, "No", ""), c: txtReverseAlarmCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6657,8 +6774,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_16");
-                              Collect(colDraft, {f: "field_16", a: If(DataCardValue61.Value, "Yes", chkReverseAlarmNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_16")),
+                                  Collect(colDraft, {f: "field_16", a: If(DataCardValue61.Value, "Yes", chkReverseAlarmNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_16"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -6780,14 +6898,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_18");
-                              Collect(colDraft, {f: "field_18", a: "Yes", c: txtRearSpotLightCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_18")),
+                                  Collect(colDraft, {f: "field_18", a: "Yes", c: txtRearSpotLightCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_18"), {a: "Yes", c: txtRearSpotLightCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkRearSpotLightNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_18");
-                              Collect(colDraft, {f: "field_18", a: If(DataCardValue59.Value, "Yes", chkRearSpotLightNo.Value, "No", ""), c: txtRearSpotLightCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_18")),
+                                  Collect(colDraft, {f: "field_18", a: If(DataCardValue59.Value, "Yes", chkRearSpotLightNo.Value, "No", ""), c: txtRearSpotLightCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_18"), {a: If(DataCardValue59.Value, "Yes", chkRearSpotLightNo.Value, "No", ""), c: txtRearSpotLightCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6816,14 +6936,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_18");
-                              Collect(colDraft, {f: "field_18", a: "No", c: txtRearSpotLightCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_18")),
+                                  Collect(colDraft, {f: "field_18", a: "No", c: txtRearSpotLightCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_18"), {a: "No", c: txtRearSpotLightCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue59)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_18");
-                              Collect(colDraft, {f: "field_18", a: If(DataCardValue59.Value, "Yes", chkRearSpotLightNo.Value, "No", ""), c: txtRearSpotLightCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_18")),
+                                  Collect(colDraft, {f: "field_18", a: If(DataCardValue59.Value, "Yes", chkRearSpotLightNo.Value, "No", ""), c: txtRearSpotLightCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_18"), {a: If(DataCardValue59.Value, "Yes", chkRearSpotLightNo.Value, "No", ""), c: txtRearSpotLightCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -6852,8 +6974,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_18");
-                              Collect(colDraft, {f: "field_18", a: If(DataCardValue59.Value, "Yes", chkRearSpotLightNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_18")),
+                                  Collect(colDraft, {f: "field_18", a: If(DataCardValue59.Value, "Yes", chkRearSpotLightNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_18"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -7011,14 +7134,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_28");
-                              Collect(colDraft, {f: "field_28", a: "Yes", c: txtBumpersCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_28")),
+                                  Collect(colDraft, {f: "field_28", a: "Yes", c: txtBumpersCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_28"), {a: "Yes", c: txtBumpersCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkBumpersNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_28");
-                              Collect(colDraft, {f: "field_28", a: If(DataCardValue47.Value, "Yes", chkBumpersNo.Value, "No", ""), c: txtBumpersCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_28")),
+                                  Collect(colDraft, {f: "field_28", a: If(DataCardValue47.Value, "Yes", chkBumpersNo.Value, "No", ""), c: txtBumpersCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_28"), {a: If(DataCardValue47.Value, "Yes", chkBumpersNo.Value, "No", ""), c: txtBumpersCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7047,14 +7172,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_28");
-                              Collect(colDraft, {f: "field_28", a: "No", c: txtBumpersCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_28")),
+                                  Collect(colDraft, {f: "field_28", a: "No", c: txtBumpersCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_28"), {a: "No", c: txtBumpersCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue47)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_28");
-                              Collect(colDraft, {f: "field_28", a: If(DataCardValue47.Value, "Yes", chkBumpersNo.Value, "No", ""), c: txtBumpersCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_28")),
+                                  Collect(colDraft, {f: "field_28", a: If(DataCardValue47.Value, "Yes", chkBumpersNo.Value, "No", ""), c: txtBumpersCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_28"), {a: If(DataCardValue47.Value, "Yes", chkBumpersNo.Value, "No", ""), c: txtBumpersCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7083,8 +7210,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_28");
-                              Collect(colDraft, {f: "field_28", a: If(DataCardValue47.Value, "Yes", chkBumpersNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_28")),
+                                  Collect(colDraft, {f: "field_28", a: If(DataCardValue47.Value, "Yes", chkBumpersNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_28"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -7206,14 +7334,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_4");
-                              Collect(colDraft, {f: "field_4", a: "Yes", c: txtOilLevelsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_4")),
+                                  Collect(colDraft, {f: "field_4", a: "Yes", c: txtOilLevelsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_4"), {a: "Yes", c: txtOilLevelsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkOilLevelsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_4");
-                              Collect(colDraft, {f: "field_4", a: If(DataCardValue21.Value, "Yes", chkOilLevelsNo.Value, "No", ""), c: txtOilLevelsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_4")),
+                                  Collect(colDraft, {f: "field_4", a: If(DataCardValue21.Value, "Yes", chkOilLevelsNo.Value, "No", ""), c: txtOilLevelsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_4"), {a: If(DataCardValue21.Value, "Yes", chkOilLevelsNo.Value, "No", ""), c: txtOilLevelsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7242,14 +7372,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_4");
-                              Collect(colDraft, {f: "field_4", a: "No", c: txtOilLevelsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_4")),
+                                  Collect(colDraft, {f: "field_4", a: "No", c: txtOilLevelsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_4"), {a: "No", c: txtOilLevelsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue21)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_4");
-                              Collect(colDraft, {f: "field_4", a: If(DataCardValue21.Value, "Yes", chkOilLevelsNo.Value, "No", ""), c: txtOilLevelsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_4")),
+                                  Collect(colDraft, {f: "field_4", a: If(DataCardValue21.Value, "Yes", chkOilLevelsNo.Value, "No", ""), c: txtOilLevelsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_4"), {a: If(DataCardValue21.Value, "Yes", chkOilLevelsNo.Value, "No", ""), c: txtOilLevelsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7278,8 +7410,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_4");
-                              Collect(colDraft, {f: "field_4", a: If(DataCardValue21.Value, "Yes", chkOilLevelsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_4")),
+                                  Collect(colDraft, {f: "field_4", a: If(DataCardValue21.Value, "Yes", chkOilLevelsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_4"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -7401,14 +7534,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_5");
-                              Collect(colDraft, {f: "field_5", a: "Yes", c: txtCoolantLevelsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_5")),
+                                  Collect(colDraft, {f: "field_5", a: "Yes", c: txtCoolantLevelsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_5"), {a: "Yes", c: txtCoolantLevelsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkCoolantLevelsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_5");
-                              Collect(colDraft, {f: "field_5", a: If(DataCardValue22.Value, "Yes", chkCoolantLevelsNo.Value, "No", ""), c: txtCoolantLevelsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_5")),
+                                  Collect(colDraft, {f: "field_5", a: If(DataCardValue22.Value, "Yes", chkCoolantLevelsNo.Value, "No", ""), c: txtCoolantLevelsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_5"), {a: If(DataCardValue22.Value, "Yes", chkCoolantLevelsNo.Value, "No", ""), c: txtCoolantLevelsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7437,14 +7572,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_5");
-                              Collect(colDraft, {f: "field_5", a: "No", c: txtCoolantLevelsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_5")),
+                                  Collect(colDraft, {f: "field_5", a: "No", c: txtCoolantLevelsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_5"), {a: "No", c: txtCoolantLevelsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue22)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_5");
-                              Collect(colDraft, {f: "field_5", a: If(DataCardValue22.Value, "Yes", chkCoolantLevelsNo.Value, "No", ""), c: txtCoolantLevelsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_5")),
+                                  Collect(colDraft, {f: "field_5", a: If(DataCardValue22.Value, "Yes", chkCoolantLevelsNo.Value, "No", ""), c: txtCoolantLevelsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_5"), {a: If(DataCardValue22.Value, "Yes", chkCoolantLevelsNo.Value, "No", ""), c: txtCoolantLevelsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7473,8 +7610,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_5");
-                              Collect(colDraft, {f: "field_5", a: If(DataCardValue22.Value, "Yes", chkCoolantLevelsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_5")),
+                                  Collect(colDraft, {f: "field_5", a: If(DataCardValue22.Value, "Yes", chkCoolantLevelsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_5"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -7596,14 +7734,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_6");
-                              Collect(colDraft, {f: "field_6", a: "Yes", c: txtFanBeltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_6")),
+                                  Collect(colDraft, {f: "field_6", a: "Yes", c: txtFanBeltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_6"), {a: "Yes", c: txtFanBeltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkFanBeltsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_6");
-                              Collect(colDraft, {f: "field_6", a: If(DataCardValue42.Value, "Yes", chkFanBeltsNo.Value, "No", ""), c: txtFanBeltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_6")),
+                                  Collect(colDraft, {f: "field_6", a: If(DataCardValue42.Value, "Yes", chkFanBeltsNo.Value, "No", ""), c: txtFanBeltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_6"), {a: If(DataCardValue42.Value, "Yes", chkFanBeltsNo.Value, "No", ""), c: txtFanBeltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7632,14 +7772,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_6");
-                              Collect(colDraft, {f: "field_6", a: "No", c: txtFanBeltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_6")),
+                                  Collect(colDraft, {f: "field_6", a: "No", c: txtFanBeltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_6"), {a: "No", c: txtFanBeltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue42)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_6");
-                              Collect(colDraft, {f: "field_6", a: If(DataCardValue42.Value, "Yes", chkFanBeltsNo.Value, "No", ""), c: txtFanBeltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_6")),
+                                  Collect(colDraft, {f: "field_6", a: If(DataCardValue42.Value, "Yes", chkFanBeltsNo.Value, "No", ""), c: txtFanBeltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_6"), {a: If(DataCardValue42.Value, "Yes", chkFanBeltsNo.Value, "No", ""), c: txtFanBeltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7668,8 +7810,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_6");
-                              Collect(colDraft, {f: "field_6", a: If(DataCardValue42.Value, "Yes", chkFanBeltsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_6")),
+                                  Collect(colDraft, {f: "field_6", a: If(DataCardValue42.Value, "Yes", chkFanBeltsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_6"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -7791,14 +7934,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_7");
-                              Collect(colDraft, {f: "field_7", a: "Yes", c: txtOilWaterLeaksCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_7")),
+                                  Collect(colDraft, {f: "field_7", a: "Yes", c: txtOilWaterLeaksCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_7"), {a: "Yes", c: txtOilWaterLeaksCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkOilWaterLeaksNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_7");
-                              Collect(colDraft, {f: "field_7", a: If(DataCardValue56.Value, "Yes", chkOilWaterLeaksNo.Value, "No", ""), c: txtOilWaterLeaksCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_7")),
+                                  Collect(colDraft, {f: "field_7", a: If(DataCardValue56.Value, "Yes", chkOilWaterLeaksNo.Value, "No", ""), c: txtOilWaterLeaksCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_7"), {a: If(DataCardValue56.Value, "Yes", chkOilWaterLeaksNo.Value, "No", ""), c: txtOilWaterLeaksCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7827,14 +7972,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_7");
-                              Collect(colDraft, {f: "field_7", a: "No", c: txtOilWaterLeaksCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_7")),
+                                  Collect(colDraft, {f: "field_7", a: "No", c: txtOilWaterLeaksCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_7"), {a: "No", c: txtOilWaterLeaksCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue56)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_7");
-                              Collect(colDraft, {f: "field_7", a: If(DataCardValue56.Value, "Yes", chkOilWaterLeaksNo.Value, "No", ""), c: txtOilWaterLeaksCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_7")),
+                                  Collect(colDraft, {f: "field_7", a: If(DataCardValue56.Value, "Yes", chkOilWaterLeaksNo.Value, "No", ""), c: txtOilWaterLeaksCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_7"), {a: If(DataCardValue56.Value, "Yes", chkOilWaterLeaksNo.Value, "No", ""), c: txtOilWaterLeaksCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -7863,8 +8010,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_7");
-                              Collect(colDraft, {f: "field_7", a: If(DataCardValue56.Value, "Yes", chkOilWaterLeaksNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_7")),
+                                  Collect(colDraft, {f: "field_7", a: If(DataCardValue56.Value, "Yes", chkOilWaterLeaksNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_7"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -7986,14 +8134,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_31");
-                              Collect(colDraft, {f: "field_31", a: "Yes", c: txtAirHosesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_31")),
+                                  Collect(colDraft, {f: "field_31", a: "Yes", c: txtAirHosesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_31"), {a: "Yes", c: txtAirHosesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkAirHosesNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_31");
-                              Collect(colDraft, {f: "field_31", a: If(DataCardValue27.Value, "Yes", chkAirHosesNo.Value, "No", ""), c: txtAirHosesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_31")),
+                                  Collect(colDraft, {f: "field_31", a: If(DataCardValue27.Value, "Yes", chkAirHosesNo.Value, "No", ""), c: txtAirHosesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_31"), {a: If(DataCardValue27.Value, "Yes", chkAirHosesNo.Value, "No", ""), c: txtAirHosesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8022,14 +8172,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_31");
-                              Collect(colDraft, {f: "field_31", a: "No", c: txtAirHosesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_31")),
+                                  Collect(colDraft, {f: "field_31", a: "No", c: txtAirHosesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_31"), {a: "No", c: txtAirHosesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue27)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_31");
-                              Collect(colDraft, {f: "field_31", a: If(DataCardValue27.Value, "Yes", chkAirHosesNo.Value, "No", ""), c: txtAirHosesCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_31")),
+                                  Collect(colDraft, {f: "field_31", a: If(DataCardValue27.Value, "Yes", chkAirHosesNo.Value, "No", ""), c: txtAirHosesCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_31"), {a: If(DataCardValue27.Value, "Yes", chkAirHosesNo.Value, "No", ""), c: txtAirHosesCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8058,8 +8210,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_31");
-                              Collect(colDraft, {f: "field_31", a: If(DataCardValue27.Value, "Yes", chkAirHosesNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_31")),
+                                  Collect(colDraft, {f: "field_31", a: If(DataCardValue27.Value, "Yes", chkAirHosesNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_31"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -8181,14 +8334,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_27");
-                              Collect(colDraft, {f: "field_27", a: "Yes", c: txtSpringsUBoltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_27")),
+                                  Collect(colDraft, {f: "field_27", a: "Yes", c: txtSpringsUBoltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_27"), {a: "Yes", c: txtSpringsUBoltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkSpringsUBoltsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_27");
-                              Collect(colDraft, {f: "field_27", a: If(DataCardValue66.Value, "Yes", chkSpringsUBoltsNo.Value, "No", ""), c: txtSpringsUBoltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_27")),
+                                  Collect(colDraft, {f: "field_27", a: If(DataCardValue66.Value, "Yes", chkSpringsUBoltsNo.Value, "No", ""), c: txtSpringsUBoltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_27"), {a: If(DataCardValue66.Value, "Yes", chkSpringsUBoltsNo.Value, "No", ""), c: txtSpringsUBoltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8217,14 +8372,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_27");
-                              Collect(colDraft, {f: "field_27", a: "No", c: txtSpringsUBoltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_27")),
+                                  Collect(colDraft, {f: "field_27", a: "No", c: txtSpringsUBoltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_27"), {a: "No", c: txtSpringsUBoltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue66)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_27");
-                              Collect(colDraft, {f: "field_27", a: If(DataCardValue66.Value, "Yes", chkSpringsUBoltsNo.Value, "No", ""), c: txtSpringsUBoltsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_27")),
+                                  Collect(colDraft, {f: "field_27", a: If(DataCardValue66.Value, "Yes", chkSpringsUBoltsNo.Value, "No", ""), c: txtSpringsUBoltsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_27"), {a: If(DataCardValue66.Value, "Yes", chkSpringsUBoltsNo.Value, "No", ""), c: txtSpringsUBoltsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8253,8 +8410,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_27");
-                              Collect(colDraft, {f: "field_27", a: If(DataCardValue66.Value, "Yes", chkSpringsUBoltsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_27")),
+                                  Collect(colDraft, {f: "field_27", a: If(DataCardValue66.Value, "Yes", chkSpringsUBoltsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_27"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -8376,14 +8534,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_46");
-                              Collect(colDraft, {f: "field_46", a: "Yes", c: txtFreezerLockedCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_46")),
+                                  Collect(colDraft, {f: "field_46", a: "Yes", c: txtFreezerLockedCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_46"), {a: "Yes", c: txtFreezerLockedCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkFreezerLockedNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_46");
-                              Collect(colDraft, {f: "field_46", a: If(DataCardValue45.Value, "Yes", chkFreezerLockedNo.Value, "No", ""), c: txtFreezerLockedCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_46")),
+                                  Collect(colDraft, {f: "field_46", a: If(DataCardValue45.Value, "Yes", chkFreezerLockedNo.Value, "No", ""), c: txtFreezerLockedCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_46"), {a: If(DataCardValue45.Value, "Yes", chkFreezerLockedNo.Value, "No", ""), c: txtFreezerLockedCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8412,14 +8572,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_46");
-                              Collect(colDraft, {f: "field_46", a: "No", c: txtFreezerLockedCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_46")),
+                                  Collect(colDraft, {f: "field_46", a: "No", c: txtFreezerLockedCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_46"), {a: "No", c: txtFreezerLockedCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue45)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_46");
-                              Collect(colDraft, {f: "field_46", a: If(DataCardValue45.Value, "Yes", chkFreezerLockedNo.Value, "No", ""), c: txtFreezerLockedCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_46")),
+                                  Collect(colDraft, {f: "field_46", a: If(DataCardValue45.Value, "Yes", chkFreezerLockedNo.Value, "No", ""), c: txtFreezerLockedCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_46"), {a: If(DataCardValue45.Value, "Yes", chkFreezerLockedNo.Value, "No", ""), c: txtFreezerLockedCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8448,8 +8610,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_46");
-                              Collect(colDraft, {f: "field_46", a: If(DataCardValue45.Value, "Yes", chkFreezerLockedNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_46")),
+                                  Collect(colDraft, {f: "field_46", a: If(DataCardValue45.Value, "Yes", chkFreezerLockedNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_46"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -8571,14 +8734,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTruckFloor");
-                              Collect(colDraft, {f: "AccTruckFloor", a: "Yes", c: txtTruckFloorCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTruckFloor")),
+                                  Collect(colDraft, {f: "AccTruckFloor", a: "Yes", c: txtTruckFloorCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTruckFloor"), {a: "Yes", c: txtTruckFloorCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkTruckFloorNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTruckFloor");
-                              Collect(colDraft, {f: "AccTruckFloor", a: If(DataCardValue116.Value, "Yes", chkTruckFloorNo.Value, "No", ""), c: txtTruckFloorCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTruckFloor")),
+                                  Collect(colDraft, {f: "AccTruckFloor", a: If(DataCardValue116.Value, "Yes", chkTruckFloorNo.Value, "No", ""), c: txtTruckFloorCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTruckFloor"), {a: If(DataCardValue116.Value, "Yes", chkTruckFloorNo.Value, "No", ""), c: txtTruckFloorCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8607,14 +8772,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTruckFloor");
-                              Collect(colDraft, {f: "AccTruckFloor", a: "No", c: txtTruckFloorCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTruckFloor")),
+                                  Collect(colDraft, {f: "AccTruckFloor", a: "No", c: txtTruckFloorCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTruckFloor"), {a: "No", c: txtTruckFloorCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue116)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTruckFloor");
-                              Collect(colDraft, {f: "AccTruckFloor", a: If(DataCardValue116.Value, "Yes", chkTruckFloorNo.Value, "No", ""), c: txtTruckFloorCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTruckFloor")),
+                                  Collect(colDraft, {f: "AccTruckFloor", a: If(DataCardValue116.Value, "Yes", chkTruckFloorNo.Value, "No", ""), c: txtTruckFloorCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTruckFloor"), {a: If(DataCardValue116.Value, "Yes", chkTruckFloorNo.Value, "No", ""), c: txtTruckFloorCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8643,8 +8810,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTruckFloor");
-                              Collect(colDraft, {f: "AccTruckFloor", a: If(DataCardValue116.Value, "Yes", chkTruckFloorNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTruckFloor")),
+                                  Collect(colDraft, {f: "AccTruckFloor", a: If(DataCardValue116.Value, "Yes", chkTruckFloorNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTruckFloor"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -8814,14 +8982,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccPlugWire");
-                              Collect(colDraft, {f: "AccPlugWire", a: "Yes", c: txtPlugWireCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccPlugWire")),
+                                  Collect(colDraft, {f: "AccPlugWire", a: "Yes", c: txtPlugWireCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccPlugWire"), {a: "Yes", c: txtPlugWireCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkPlugWireNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccPlugWire");
-                              Collect(colDraft, {f: "AccPlugWire", a: If(DataCardValue117.Value, "Yes", chkPlugWireNo.Value, "No", ""), c: txtPlugWireCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccPlugWire")),
+                                  Collect(colDraft, {f: "AccPlugWire", a: If(DataCardValue117.Value, "Yes", chkPlugWireNo.Value, "No", ""), c: txtPlugWireCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccPlugWire"), {a: If(DataCardValue117.Value, "Yes", chkPlugWireNo.Value, "No", ""), c: txtPlugWireCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8850,14 +9020,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccPlugWire");
-                              Collect(colDraft, {f: "AccPlugWire", a: "No", c: txtPlugWireCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccPlugWire")),
+                                  Collect(colDraft, {f: "AccPlugWire", a: "No", c: txtPlugWireCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccPlugWire"), {a: "No", c: txtPlugWireCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue117)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccPlugWire");
-                              Collect(colDraft, {f: "AccPlugWire", a: If(DataCardValue117.Value, "Yes", chkPlugWireNo.Value, "No", ""), c: txtPlugWireCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccPlugWire")),
+                                  Collect(colDraft, {f: "AccPlugWire", a: If(DataCardValue117.Value, "Yes", chkPlugWireNo.Value, "No", ""), c: txtPlugWireCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccPlugWire"), {a: If(DataCardValue117.Value, "Yes", chkPlugWireNo.Value, "No", ""), c: txtPlugWireCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -8886,8 +9058,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccPlugWire");
-                              Collect(colDraft, {f: "AccPlugWire", a: If(DataCardValue117.Value, "Yes", chkPlugWireNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccPlugWire")),
+                                  Collect(colDraft, {f: "AccPlugWire", a: If(DataCardValue117.Value, "Yes", chkPlugWireNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccPlugWire"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -9057,14 +9230,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTrolley");
-                              Collect(colDraft, {f: "AccEngTrolley", a: "Yes", c: txtEngTrolleyCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTrolley")),
+                                  Collect(colDraft, {f: "AccEngTrolley", a: "Yes", c: txtEngTrolleyCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTrolley"), {a: "Yes", c: txtEngTrolleyCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkEngTrolleyNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTrolley");
-                              Collect(colDraft, {f: "AccEngTrolley", a: If(DataCardValue118.Value, "Yes", chkEngTrolleyNo.Value, "No", ""), c: txtEngTrolleyCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTrolley")),
+                                  Collect(colDraft, {f: "AccEngTrolley", a: If(DataCardValue118.Value, "Yes", chkEngTrolleyNo.Value, "No", ""), c: txtEngTrolleyCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTrolley"), {a: If(DataCardValue118.Value, "Yes", chkEngTrolleyNo.Value, "No", ""), c: txtEngTrolleyCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -9093,14 +9268,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTrolley");
-                              Collect(colDraft, {f: "AccEngTrolley", a: "No", c: txtEngTrolleyCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTrolley")),
+                                  Collect(colDraft, {f: "AccEngTrolley", a: "No", c: txtEngTrolleyCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTrolley"), {a: "No", c: txtEngTrolleyCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue118)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTrolley");
-                              Collect(colDraft, {f: "AccEngTrolley", a: If(DataCardValue118.Value, "Yes", chkEngTrolleyNo.Value, "No", ""), c: txtEngTrolleyCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTrolley")),
+                                  Collect(colDraft, {f: "AccEngTrolley", a: If(DataCardValue118.Value, "Yes", chkEngTrolleyNo.Value, "No", ""), c: txtEngTrolleyCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTrolley"), {a: If(DataCardValue118.Value, "Yes", chkEngTrolleyNo.Value, "No", ""), c: txtEngTrolleyCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -9129,8 +9306,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTrolley");
-                              Collect(colDraft, {f: "AccEngTrolley", a: If(DataCardValue118.Value, "Yes", chkEngTrolleyNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTrolley")),
+                                  Collect(colDraft, {f: "AccEngTrolley", a: If(DataCardValue118.Value, "Yes", chkEngTrolleyNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTrolley"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -9336,14 +9514,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTyreCondition");
-                              Collect(colDraft, {f: "AccTyreCondition", a: "Yes", c: txtAccTyreConditionCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTyreCondition")),
+                                  Collect(colDraft, {f: "AccTyreCondition", a: "Yes", c: txtAccTyreConditionCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTyreCondition"), {a: "Yes", c: txtAccTyreConditionCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkAccTyreConditionNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTyreCondition");
-                              Collect(colDraft, {f: "AccTyreCondition", a: If(DataCardValue119.Value, "Yes", chkAccTyreConditionNo.Value, "No", ""), c: txtAccTyreConditionCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTyreCondition")),
+                                  Collect(colDraft, {f: "AccTyreCondition", a: If(DataCardValue119.Value, "Yes", chkAccTyreConditionNo.Value, "No", ""), c: txtAccTyreConditionCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTyreCondition"), {a: If(DataCardValue119.Value, "Yes", chkAccTyreConditionNo.Value, "No", ""), c: txtAccTyreConditionCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -9372,14 +9552,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTyreCondition");
-                              Collect(colDraft, {f: "AccTyreCondition", a: "No", c: txtAccTyreConditionCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTyreCondition")),
+                                  Collect(colDraft, {f: "AccTyreCondition", a: "No", c: txtAccTyreConditionCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTyreCondition"), {a: "No", c: txtAccTyreConditionCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue119)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTyreCondition");
-                              Collect(colDraft, {f: "AccTyreCondition", a: If(DataCardValue119.Value, "Yes", chkAccTyreConditionNo.Value, "No", ""), c: txtAccTyreConditionCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTyreCondition")),
+                                  Collect(colDraft, {f: "AccTyreCondition", a: If(DataCardValue119.Value, "Yes", chkAccTyreConditionNo.Value, "No", ""), c: txtAccTyreConditionCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTyreCondition"), {a: If(DataCardValue119.Value, "Yes", chkAccTyreConditionNo.Value, "No", ""), c: txtAccTyreConditionCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -9408,8 +9590,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccTyreCondition");
-                              Collect(colDraft, {f: "AccTyreCondition", a: If(DataCardValue119.Value, "Yes", chkAccTyreConditionNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccTyreCondition")),
+                                  Collect(colDraft, {f: "AccTyreCondition", a: If(DataCardValue119.Value, "Yes", chkAccTyreConditionNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccTyreCondition"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -9918,14 +10101,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_33");
-                              Collect(colDraft, {f: "field_33", a: "Yes", c: txtWheelStudsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_33")),
+                                  Collect(colDraft, {f: "field_33", a: "Yes", c: txtWheelStudsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_33"), {a: "Yes", c: txtWheelStudsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkWheelStudsNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_33");
-                              Collect(colDraft, {f: "field_33", a: If(DataCardValue67.Value, "Yes", chkWheelStudsNo.Value, "No", ""), c: txtWheelStudsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_33")),
+                                  Collect(colDraft, {f: "field_33", a: If(DataCardValue67.Value, "Yes", chkWheelStudsNo.Value, "No", ""), c: txtWheelStudsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_33"), {a: If(DataCardValue67.Value, "Yes", chkWheelStudsNo.Value, "No", ""), c: txtWheelStudsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -9954,14 +10139,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_33");
-                              Collect(colDraft, {f: "field_33", a: "No", c: txtWheelStudsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_33")),
+                                  Collect(colDraft, {f: "field_33", a: "No", c: txtWheelStudsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_33"), {a: "No", c: txtWheelStudsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue67)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_33");
-                              Collect(colDraft, {f: "field_33", a: If(DataCardValue67.Value, "Yes", chkWheelStudsNo.Value, "No", ""), c: txtWheelStudsCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_33")),
+                                  Collect(colDraft, {f: "field_33", a: If(DataCardValue67.Value, "Yes", chkWheelStudsNo.Value, "No", ""), c: txtWheelStudsCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_33"), {a: If(DataCardValue67.Value, "Yes", chkWheelStudsNo.Value, "No", ""), c: txtWheelStudsCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -9990,8 +10177,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_33");
-                              Collect(colDraft, {f: "field_33", a: If(DataCardValue67.Value, "Yes", chkWheelStudsNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "field_33")),
+                                  Collect(colDraft, {f: "field_33", a: If(DataCardValue67.Value, "Yes", chkWheelStudsNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_33"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -10113,14 +10301,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccSpareTyre");
-                              Collect(colDraft, {f: "AccSpareTyre", a: "Yes", c: txtAccSpareTyreCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccSpareTyre")),
+                                  Collect(colDraft, {f: "AccSpareTyre", a: "Yes", c: txtAccSpareTyreCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccSpareTyre"), {a: "Yes", c: txtAccSpareTyreCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkAccSpareTyreNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccSpareTyre");
-                              Collect(colDraft, {f: "AccSpareTyre", a: If(DataCardValue120.Value, "Yes", chkAccSpareTyreNo.Value, "No", ""), c: txtAccSpareTyreCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccSpareTyre")),
+                                  Collect(colDraft, {f: "AccSpareTyre", a: If(DataCardValue120.Value, "Yes", chkAccSpareTyreNo.Value, "No", ""), c: txtAccSpareTyreCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccSpareTyre"), {a: If(DataCardValue120.Value, "Yes", chkAccSpareTyreNo.Value, "No", ""), c: txtAccSpareTyreCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -10149,14 +10339,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccSpareTyre");
-                              Collect(colDraft, {f: "AccSpareTyre", a: "No", c: txtAccSpareTyreCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccSpareTyre")),
+                                  Collect(colDraft, {f: "AccSpareTyre", a: "No", c: txtAccSpareTyreCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccSpareTyre"), {a: "No", c: txtAccSpareTyreCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue120)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccSpareTyre");
-                              Collect(colDraft, {f: "AccSpareTyre", a: If(DataCardValue120.Value, "Yes", chkAccSpareTyreNo.Value, "No", ""), c: txtAccSpareTyreCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccSpareTyre")),
+                                  Collect(colDraft, {f: "AccSpareTyre", a: If(DataCardValue120.Value, "Yes", chkAccSpareTyreNo.Value, "No", ""), c: txtAccSpareTyreCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccSpareTyre"), {a: If(DataCardValue120.Value, "Yes", chkAccSpareTyreNo.Value, "No", ""), c: txtAccSpareTyreCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -10185,8 +10377,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccSpareTyre");
-                              Collect(colDraft, {f: "AccSpareTyre", a: If(DataCardValue120.Value, "Yes", chkAccSpareTyreNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccSpareTyre")),
+                                  Collect(colDraft, {f: "AccSpareTyre", a: If(DataCardValue120.Value, "Yes", chkAccSpareTyreNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccSpareTyre"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -10356,14 +10549,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTyreWinder");
-                              Collect(colDraft, {f: "AccEngTyreWinder", a: "Yes", c: txtEngTyreWinderCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTyreWinder")),
+                                  Collect(colDraft, {f: "AccEngTyreWinder", a: "Yes", c: txtEngTyreWinderCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTyreWinder"), {a: "Yes", c: txtEngTyreWinderCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkEngTyreWinderNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTyreWinder");
-                              Collect(colDraft, {f: "AccEngTyreWinder", a: If(DataCardValue121.Value, "Yes", chkEngTyreWinderNo.Value, "No", ""), c: txtEngTyreWinderCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTyreWinder")),
+                                  Collect(colDraft, {f: "AccEngTyreWinder", a: If(DataCardValue121.Value, "Yes", chkEngTyreWinderNo.Value, "No", ""), c: txtEngTyreWinderCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTyreWinder"), {a: If(DataCardValue121.Value, "Yes", chkEngTyreWinderNo.Value, "No", ""), c: txtEngTyreWinderCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -10392,14 +10587,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTyreWinder");
-                              Collect(colDraft, {f: "AccEngTyreWinder", a: "No", c: txtEngTyreWinderCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTyreWinder")),
+                                  Collect(colDraft, {f: "AccEngTyreWinder", a: "No", c: txtEngTyreWinderCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTyreWinder"), {a: "No", c: txtEngTyreWinderCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue121)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTyreWinder");
-                              Collect(colDraft, {f: "AccEngTyreWinder", a: If(DataCardValue121.Value, "Yes", chkEngTyreWinderNo.Value, "No", ""), c: txtEngTyreWinderCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTyreWinder")),
+                                  Collect(colDraft, {f: "AccEngTyreWinder", a: If(DataCardValue121.Value, "Yes", chkEngTyreWinderNo.Value, "No", ""), c: txtEngTyreWinderCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTyreWinder"), {a: If(DataCardValue121.Value, "Yes", chkEngTyreWinderNo.Value, "No", ""), c: txtEngTyreWinderCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -10428,8 +10625,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngTyreWinder");
-                              Collect(colDraft, {f: "AccEngTyreWinder", a: If(DataCardValue121.Value, "Yes", chkEngTyreWinderNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngTyreWinder")),
+                                  Collect(colDraft, {f: "AccEngTyreWinder", a: If(DataCardValue121.Value, "Yes", chkEngTyreWinderNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngTyreWinder"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -10599,14 +10797,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngJack");
-                              Collect(colDraft, {f: "AccEngJack", a: "Yes", c: txtEngJackCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngJack")),
+                                  Collect(colDraft, {f: "AccEngJack", a: "Yes", c: txtEngJackCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngJack"), {a: "Yes", c: txtEngJackCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkEngJackNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngJack");
-                              Collect(colDraft, {f: "AccEngJack", a: If(DataCardValue122.Value, "Yes", chkEngJackNo.Value, "No", ""), c: txtEngJackCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngJack")),
+                                  Collect(colDraft, {f: "AccEngJack", a: If(DataCardValue122.Value, "Yes", chkEngJackNo.Value, "No", ""), c: txtEngJackCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngJack"), {a: If(DataCardValue122.Value, "Yes", chkEngJackNo.Value, "No", ""), c: txtEngJackCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -10635,14 +10835,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngJack");
-                              Collect(colDraft, {f: "AccEngJack", a: "No", c: txtEngJackCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngJack")),
+                                  Collect(colDraft, {f: "AccEngJack", a: "No", c: txtEngJackCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngJack"), {a: "No", c: txtEngJackCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue122)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngJack");
-                              Collect(colDraft, {f: "AccEngJack", a: If(DataCardValue122.Value, "Yes", chkEngJackNo.Value, "No", ""), c: txtEngJackCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngJack")),
+                                  Collect(colDraft, {f: "AccEngJack", a: If(DataCardValue122.Value, "Yes", chkEngJackNo.Value, "No", ""), c: txtEngJackCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngJack"), {a: If(DataCardValue122.Value, "Yes", chkEngJackNo.Value, "No", ""), c: txtEngJackCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -10671,8 +10873,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngJack");
-                              Collect(colDraft, {f: "AccEngJack", a: If(DataCardValue122.Value, "Yes", chkEngJackNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngJack")),
+                                  Collect(colDraft, {f: "AccEngJack", a: If(DataCardValue122.Value, "Yes", chkEngJackNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngJack"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -10842,14 +11045,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngWheelBrace");
-                              Collect(colDraft, {f: "AccEngWheelBrace", a: "Yes", c: txtEngWheelBraceCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngWheelBrace")),
+                                  Collect(colDraft, {f: "AccEngWheelBrace", a: "Yes", c: txtEngWheelBraceCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngWheelBrace"), {a: "Yes", c: txtEngWheelBraceCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkEngWheelBraceNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngWheelBrace");
-                              Collect(colDraft, {f: "AccEngWheelBrace", a: If(DataCardValue123.Value, "Yes", chkEngWheelBraceNo.Value, "No", ""), c: txtEngWheelBraceCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngWheelBrace")),
+                                  Collect(colDraft, {f: "AccEngWheelBrace", a: If(DataCardValue123.Value, "Yes", chkEngWheelBraceNo.Value, "No", ""), c: txtEngWheelBraceCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngWheelBrace"), {a: If(DataCardValue123.Value, "Yes", chkEngWheelBraceNo.Value, "No", ""), c: txtEngWheelBraceCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -10878,14 +11083,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngWheelBrace");
-                              Collect(colDraft, {f: "AccEngWheelBrace", a: "No", c: txtEngWheelBraceCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngWheelBrace")),
+                                  Collect(colDraft, {f: "AccEngWheelBrace", a: "No", c: txtEngWheelBraceCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngWheelBrace"), {a: "No", c: txtEngWheelBraceCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue123)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngWheelBrace");
-                              Collect(colDraft, {f: "AccEngWheelBrace", a: If(DataCardValue123.Value, "Yes", chkEngWheelBraceNo.Value, "No", ""), c: txtEngWheelBraceCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngWheelBrace")),
+                                  Collect(colDraft, {f: "AccEngWheelBrace", a: If(DataCardValue123.Value, "Yes", chkEngWheelBraceNo.Value, "No", ""), c: txtEngWheelBraceCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngWheelBrace"), {a: If(DataCardValue123.Value, "Yes", chkEngWheelBraceNo.Value, "No", ""), c: txtEngWheelBraceCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -10914,8 +11121,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngWheelBrace");
-                              Collect(colDraft, {f: "AccEngWheelBrace", a: If(DataCardValue123.Value, "Yes", chkEngWheelBraceNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngWheelBrace")),
+                                  Collect(colDraft, {f: "AccEngWheelBrace", a: If(DataCardValue123.Value, "Yes", chkEngWheelBraceNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngWheelBrace"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -11085,14 +11293,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngPipe");
-                              Collect(colDraft, {f: "AccEngPipe", a: "Yes", c: txtEngPipeCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngPipe")),
+                                  Collect(colDraft, {f: "AccEngPipe", a: "Yes", c: txtEngPipeCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngPipe"), {a: "Yes", c: txtEngPipeCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkEngPipeNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngPipe");
-                              Collect(colDraft, {f: "AccEngPipe", a: If(DataCardValue124.Value, "Yes", chkEngPipeNo.Value, "No", ""), c: txtEngPipeCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngPipe")),
+                                  Collect(colDraft, {f: "AccEngPipe", a: If(DataCardValue124.Value, "Yes", chkEngPipeNo.Value, "No", ""), c: txtEngPipeCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngPipe"), {a: If(DataCardValue124.Value, "Yes", chkEngPipeNo.Value, "No", ""), c: txtEngPipeCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -11121,14 +11331,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngPipe");
-                              Collect(colDraft, {f: "AccEngPipe", a: "No", c: txtEngPipeCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngPipe")),
+                                  Collect(colDraft, {f: "AccEngPipe", a: "No", c: txtEngPipeCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngPipe"), {a: "No", c: txtEngPipeCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue124)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngPipe");
-                              Collect(colDraft, {f: "AccEngPipe", a: If(DataCardValue124.Value, "Yes", chkEngPipeNo.Value, "No", ""), c: txtEngPipeCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngPipe")),
+                                  Collect(colDraft, {f: "AccEngPipe", a: If(DataCardValue124.Value, "Yes", chkEngPipeNo.Value, "No", ""), c: txtEngPipeCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngPipe"), {a: If(DataCardValue124.Value, "Yes", chkEngPipeNo.Value, "No", ""), c: txtEngPipeCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -11157,8 +11369,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccEngPipe");
-                              Collect(colDraft, {f: "AccEngPipe", a: If(DataCardValue124.Value, "Yes", chkEngPipeNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccEngPipe")),
+                                  Collect(colDraft, {f: "AccEngPipe", a: If(DataCardValue124.Value, "Yes", chkEngPipeNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccEngPipe"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -11362,14 +11575,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccidentDamage");
-                              Collect(colDraft, {f: "AccidentDamage", a: "Yes", c: txtAccidentDamageCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccidentDamage")),
+                                  Collect(colDraft, {f: "AccidentDamage", a: "Yes", c: txtAccidentDamageCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccidentDamage"), {a: "Yes", c: txtAccidentDamageCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(chkAccidentDamageNo)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccidentDamage");
-                              Collect(colDraft, {f: "AccidentDamage", a: If(DataCardValue125.Value, "Yes", chkAccidentDamageNo.Value, "No", ""), c: txtAccidentDamageCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccidentDamage")),
+                                  Collect(colDraft, {f: "AccidentDamage", a: If(DataCardValue125.Value, "Yes", chkAccidentDamageNo.Value, "No", ""), c: txtAccidentDamageCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccidentDamage"), {a: If(DataCardValue125.Value, "Yes", chkAccidentDamageNo.Value, "No", ""), c: txtAccidentDamageCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -11398,14 +11613,16 @@ Screens:
                         HoverFill: =RGBA(226, 243, 242, 1)
                         OnCheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccidentDamage");
-                              Collect(colDraft, {f: "AccidentDamage", a: "No", c: txtAccidentDamageCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccidentDamage")),
+                                  Collect(colDraft, {f: "AccidentDamage", a: "No", c: txtAccidentDamageCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccidentDamage"), {a: "No", c: txtAccidentDamageCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false));
                           Reset(DataCardValue125)
                         OnUncheck: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccidentDamage");
-                              Collect(colDraft, {f: "AccidentDamage", a: If(DataCardValue125.Value, "Yes", chkAccidentDamageNo.Value, "No", ""), c: txtAccidentDamageCmt.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccidentDamage")),
+                                  Collect(colDraft, {f: "AccidentDamage", a: If(DataCardValue125.Value, "Yes", chkAccidentDamageNo.Value, "No", ""), c: txtAccidentDamageCmt.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccidentDamage"), {a: If(DataCardValue125.Value, "Yes", chkAccidentDamageNo.Value, "No", ""), c: txtAccidentDamageCmt.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PressedColor: =RGBA(31, 41, 51, 1)
                         PressedFill: =RGBA(226, 243, 242, 1)
@@ -11434,8 +11651,9 @@ Screens:
                         HoverFill: =RGBA(255, 255, 255, 1)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "AccidentDamage");
-                              Collect(colDraft, {f: "AccidentDamage", a: If(DataCardValue125.Value, "Yes", chkAccidentDamageNo.Value, "No", ""), c: Self.Text});
+                              If(IsBlank(LookUp(colDraft, f = "AccidentDamage")),
+                                  Collect(colDraft, {f: "AccidentDamage", a: If(DataCardValue125.Value, "Yes", chkAccidentDamageNo.Value, "No", ""), c: Self.Text}),
+                                  Patch(colDraft, LookUp(colDraft, f = "AccidentDamage"), {c: Self.Text}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         PaddingLeft: =5
                         PressedBorderColor: =RGBA(8, 144, 144, 1)
@@ -11835,8 +12053,9 @@ Screens:
                           =If(varReviewing, Parent.Default, LookUp(colDraft, f = "field_51").a)
                         OnChange: |-
                           =If(!varReviewing,
-                              RemoveIf(colDraft, f = "field_51");
-                              Collect(colDraft, {f: "field_51", a: Self.Text, c: ""});
+                              If(IsBlank(LookUp(colDraft, f = "field_51")),
+                                  Collect(colDraft, {f: "field_51", a: Self.Text, c: ""}),
+                                  Patch(colDraft, LookUp(colDraft, f = "field_51"), {a: Self.Text, c: ""}));
                               IfError(SaveData(colDraft, "fcCheckDraft"); true, false))
                         DelayOutput: =true
                         DisabledBorderColor: =RGBA(0, 0, 0, 0)

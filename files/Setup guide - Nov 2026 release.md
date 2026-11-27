@@ -335,7 +335,7 @@ Steps 0–8 below are the same changes done by hand. You only need them if the i
 
 **If fewer photos are attached than taken,** they didn't fit in about 19 MB together; the link shows them all. **If none are attached,** check **Get invoice files**: an empty result means the photos have no `RunKey` (SaveFleetPhotos step 2.1 not done, or the app not re-published).
 
-**Email sender:** this keeps sending from the flow owner's mailbox, as today. When IT grants Send As on the shared mailbox, switch **Send an email (V2)** to **Send an email from a shared mailbox (V2)**.
+**Email sender:** this keeps sending from the flow owner's mailbox, as today. To send from the shared mailbox with Send As only: open **Send an email (V2)** > Show advanced options > **From (Send as)** = the shared mailbox. **Send an email from a shared mailbox (V2)** also needs **Full Access** (without it: "The specified object was not found in the store").
 
 The app doesn't call this flow; the SharePoint trigger starts it. So there's nothing to add in Power Apps Studio for it.
 
@@ -409,7 +409,7 @@ The app doesn't call this flow; the SharePoint trigger starts it. So there's not
 | **Krish**  | The truck table (number, type, tyres, dates) and which items are Frozen-only                                                               | Import the table with `create_trucks_list.js` (1.3). Set `truckType` in `checklist_items.json`, regenerate, and paste `scrPreTrip` again                                                                                                                       |
 | **Office** | Each truck's COF, blower and truck service dates                                                                                           | Typed straight into GF Fleet Trucks                                                                                                                                                                                                                                    |
 | **Labels** | A photo of the COF and blower stickers, plus what your phone reads if they have a QR code or barcode                                       | Decides whether a "Scan" button can fill the dates (free) or would need AI Builder (premium)                                                                                                                                                                           |
-| **IT**     | Send As on the shared mailbox                                                                                                              | Switch Run Sheet - Submission email to **Send an email from a shared mailbox (V2)**                                                                                                                                                                              |
+| **IT**     | Full Access on the shared mailbox (Send As granted 25 Nov)                                                                                                              | Switch Run Sheet - Submission email to **Send an email from a shared mailbox (V2)**                                                                                                                                                                              |
 
 ## Where things are documented
 

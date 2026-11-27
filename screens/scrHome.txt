@@ -341,6 +341,7 @@ Screens:
                                       Set(varCheck, Blank());
                                       UpdateContext({ctxConfirmDiscard: false});
                                       NewForm(frmPreTrip);
+                                      Set(varTruckInfo, Blank());
                                       Navigate(scrPreTrip, ScreenTransition.None, {ctxPage: 1, ctxSec: "cabin"})
                                     PressedBorderColor: =RGBA(0, 0, 0, 0)
                                     PressedColor: =RGBA(255, 255, 255, 1)
@@ -573,6 +574,7 @@ Screens:
                           ClearCollect(colDraft, {f: "_truck", a: varTruck, c: ""}, {f: "_started", a: Text(Now(), "ddd d mmm, hh:mm"), c: ""});
                           IfError(SaveData(colDraft, "fcCheckDraft"); SaveData(colPhotos, "fcCheckPhotos"); true, false);
                           NewForm(frmPreTrip);
+                          Set(varTruckInfo, Blank());
                           Navigate(scrPreTrip, ScreenTransition.None, {ctxPage: 1, ctxSec: "cabin"})
                         PressedBorderColor: =RGBA(0, 0, 0, 0)
                         PressedColor: =RGBA(255, 255, 255, 1)

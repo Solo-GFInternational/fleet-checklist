@@ -4,7 +4,8 @@ Screens:
       Fill: =RGBA(243, 246, 246, 1)
       LoadingSpinnerColor: =RGBA(8, 144, 144, 1)
       OnVisible: |-
-        =Reset(drpPhotoType);
+        =UpdateContext({ctxItemMode: !IsBlank(varPhotoItem)});
+        Reset(drpPhotoType);
         Reset(txtPhotoItem)
     Children:
       - conPhotos:
@@ -353,6 +354,7 @@ Screens:
                         PaddingTop: =4
                         Size: =14
                         Text: ="Photos taken (" & CountRows(colPhotos) & ") – tap the bin to remove one"
+                        Visible: =!ctxItemMode
                   - galPhotos:
                       Control: Gallery@2.15.0
                       Variant: BrowseLayout_Horizontal_TwoTextOneImageVariant_ver5.0
@@ -364,6 +366,7 @@ Screens:
                         Items: =colPhotos
                         TemplatePadding: =8
                         TemplateSize: =150
+                        Visible: =!ctxItemMode
                       Children:
                         - imgPhoto:
                             Control: Image@2.2.3

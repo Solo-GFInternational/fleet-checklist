@@ -197,7 +197,7 @@ Inline-styled HTML bodies for Office 365 Outlook "Send an email (V2)" (paste int
 | [flow-failure.html](email-templates/flow-failure.html) | A flow failed, response may be missing | `FLOW_NAME`, `FAIL_TIME`, `RESPONSE_ID`, `RUN_LINK` |
 | [preview.html](email-templates/preview.html) | Open in a browser to see all three (Option A, Option B, failure) | – |
 
-Email alerts are **on hold** (see gotchas): no Send As on the shared mailbox.
+Email alerts from the shared mailbox: see 4.6 (Send As granted, Full Access pending).
 
 ### 3.4 Test data
 
@@ -293,7 +293,7 @@ Steps:
 3. **Ensure user.** *Send an HTTP request to SharePoint*, POST `_api/web/ensureuser`, headers `Accept` and `Content-Type` = `application/json;odata=verbose`, body `{"logonName":"<email>"}`. Keep `body('Ensure_user')?['d']?['Id']` and `?['LoginName']`.
 4. **Remove from both groups.** Two HTTP POSTs: `_api/web/sitegroups/getbyname('Fleet App Drivers')/users/removebyid(<Id>)`, then the same for `Fleet App Reviewers`. Set each one's *Configure run after* to continue on failure (it fails when the person wasn't in that group).
 5. **If Active:** HTTP POST `_api/web/sitegroups/getbyname('<group>')/users`, body `{"__metadata":{"type":"SP.User"},"LoginName":"<LoginName>"}`. Use group `Fleet App Drivers` for Driver and `Fleet App Reviewers` for Reviewer/Admin.
-6. **Optional: share the app.** *Power Apps for Makers → Edit App Role Assignment* (the flow owner must own the app), role CanView. Not tested here: check on the first run whether an invitation email arrives. Otherwise share the app by hand or with a security group from IT.
+6. **Sharing the app is done by hand** (decision 27 Nov 2026, few users): after adding someone on Manage users, Power Apps > Apps > ... > Share, add them as a User (not Co-owner), tick the invitation email, and share nothing from the data panel. To remove someone, untick Active on Manage users **and** remove them in Share. (Automating it with *Power Apps for Makers > Edit App Role Assignment* or a security-enabled group was considered and not built.)
 7. **Respond to a PowerApp or flow:** `ok = true`, `message` = for example "Added to Fleet App Drivers".
 
 Removing access keeps the person's past records (Created By doesn't change) and keeps the App Users row with Active = No.
@@ -326,7 +326,7 @@ The app no longer calls a flow for this, so it works even if the driver closes t
 - Forms + standard SharePoint/Outlook/Teams connectors run on standard M365 licences. Anything premium (Dataverse, premium connectors, Power Apps offline-first on Dataverse) needs Power Apps/Automate premium licences: check before designing for it.
 - **Ownership:** create forms under a Microsoft 365 group / Team (e.g. "Fleet Operations"), not a personal account, so the organisation owns them.
 - **Flows:** add a **co-owner** (still to do); ideally run connections under a dedicated service account so flows survive staff changes.
-- **Email:** sending as a shared mailbox needs **Send As** granted by IT.
+- **Email:** **Send an email from a shared mailbox (V2)** needs **Full Access** as well as Send As (with Send As only it fails: "The specified object was not found in the store", 27 Nov 2026). With Send As only, use **Send an email (V2)** with **From (Send as)** = the shared mailbox.
 - Rough effort: lists 1–2 h, importing/configuring forms ~1 h, each flow ~½ day, QR codes per truck ~1 h, pilot 1–2 trucks for a week.
 
 ---
@@ -429,50 +429,22 @@ Offline completion estimates given to the user (22 Oct): run sheet online-only ~
 
 ## 6. Current state
 
+*Rewritten 27 Nov 2026. The Forms track (sections 2-3) is no longer the main path; the Power Apps canvas app is.*
+
 ### Done
 
-- Three Forms import files generated; Driver Declaration and Run Sheet forms imported and configured (branching, required, number restrictions).
-- SharePoint site "Fleet Operations" with Run Sheets, Run Sheet Details, Driver Declarations lists (and Pre-Trip Checks / Fleet Checklist).
-- Driver Declaration flow and Run Sheet flow (17 stops) working; Pre-Trip flow fully mapped.
-- Email templates drafted; test-data generator built.
+- Power Apps canvas app (phone): Home (truck scan, registered trucks only, role lookup, checklist draft resume), Fleet checklist (one section per page, explicit Yes/No, defects list, photos, truck due dates), Photos, Run sheet (offline, invoice photos), Driver declaration, Review and sign-off, Manage users, in-app manual (scrHelp; screenshots still to take).
+- SharePoint lists on Fleet Operations: Fleet Checklist, GF Fleet Checklist Defects, Run Sheets, Run Sheet Details, Driver Declarations, GF Fleet Checklist App Users, GF Fleet Trucks, GF Fleet Daily Reviews, Fleet Photos library; groups Fleet App Drivers / Fleet App Reviewers, drivers add-only.
+- Flows: SaveFleetPhotos, SyncAppUser, Run Sheet - Submission email v2 (invoice photos attached; no invoice PDF, see 4.5).
+- Access: the first 5 users are registered on Manage users and the app is shared with them by hand (27 Nov 2026).
+- 27 Nov fixes: comment box no longer closes and loses its text (draft rows updated in place), faster camera open/close, tabs and buttons fit a 360 px phone, Fleet Checklist columns made optional in SharePoint. Paste and publish the changed screens if not done yet.
 
-### Drift between files and live system
+### Open
 
-| Item | Local file | Live |
-| --- | --- | --- |
-| Pre-trip end section | .docx: Driver Declaration (51 q); script: Site Engineer (52 q) | Site Engineer section, all Required |
-| Run sheet stops | 18 stops, no numbers | 17 stops, "- n" titles, "(Sn)" question suffixes, extra sign-off/review questions |
-| Stops list | "Run Sheet Stops" template with RunSheetID + StopOrder | "Run Sheet Details" with lookup, no Stop Order |
-
-Update `build_forms.py` / `build_lists.py` before any re-import.
-
-### Last open bugs
-
-1. **Run sheet Trip Details merging** into the section description on Quick Import. Fix applied 20 Oct (explicit description line per section, answer lines removed, Word re-save) but **never confirmed by re-importing**. Live form is already built by hand, so only matters on re-import.
-2. **END Mileage** not found in the live Return to CD section (22 Oct).
-3. Review/approval and date questions in the live run sheet have **no list columns**.
-
-### Open questions for the user
-
-- Forms + Power Automate or Power Apps as the go-live driver front end? Is offline required?
-- Pre-trip: how is the **truck** identified (QR code / link per truck / question / app dropdown)?
-- Pre-trip: keep the Site Engineer section in the driver's form (Required), or move it to list columns / a Power Automate approval?
-- Email alerts: will IT grant Send As on the shared mailbox, or use Teams posts?
-- Is a Stop Order column needed on Run Sheet Details?
-
-### Next steps
-
-1. Ask the user where they left the Power Apps Fleet Checklist work and which track goes live.
-2. Run a full end-to-end test of the Pre-Trip flow.
-3. Turn off Required on the Site Engineer questions (or move them to the list / an approval).
-4. Fix END Mileage and add list columns for the new run sheet sign-off fields; extend the flow.
-5. Add the "No" alert (Teams or email once Send As is granted) and a flow-failure alert (configure "run after: has failed").
-6. Index Date/Truck columns; create filtered views; add the office-only status columns.
-7. Add a co-owner / service account to every flow.
-8. Clean up test data, then pilot with 1–2 trucks.
-9. Bring `build_forms.py` / `build_lists.py` in line with the live forms and lists; consider `git init`.
-
----
+- Flows send from the owner's work email until IT grants **Full Access** on the shared mailbox (see 4.6).
+- Manual screenshots; daily SharePoint views (stops, driving and waiting time); Trade Issue and MEX reporting emails; Phase 2 Driver Assessment.
+- Waiting on Krish (Ambient/Frozen items, final wording, COF label barcode), office (COF and service dates), Pawan (wording sign-off before the rename).
+- Co-owner / service account on every flow; merge the branch into `main`; pilot 1-2 trucks for a week.
 
 ## 7. Gotchas and quick reference
 
@@ -486,6 +458,7 @@ Update `build_forms.py` / `build_lists.py` before any re-import.
 | Identical question names across stops | Unusable in Power Automate's picker: suffix "(Sn)" |
 | Forms answers are text | `if(isFloat(x), float(x), null)`; add Number restrictions in Forms |
 | "Send an email from a shared mailbox" → Unauthorized | Needs Send As from IT |
+| "Send an email from a shared mailbox" → "The specified object was not found in the store" | Also needs Full Access; or use Send an email (V2) with From (Send as) |
 | Mail connector "Send an email notification (V3)" → 401 for new tenants | Don't use it; use Outlook "Send an email (V2)" or Teams |
 | SharePoint internal names are fixed at creation | Short, no-space names; spaces become `_x0020_` |
 | Breaking list permissions | Caused the Run Sheet Stops rebuild. Only stop inheriting with existing permissions **copied** (`setup_app_permissions.js` does this), so the flow owner and site owners keep access |

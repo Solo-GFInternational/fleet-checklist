@@ -215,11 +215,17 @@ def star_label(n):
     ], KID, metadata='FieldRequired')
 
 
-def draft_save(field, answer, comment='""'):
-    """Write one row of the phone draft (colDraft) and save it. Skipped when reviewing."""
+def draft_save(field, answer, comment='""', comment_only=False):
+    """Write one row of the phone draft (colDraft) and save it. Skipped when reviewing.
+    The row is updated in place (Patch), never removed and re-added: the Yes/No boxes' Default
+    reads this row, and a moment without it unticked the No box, hid the comment and lost it.
+    comment_only: an existing row keeps its answer and only the comment changes."""
+    key = fx_str(field)
+    change = f'{{c: {comment}}}' if comment_only else f'{{a: {answer}, c: {comment}}}'
     return (f'If(!varReviewing,\n'
-            f'    RemoveIf(colDraft, f = {fx_str(field)});\n'
-            f'    Collect(colDraft, {{f: {fx_str(field)}, a: {answer}, c: {comment}}});\n'
+            f'    If(IsBlank(LookUp(colDraft, f = {key})),\n'
+            f'        Collect(colDraft, {{f: {key}, a: {answer}, c: {comment}}}),\n'
+            f'        Patch(colDraft, LookUp(colDraft, f = {key}), {change}));\n'
             f'    IfError(SaveData(colDraft, "fcCheckDraft"); true, false))')
 
 
@@ -502,7 +508,7 @@ class Builder:
         problem_box = yes_box if it.get('commentOn') == 'Yes' else no_box
         if cmt:
             kids.append(self.comment_box(it, cmt, problem_box, yes_box, reviewer, week_var if reviewer else None,
-                                         None if reviewer else draft_save(f, answer, 'Self.Text')))
+                                         None if reviewer else draft_save(f, answer, 'Self.Text', comment_only=True)))
             err_y = f'If({cmt}.Visible, {cmt}.Y + {cmt}.Height, {err_y})'
         kids.append(error_label(n, err_y))
         kids.append(star_label(n))
@@ -734,7 +740,11 @@ class Builder:
 
     def on_visible(self):
         lines = [
-            "Set(varTruckInfo, LookUp('GF Fleet Trucks', Title = If(varReviewing, varCheck.field_1, varTruck) && ActiveYN = true));",
+            # Look the truck up only when it isn't already loaded: coming back from the camera
+            # (scrPhotos) re-runs OnVisible, and a SharePoint call each time made closing it slow.
+            "With({tk: If(varReviewing, varCheck.field_1, varTruck)},\n"
+            "    If(IsBlank(varTruckInfo) || varTruckInfo.Title <> tk,\n"
+            "        Set(varTruckInfo, LookUp('GF Fleet Trucks', Title = tk && ActiveYN = true))));",
             f'Set(varTyreCount, Min(Coalesce(varTruckInfo.NoOfTyres, 6), {MAX_TYRES}));',
             "If(varReviewing, ClearCollect(colCheckDefects, Filter('GF Fleet Checklist Defects', "
             "ChecklistID = varCheck.ID)), Clear(colCheckDefects));",
